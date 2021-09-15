@@ -1,4 +1,4 @@
-package com.example.digitalrefrige.Utils.di;
+package com.example.digitalrefrige.utils.di;
 
 import android.content.Context;
 

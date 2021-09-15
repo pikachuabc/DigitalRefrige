@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +40,6 @@ public class ItemListFragment extends Fragment {
     private FragmentItemListBinding binding;
 
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +62,21 @@ public class ItemListFragment extends Fragment {
             }
         });
 
+        // enable swipe delete on our recyclerView
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Item toDelete = itemListAdapter.getCurrentList().get(viewHolder.getAdapterPosition());
+                itemListViewModel.deleteItem(toDelete);
+                Toast.makeText(getContext(),"Item deleted",Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(itemListRecyclerView);
+
         // set AddButton
         binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +89,6 @@ public class ItemListFragment extends Fragment {
 
         return binding.getRoot();
     }
-
 
 
     @Override

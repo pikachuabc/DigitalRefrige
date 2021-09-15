@@ -73,16 +73,17 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    String testMsg = "click item with id" + itemID;
-//                    Toast.makeText(itemView.getContext(), testMsg, Toast.LENGTH_SHORT).show();
-                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID, ItemDetailFragment.EDIT_OR_DELETE_ITEM);
-                    Navigation.findNavController(view).navigate(directions);
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID, ItemDetailFragment.EDIT_OR_DELETE_ITEM);
+                        Navigation.findNavController(view).navigate(directions);
+                    }
                 }
             });
         }
 
         public void bind(Item note) {
-            // bond item info to this holder
+            // bond item content into to this holder
             textViewName.setText(note.getName());
             textViewDescription.setText(note.getDescription());
             itemID = note.getId();
