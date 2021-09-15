@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.views.ItemListFragmentDirections;

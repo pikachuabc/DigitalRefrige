@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,9 +20,10 @@ import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
 
 import java.util.List;
 
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ItemListFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class ItemListFragment extends Fragment {
