@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * Accessing data through this
+ */
 public class ItemRepository {
 
     private LiveData<List<Item>> allItems;

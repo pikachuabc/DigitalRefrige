@@ -12,6 +12,9 @@ import com.example.digitalrefrige.model.dataHolder.Item;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Establishing local database with some dummy data
+ */
 @Database(entities = Item.class, version = 1)
 public abstract class LocalDataBase extends RoomDatabase{
 
