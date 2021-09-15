@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
+import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +25,6 @@ import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
 public class ItemDetailFragment extends Fragment {
 
     private FragmentItemDetailBinding binding;
-    private int itemId;
 
 
 //    // TODO: Rename parameter arguments, choose names that match
@@ -68,9 +70,17 @@ public class ItemDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
-        String temp = ""+itemId;
-        binding.editTextName.setText(temp);
+        int itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
+        ItemDetailViewModel itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
+        itemDetailViewModel.bindWithItem(itemId);
+
+        Item curItem = itemDetailViewModel.getCurItem();
+        if (curItem == null) {
+            // TODO something wrong....
+        } else {
+            binding.editTextName.setText(curItem.getName());
+            binding.editTextDescription.setText(curItem.getDescription());
+        }
     }
 
     @Override

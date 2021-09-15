@@ -9,8 +9,10 @@ import com.example.digitalrefrige.model.dataSource.ItemDAO;
 import com.example.digitalrefrige.model.dataSource.LocalDataBase;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ItemRepository {
 
@@ -32,13 +34,23 @@ public class ItemRepository {
     public void insertItem(Item item) {
         executorService.execute(() -> itemDAO.insertItem(item));
     }
+
     public void updateItem(Item item) {
         executorService.execute(() -> itemDAO.updateItem(item));
     }
+
     public void deleteItem(Item item) {
         executorService.execute(() -> itemDAO.deleteItem(item));
     }
-    public void findItemById(int id) {
-        executorService.execute(() -> itemDAO.findItemById(id));
+
+    public Item findItemById(int id) {
+        Future<Item> itemFuture = executorService.submit(() -> itemDAO.findItemById(id));
+        try {
+            return itemFuture.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

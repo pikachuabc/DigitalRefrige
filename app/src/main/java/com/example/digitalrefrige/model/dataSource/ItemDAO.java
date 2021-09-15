@@ -26,5 +26,6 @@ public interface ItemDAO {
     void deleteItem(Item item);
 
     @Query("select * from item_table where id=:id")
-    LiveData<Item> findItemById(int id);
+    Item findItemById(int id);
+
 }

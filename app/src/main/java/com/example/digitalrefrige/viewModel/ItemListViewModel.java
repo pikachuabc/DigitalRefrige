@@ -22,7 +22,6 @@ public class ItemListViewModel extends ViewModel {
     public ItemListViewModel(ItemRepository repo) {
         repository = repo;
         allItems = repository.getAllNotes();
-        repository.insertItem(new Item("nihaohahah","dsaufhaksdfj"));
     }
 
     public LiveData<List<Item>> getAllItems() {
