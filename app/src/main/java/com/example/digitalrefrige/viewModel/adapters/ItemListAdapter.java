@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.views.ItemDetailFragment;
 import com.example.digitalrefrige.views.ItemListFragmentDirections;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolder> {
@@ -72,9 +73,9 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String testMsg = "click item with id" + itemID;
-                    Toast.makeText(itemView.getContext(), testMsg, Toast.LENGTH_SHORT).show();
-                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
+//                    String testMsg = "click item with id" + itemID;
+//                    Toast.makeText(itemView.getContext(), testMsg, Toast.LENGTH_SHORT).show();
+                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID, ItemDetailFragment.EDIT_OR_DELETE_ITEM);
                     Navigation.findNavController(view).navigate(directions);
                 }
             });

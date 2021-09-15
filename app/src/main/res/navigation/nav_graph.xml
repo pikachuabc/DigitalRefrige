@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailFragment"
             app:destination="@id/itemDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             />
     </fragment>
     <fragment
@@ -22,6 +26,9 @@
         tools:layout="@layout/fragment_item_detail" >
         <argument
             android:name="itemID"
+            app:argType="integer" />
+        <argument
+            android:name="operationMode"
             app:argType="integer" />
     </fragment>
 </navigation>

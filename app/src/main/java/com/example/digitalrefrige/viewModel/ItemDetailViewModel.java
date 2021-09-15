@@ -41,4 +41,17 @@ public class ItemDetailViewModel extends ViewModel {
     public void setCurItem(Item curItem) {
         this.curItem = curItem;
     }
+
+    public void insertItem(Item item) {
+        repository.insertItem(item);
+    }
+
+    public void updateItem(Item item) {
+        repository.updateItem(item);
+    }
+
+    public void deleteCurItem() {
+        repository.deleteItem(curItem);
+        curItem = null;
+    }
 }

@@ -8,7 +8,6 @@
     tools:context=".views.ItemDetailFragment">
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -34,6 +33,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_name" />
+
+        <Button
+            android:id="@+id/button_delete_or_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_description" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

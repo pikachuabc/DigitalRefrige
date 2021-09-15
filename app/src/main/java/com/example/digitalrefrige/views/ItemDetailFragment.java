@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,63 +25,62 @@ import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
  */
 public class ItemDetailFragment extends Fragment {
 
+    public static final int EDIT_OR_DELETE_ITEM = 0;
+    public static final int CREATE_NEW_ITEM = 1;
+
+
     private FragmentItemDetailBinding binding;
-
-
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-//
-//    public ItemDetailFragment() {
-//        // Required empty public constructor
-//    }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment ItemDetailFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static ItemDetailFragment newInstance(String param1, String param2) {
-//        ItemDetailFragment fragment = new ItemDetailFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
+    private ItemDetailViewModel itemDetailViewModel;
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        int itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
-        ItemDetailViewModel itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
-        itemDetailViewModel.bindWithItem(itemId);
+        // inject viewModel
+        itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
 
-        Item curItem = itemDetailViewModel.getCurItem();
-        if (curItem == null) {
-            // TODO something wrong....
-        } else {
-            binding.editTextName.setText(curItem.getName());
-            binding.editTextDescription.setText(curItem.getDescription());
+        int opeMode = ItemDetailFragmentArgs.fromBundle(getArguments()).getOperationMode();
+        if (opeMode == EDIT_OR_DELETE_ITEM) {
+            int itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
+            itemDetailViewModel.bindWithItem(itemId);
+            Item curItem = itemDetailViewModel.getCurItem();
+            if (curItem == null) {
+                // TODO something wrong....
+            } else {
+                binding.editTextName.setText(curItem.getName());
+                binding.editTextDescription.setText(curItem.getDescription());
+
+                binding.buttonDeleteOrAdd.setText(R.string.delete_current_item);
+                binding.buttonDeleteOrAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        binding.editTextName.clearFocus();
+                        binding.editTextDescription.clearFocus();
+                        itemDetailViewModel.deleteCurItem();
+                        Navigation.findNavController(view).popBackStack();
+                    }
+                });
+            }
+        } else if (opeMode == CREATE_NEW_ITEM) {
+            binding.editTextName.setHint("add item");
+            binding.editTextDescription.setHint("add item description");
+            binding.buttonDeleteOrAdd.setText(R.string.add_new_item);
+            binding.buttonDeleteOrAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String itemName = binding.editTextName.getText().toString();
+                    String itemDescription = binding.editTextDescription.getText().toString();
+                    binding.editTextName.clearFocus();
+                    binding.editTextDescription.clearFocus();
+                    if (!"".equals(itemName)) {
+                        itemDetailViewModel.insertItem(new Item(itemName, itemDescription));
+                        Navigation.findNavController(view).popBackStack();
+                    } else {
+                        Toast.makeText(getContext(),"Need item name",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
+
     }
 
     @Override
@@ -88,6 +88,10 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentItemDetailBinding.inflate(inflater, container, false);
+
+
         return binding.getRoot();
     }
+
+
 }

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * Establishing local database with some dummy data
  */
 @Database(entities = Item.class, version = 1)
-public abstract class LocalDataBase extends RoomDatabase{
+public abstract class LocalDataBase extends RoomDatabase {
 
     private static LocalDataBase instance;
 
@@ -31,27 +31,15 @@ public abstract class LocalDataBase extends RoomDatabase{
                     instance = Room.databaseBuilder(context.getApplicationContext(), LocalDataBase.class, "note_database")
                             .fallbackToDestructiveMigration()
                             // pre-define data in our database
-                            .addCallback(new RoomDatabase.Callback() {
+                            .addCallback(new Callback() {
                                 @Override
                                 public void onCreate(@NonNull @NotNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
                                     new Thread(() -> {
                                         ItemDAO itemDAO = instance.itemDAO();
-                                        itemDAO.insertItem(new Item("item1", "description1"));
-                                        itemDAO.insertItem(new Item("item2", "description2"));
-                                        itemDAO.insertItem(new Item("item3", "description3"));
-                                        itemDAO.insertItem(new Item("item1", "description1"));
-                                        itemDAO.insertItem(new Item("item2", "description2"));
-                                        itemDAO.insertItem(new Item("item3", "description3"));
-                                        itemDAO.insertItem(new Item("item1", "description1"));
-                                        itemDAO.insertItem(new Item("item2", "description2"));
-                                        itemDAO.insertItem(new Item("item3", "description3"));
-                                        itemDAO.insertItem(new Item("item1", "description1"));
-                                        itemDAO.insertItem(new Item("item2", "description2"));
-                                        itemDAO.insertItem(new Item("item3", "description3"));
-                                        itemDAO.insertItem(new Item("item1", "description1"));
-                                        itemDAO.insertItem(new Item("item2", "description2"));
-                                        itemDAO.insertItem(new Item("item3", "description3"));
+                                        for (int i = 0; i < 15; i++) {
+                                            itemDAO.insertItem(new Item("item" + i, "description" + i));
+                                        }
                                     }).start();
                                 }
                             })
