@@ -3,7 +3,7 @@ plugins {
 }
 
 apply plugin: "androidx.navigation.safeargs"
-//apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdk 31
@@ -55,10 +55,14 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
-//    // dependency injection
-//    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
-//    implementation "com.google.dagger:hilt-android:2.38.1"
-//    annotationProcessor "com.google.dagger:hilt-android-compiler:2.33-beta"
+    // ViewModel
+    def lifecycle_version = "2.4.0-alpha03"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+
+    // dependency injection
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    annotationProcessor "com.google.dagger:hilt-android-compiler:2.33-beta"
 
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'

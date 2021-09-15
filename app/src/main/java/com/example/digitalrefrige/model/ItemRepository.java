@@ -16,11 +16,11 @@ public class ItemRepository {
 
     private LiveData<List<Item>> allItems;
     private ExecutorService executorService;
+
     private ItemDAO itemDAO;
 
-    public ItemRepository(Application application) {
-        LocalDataBase dataBase = LocalDataBase.getInstance(application);
-        itemDAO = dataBase.itemDAO();
+    public ItemRepository(ItemDAO dao) {
+        itemDAO = dao;
         executorService = Executors.newFixedThreadPool(2);
         allItems = itemDAO.getAllItems();
     }

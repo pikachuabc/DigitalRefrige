@@ -74,7 +74,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
                 public void onClick(View view) {
                     String testMsg = "click item with id" + itemID;
                     Toast.makeText(itemView.getContext(), testMsg, Toast.LENGTH_SHORT).show();
-                    NavDirections directions = ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
+                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
                     Navigation.findNavController(view).navigate(directions);
                 }
             });

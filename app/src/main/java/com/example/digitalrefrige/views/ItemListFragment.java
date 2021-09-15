@@ -1,5 +1,6 @@
 package com.example.digitalrefrige.views;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,12 +22,15 @@ import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
 
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the  factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 public class ItemListFragment extends Fragment {
 
     private ItemListViewModel itemListViewModel;
@@ -86,7 +91,7 @@ public class ItemListFragment extends Fragment {
         itemListRecyclerView.setAdapter(itemListAdapter);
 
         // inject viewModel and start observing
-        itemListViewModel = new ViewModelProvider(this).get(ItemListViewModel.class);
+        itemListViewModel = new ViewModelProvider(requireActivity()).get(ItemListViewModel.class);
         itemListViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
