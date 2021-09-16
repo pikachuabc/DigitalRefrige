@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/itemListFragment"
-        android:name="com.example.digitalrefrige.views.ItemListFragment"
+        android:name="com.example.digitalrefrige.views.itemList.ItemListFragment"
         android:label="fragment_item_list"
         tools:layout="@layout/fragment_item_list" >
         <action
@@ -19,9 +19,10 @@
             app:popExitAnim="@anim/slide_out_right"
             />
     </fragment>
+
     <fragment
         android:id="@+id/itemDetailFragment"
-        android:name="com.example.digitalrefrige.views.ItemDetailFragment"
+        android:name="com.example.digitalrefrige.views.itemList.ItemDetailFragment"
         android:label="fragment_item_detail"
         tools:layout="@layout/fragment_item_detail" >
         <argument
@@ -31,4 +32,10 @@
             android:name="operationMode"
             app:argType="integer" />
     </fragment>
+
+    <fragment
+        android:id="@+id/theOtherFragment"
+        android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
+        android:label="fragment_the_other"
+        tools:layout="@layout/fragment_the_other" />
 </navigation>

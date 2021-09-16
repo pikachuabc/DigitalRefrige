@@ -1,4 +1,4 @@
-package com.example.digitalrefrige.views;
+package com.example.digitalrefrige.views.itemList;
 
 import android.os.Bundle;
 
