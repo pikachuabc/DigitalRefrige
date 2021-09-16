@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
@@ -37,7 +38,9 @@ public class ItemDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // inject viewModel
         itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
-
+        //
+        ((MainActivity) getActivity()).mainBottomBar(false);
+        // distinguish add item or edit item
         int opeMode = ItemDetailFragmentArgs.fromBundle(getArguments()).getOperationMode();
         if (opeMode == EDIT_OR_DELETE_ITEM) {
             int itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
@@ -88,8 +91,6 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentItemDetailBinding.inflate(inflater, container, false);
-
-
         return binding.getRoot();
     }
 

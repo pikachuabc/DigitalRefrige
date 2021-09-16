@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.FragmentItemListBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
@@ -43,7 +44,8 @@ public class ItemListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         binding = FragmentItemListBinding.inflate(inflater, container, false);
-
+        // set main nav bar visible
+        ((MainActivity)getActivity()).mainBottomBar(true);
         // config adapter for the recyclerView
         RecyclerView itemListRecyclerView = binding.recyclerView;
         itemListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -75,7 +77,7 @@ public class ItemListFragment extends Fragment {
             }
         }).attachToRecyclerView(itemListRecyclerView);
 
-        // set AddButton
+        // set Add Button
         binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

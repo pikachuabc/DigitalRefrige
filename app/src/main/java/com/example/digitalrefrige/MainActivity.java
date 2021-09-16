@@ -1,5 +1,6 @@
 package com.example.digitalrefrige;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -8,10 +9,15 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -28,19 +34,29 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_item_list, R.id.navigation_the_other).build();
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        NavController navController =navHostFragment.getNavController();
-//        if (navController == null) {
-//            Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(getApplicationContext(), "not null", Toast.LENGTH_SHORT).show();
-//        }
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        binding.navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                NavController controller = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
+                int desID = item.getItemId();
+                if (desID == R.id.navigation_item_list) {
+                    controller.navigate(R.id.itemListFragment);
+                } else if (desID == R.id.navigation_the_other) {
+                    controller.navigate(R.id.theOtherFragment);
+                }
+                return true;
+            }
+        });
 
     }
+
+    public void mainBottomBar(boolean visibility) {
+        if (!visibility) {
+            binding.navView.setVisibility(View.GONE);
+        } else {
+            binding.navView.setVisibility(View.VISIBLE);
+        }
+    }
+
 }
