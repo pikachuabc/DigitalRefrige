@@ -39,12 +39,20 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
+
         NavHostFragment hostFragment = (NavHostFragment)  getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = hostFragment.getNavController();
+
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+    }
 
+    // enable back in appbar when not at top-level destination
+    @Override
+    public boolean onSupportNavigateUp() {
+        return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp()
+                || super.onSupportNavigateUp();
     }
 
     public void mainBottomBar(boolean visibility) {

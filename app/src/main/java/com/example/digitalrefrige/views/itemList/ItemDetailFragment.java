@@ -2,6 +2,7 @@ package com.example.digitalrefrige.views.itemList;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -35,11 +38,26 @@ public class ItemDetailFragment extends Fragment {
 
 
     @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.button_add_item);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // inject viewModel
         itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
-        //
+        //hide bottom bar
         ((MainActivity) getActivity()).mainBottomBar(false);
+
+//        ((MainActivity) getActivity()).getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                Toast.makeText(getContext(),"hahahahah",Toast.LENGTH_SHORT);
+//                Navigation.findNavController(view).popBackStack();
+//            }
+//        });
+
         // distinguish add item or edit item
         int opeMode = ItemDetailFragmentArgs.fromBundle(getArguments()).getOperationMode();
         if (opeMode == EDIT_OR_DELETE_ITEM) {
