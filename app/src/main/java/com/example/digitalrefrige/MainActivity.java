@@ -34,20 +34,16 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_item_list, R.id.navigation_the_other)
+                .build();
 
-        binding.navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                NavController controller = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
-                int desID = item.getItemId();
-                if (desID == R.id.navigation_item_list) {
-                    controller.navigate(R.id.itemListFragment);
-                } else if (desID == R.id.navigation_the_other) {
-                    controller.navigate(R.id.theOtherFragment);
-                }
-                return true;
-            }
-        });
+
+        NavHostFragment hostFragment = (NavHostFragment)  getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = hostFragment.getNavController();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
 
     }
 
