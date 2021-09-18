@@ -45,7 +45,7 @@ public class ItemListFragment extends Fragment {
 
         binding = FragmentItemListBinding.inflate(inflater, container, false);
         // set main nav bar visible
-        ((MainActivity)getActivity()).mainBottomBar(true);
+        ((MainActivity) getActivity()).mainBottomBar(true);
         // config adapter for the recyclerView
         RecyclerView itemListRecyclerView = binding.recyclerView;
         itemListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -59,6 +59,7 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onChanged(List<Item> items) {
                 itemListAdapter.submitList(items);
+                itemListRecyclerView.post(() -> itemListRecyclerView.smoothScrollToPosition(0));
             }
         });
 
@@ -73,7 +74,7 @@ public class ItemListFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Item toDelete = itemListAdapter.getCurrentList().get(viewHolder.getAdapterPosition());
                 itemListViewModel.deleteItem(toDelete);
-                Toast.makeText(getContext(),"Item deleted",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(itemListRecyclerView);
 
@@ -81,7 +82,7 @@ public class ItemListFragment extends Fragment {
         binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(-1, ItemDetailFragment.CREATE_NEW_ITEM);
+                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(ItemDetailFragment.CREATE_NEW_ITEM);
                 Navigation.findNavController(view).navigate(directions);
             }
         });

@@ -10,7 +10,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.digitalrefrige.model.ItemRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.utils.Converters;
+import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ItemDetailViewModel extends ViewModel {
     private ItemRepository repository;
     private Item curItem;
+    private String timeStr;
 
     @Inject
     public ItemDetailViewModel(ItemRepository repo) {
@@ -28,10 +32,13 @@ public class ItemDetailViewModel extends ViewModel {
     }
 
     public void bindWithItem(int id) {
-        Item res = repository.findItemById(id);
-        if (res != null) {
-            curItem = res;
+        if (id == ItemDetailFragment.CREATE_NEW_ITEM) {
+            // we are adding a new item thus need a holder
+            curItem = new Item("", "", Calendar.getInstance().getTime());
+        } else {
+            curItem = repository.findItemById(id);
         }
+
     }
 
     public Item getCurItem() {
@@ -53,5 +60,13 @@ public class ItemDetailViewModel extends ViewModel {
     public void deleteCurItem() {
         repository.deleteItem(curItem);
         curItem = null;
+    }
+
+    public String getTimeStr() {
+        return Converters.dateToString(curItem.getCreateDate());
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.curItem.setCreateDate(Converters.strToDate(timeStr));
     }
 }

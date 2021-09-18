@@ -6,16 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.utils.Converters;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Establishing local database with some dummy data
  */
 @Database(entities = Item.class, version = 1)
+@TypeConverters({Converters.class})
 public abstract class LocalDataBase extends RoomDatabase {
 
     private static LocalDataBase instance;
@@ -37,8 +43,9 @@ public abstract class LocalDataBase extends RoomDatabase {
                                     super.onCreate(db);
                                     new Thread(() -> {
                                         ItemDAO itemDAO = instance.itemDAO();
+                                        Calendar calendar = Calendar.getInstance();
                                         for (int i = 0; i < 15; i++) {
-                                            itemDAO.insertItem(new Item("item" + i, "description" + i));
+                                            itemDAO.insertItem(new Item("item" + i, "description" + i, calendar.getTime()));
                                         }
                                     }).start();
                                 }

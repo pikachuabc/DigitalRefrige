@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 
+import com.example.digitalrefrige.utils.Converters;
 import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
 import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 
@@ -39,7 +40,8 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         @Override
         public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
             return oldItem.getName().equals(newItem.getName()) &&
-                    oldItem.getDescription().equals(newItem.getDescription());
+                    oldItem.getDescription().equals(newItem.getDescription()) &&
+                    oldItem.getCreateDate().equals(newItem.getCreateDate());
         }
     };
 
@@ -63,30 +65,30 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
     class ItemHolder extends RecyclerView.ViewHolder {
         private TextView textViewName;
         private TextView textViewDescription;
+        private TextView createDate;
         private int itemID;
 
         public ItemHolder(@NonNull ItemCardBinding binding) {
             super(binding.getRoot());
             textViewName = binding.textViewTitle;
             textViewDescription = binding.textViewDescription;
+            createDate = binding.textViewCreateDate;
 
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID, ItemDetailFragment.EDIT_OR_DELETE_ITEM);
-                        Navigation.findNavController(view).navigate(directions);
-                    }
+            binding.getRoot().setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
+                    Navigation.findNavController(view).navigate(directions);
                 }
             });
         }
 
-        public void bind(Item note) {
+        public void bind(Item item) {
             // bond item content into to this holder
-            textViewName.setText(note.getName());
-            textViewDescription.setText(note.getDescription());
-            itemID = note.getId();
+            textViewName.setText(item.getName());
+            textViewDescription.setText(item.getDescription());
+            createDate.setText(Converters.dateToString(item.getCreateDate()));
+            itemID = item.getId();
         }
 
     }

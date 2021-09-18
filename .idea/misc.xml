@@ -11,7 +11,8 @@
         <entry key="app/src/main/res/layout/fragment_item_detail.xml" value="0.2955611863558903" />
         <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.19519927536231885" />
         <entry key="app/src/main/res/layout/fragment_the_other.xml" value="0.2125" />
-        <entry key="app/src/main/res/layout/item_card.xml" value="0.21014492753623187" />
+        <entry key="app/src/main/res/layout/fragment_time_picker.xml" value="0.10020440098466686" />
+        <entry key="app/src/main/res/layout/item_card.xml" value="0.375" />
         <entry key="app/src/main/res/menu/bottom_nav_meau.xml" value="0.25729166666666664" />
       </map>
     </option>

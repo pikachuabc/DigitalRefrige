@@ -28,9 +28,6 @@
         <argument
             android:name="itemID"
             app:argType="integer" />
-        <argument
-            android:name="operationMode"
-            app:argType="integer" />
     </fragment>
 
     <fragment
