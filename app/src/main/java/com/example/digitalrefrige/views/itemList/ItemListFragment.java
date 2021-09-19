@@ -59,7 +59,6 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onChanged(List<Item> items) {
                 itemListAdapter.submitList(items);
-                itemListRecyclerView.post(() -> itemListRecyclerView.smoothScrollToPosition(0));
             }
         });
 

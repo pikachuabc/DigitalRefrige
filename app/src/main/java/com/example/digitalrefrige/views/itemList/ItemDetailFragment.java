@@ -1,9 +1,15 @@
 package com.example.digitalrefrige.views.itemList;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -11,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +50,7 @@ public class ItemDetailFragment extends Fragment {
 
     private FragmentItemDetailBinding binding;
     private ItemDetailViewModel itemDetailViewModel;
-
+    ActivityResultLauncher<Intent> cameraLauncher;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -59,6 +66,7 @@ public class ItemDetailFragment extends Fragment {
 
         // set button listener
         binding.timePickerButton.setOnClickListener(this::showTimePickerDialog);
+        binding.buttonCamera.setOnClickListener(this::launchCamera);
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
@@ -79,6 +87,26 @@ public class ItemDetailFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        // TODO save image to storage
+                        Intent res  = result.getData();
+                        if (res==null) return;
+                        Bundle extras = res.getExtras();
+                        Bitmap imageBitmap = (Bitmap) extras.get("data");
+                        binding.imageViewItem.setImageBitmap(imageBitmap);
+                        Toast.makeText(getContext(), "camera returned", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment(new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -86,7 +114,7 @@ public class ItemDetailFragment extends Fragment {
                 String msg = i + "-" + (i1 + 1) + "-" + i2;
                 binding.timePickerButton.setText(msg);
             }
-        });
+        },itemDetailViewModel.getCurItem().getCreateDate());
         newFragment.show(getParentFragmentManager(), "timePicker");
     }
 
@@ -121,6 +149,13 @@ public class ItemDetailFragment extends Fragment {
             Toast.makeText(getContext(), "Item updated", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Need item name", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void launchCamera(View view) {
+        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePicIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            cameraLauncher.launch(takePicIntent);
         }
     }
 

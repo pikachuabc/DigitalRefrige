@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,9 +28,11 @@ import java.util.Calendar;
 public class TimePickerFragment extends DialogFragment {
 
     private DatePickerDialog.OnDateSetListener listener;
+    private Date initDate;
 
-    public TimePickerFragment(DatePickerDialog.OnDateSetListener listener) {
+    public TimePickerFragment(DatePickerDialog.OnDateSetListener listener, Date initDate) {
         this.listener = listener;
+        this.initDate = initDate;
     }
 
     @NonNull
@@ -37,6 +40,7 @@ public class TimePickerFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
         final Calendar c = Calendar.getInstance();
+        c.setTime(initDate);
         int year = c.get(Calendar.YEAR);
         int monthOfYear = c.get(Calendar.MONTH);
         int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
