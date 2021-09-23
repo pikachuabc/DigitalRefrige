@@ -35,4 +35,28 @@
         android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
         android:label="fragment_the_other"
         tools:layout="@layout/fragment_the_other" />
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.example.digitalrefrige.views.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.digitalrefrige.views.login.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_logout" >
+        <argument
+            android:name="user"
+            app:argType="com.google.firebase.auth.FirebaseUser" />
+    </fragment>
 </navigation>

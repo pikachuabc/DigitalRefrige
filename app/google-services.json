@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "117429326790",
+    "project_id": "digital-fridge-be329",
+    "storage_bucket": "digital-fridge-be329.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117429326790:android:8ac8964f70f6cf5a7158c7",
+        "android_client_info": {
+          "package_name": "com.example.digitalrefrige"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117429326790-uaitsugb5r15qn84glrbe0sutbmu4j61.apps.googleusercontent.com",
+          "client_type": 3,
+          "android_info": {
+            "package_name": "com.example.digitalrefrige",
+            "certificate_hash": "FA:9F:2D:A3:10:8E:2F:88:BF:8C:5D:74:C7:3C:E2:FD:6D:72:79:6A"
+          }
+        },
+        {
+          "client_id": "117429326790-duhh4hgrj4g9a5ij4segdvblc6u5p8hn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz7LhsC1ZGcLAD__FkmbAh4XmkZJdGg0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117429326790-6nmjs2tehd8puntk4gp1u4f3eii01ust.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

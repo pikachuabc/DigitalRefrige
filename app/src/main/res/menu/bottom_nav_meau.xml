@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/navigation_item_list"
         android:icon="@drawable/ic_home_black_24dp"
@@ -9,4 +10,10 @@
         android:id="@+id/navigation_the_other"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="dashboard" />
+
+    <item
+        android:id="@+id/navigation_login"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="logIn" />
+
 </menu>
