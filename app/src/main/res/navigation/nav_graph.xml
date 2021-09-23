@@ -30,6 +30,7 @@
             app:argType="integer" />
     </fragment>
 
+
     <fragment
         android:id="@+id/navigation_the_other"
         android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
@@ -40,15 +41,12 @@
         android:id="@+id/navigation_login"
         android:name="com.example.digitalrefrige.views.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            />
+            android:id="@+id/from_login_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/profileFragment"
@@ -59,4 +57,6 @@
             android:name="user"
             app:argType="com.google.firebase.auth.FirebaseUser" />
     </fragment>
+
+
 </navigation>

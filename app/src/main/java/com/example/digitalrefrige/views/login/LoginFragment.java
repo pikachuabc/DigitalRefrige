@@ -23,7 +23,6 @@ import androidx.navigation.Navigation;
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentLoginBinding;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
-import com.example.digitalrefrige.views.itemList.ItemDetailFragmentDirections;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -140,11 +139,8 @@ public class LoginFragment extends Fragment {
 
     private void updateUI(FirebaseUser user, View view){
 
-//        NavDirections directions = (NavDirections) LoginFragmentDirections.actionLoginFragmentToProfileFragment(user);
-//        Navigation.findNavController(view).navigate(directions);
-//
-
-
+        NavDirections directions = (NavDirections) LoginFragmentDirections.fromLoginToProfile(user);
+        Navigation.findNavController(view).navigate(directions);
 
 
     }

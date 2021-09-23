@@ -48,21 +48,12 @@ public class ProfileFragment extends Fragment {
 
         email.setText(account.getEmail());
 
-//        Bitmap image = BitmapFactory.decodeFile(String.valueOf(account.getPhotoUrl()));
-//        avatar.setImageBitmap(image);
-
         String avatarPath = String.valueOf(account.getPhotoUrl());
         Picasso.get()
                 .load(avatarPath)
                 .resize(150, 150)
                 .centerCrop()
                 .into(avatar);
-
-
-
-
-
-
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
