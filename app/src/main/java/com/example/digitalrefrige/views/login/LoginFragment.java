@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -35,6 +37,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.squareup.picasso.Picasso;
 
 
 public class LoginFragment extends Fragment {
@@ -44,6 +47,7 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private View v;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +55,6 @@ public class LoginFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
     }
-
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +68,8 @@ public class LoginFragment extends Fragment {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this.getActivity(), gso);
+        checkUser();
+
 
 
         binding.signInButton.setOnClickListener(new View.OnClickListener() {
@@ -75,11 +79,72 @@ public class LoginFragment extends Fragment {
                 v = view;
             }
         });
+
+        binding.logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"sign out successfully",Toast.LENGTH_LONG).show();
+
+                FirebaseAuth.getInstance().signOut();
+                //Navigation.findNavController(view).popBackStack();
+                logInContent();
+
+            }
+        });
         return binding.getRoot();
     }
 
 
-    public void signIn() {
+    private void checkUser(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user == null){
+            // user is not logged in
+            Toast.makeText(getContext(),"login in plz",Toast.LENGTH_LONG).show();
+            logInContent();
+        }else{
+            // user logged in
+            Toast.makeText(getContext(),"you already logged in",Toast.LENGTH_LONG).show();
+            logOutContent();
+        }
+    }
+
+
+    private void logInContent(){
+
+        binding.signInButton.setVisibility(View.VISIBLE);
+        binding.logoutButton.setVisibility(View.GONE);
+
+        binding.email.setVisibility(View.GONE);
+        binding.avatar.setVisibility(View.GONE);
+    }
+
+    private void logOutContent(){
+
+        binding.logoutButton.setVisibility(View.VISIBLE);
+        binding.signInButton.setVisibility(View.GONE);
+        binding.email.setVisibility(View.VISIBLE);
+        binding.avatar.setVisibility(View.VISIBLE);
+        setInfo();
+    }
+
+    private void setInfo(){
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+        if(account == null) {};
+
+        binding.email.setText(account.getEmail());
+
+        String avatarPath = String.valueOf(account.getPhotoUrl());
+        Picasso.get()
+                .load(avatarPath)
+                .resize(150, 150)
+                .centerCrop()
+                .into(binding.avatar);
+    }
+
+
+
+
+    private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInResultLauncher.launch(signInIntent);
     }
@@ -123,13 +188,13 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(getContext(),"success",Toast.LENGTH_LONG).show();
-                            updateUI(user, v);
+                            Toast.makeText(getContext(),"sign in successfully",Toast.LENGTH_LONG).show();
+                            logOutContent();
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getContext(),"fail",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),"fail to sign in",Toast.LENGTH_LONG).show();
 
                         }
 
@@ -137,13 +202,11 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void updateUI(FirebaseUser user, View view){
-
-        NavDirections directions = (NavDirections) LoginFragmentDirections.fromLoginToProfile(user);
-        Navigation.findNavController(view).navigate(directions);
 
 
-    }
+
+
+
 
 
 }

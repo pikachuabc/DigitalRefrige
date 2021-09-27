@@ -42,21 +42,9 @@
         android:name="com.example.digitalrefrige.views.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/from_login_to_profile"
-            app:destination="@id/profileFragment" />
     </fragment>
 
 
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.digitalrefrige.views.login.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_logout" >
-        <argument
-            android:name="user"
-            app:argType="com.google.firebase.auth.FirebaseUser" />
-    </fragment>
 
 
 </navigation>
