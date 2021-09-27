@@ -12,9 +12,12 @@ import java.util.Date;
  */
 @Entity(tableName = "item_table")
 public class Item {
+    private int quality;
     private String name;
     private String description;
     private Date createDate;
+    private Date expireDate;
+    private String imgUrl;
 
 
     @PrimaryKey(autoGenerate = true)
@@ -58,5 +61,16 @@ public class Item {
         this.createDate = createDate;
     }
 
+    public void setQuality(int quality){ this.quality = quality; }
+
+    public int getQuality(){ return this.quality; }
+
+    public void setExpireDate(Date expireDate){ this.expireDate = expireDate; }
+
+    public Date getExpireDate(){return this.expireDate;}
+
+    public void setImgUrl(String imgUrl){ this.imgUrl = imgUrl;}
+
+    public String getImgUrl(){return this.imgUrl; }
 
 }
