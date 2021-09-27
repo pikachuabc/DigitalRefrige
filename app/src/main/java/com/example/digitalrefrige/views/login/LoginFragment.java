@@ -39,13 +39,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
 
+import java.util.concurrent.Executor;
+
 
 public class LoginFragment extends Fragment {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private FragmentLoginBinding binding;
-    private View v;
+
 
 
     @Override
@@ -53,7 +55,6 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,22 +73,29 @@ public class LoginFragment extends Fragment {
 
 
 
-        binding.signInButton.setOnClickListener(new View.OnClickListener() {
+        binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn();
-                v = view;
+                googleSignIn();
             }
         });
+
+        binding.emailSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emailSignIn();
+            }
+        });
+
 
         binding.logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),"sign out successfully",Toast.LENGTH_LONG).show();
-
                 FirebaseAuth.getInstance().signOut();
-                //Navigation.findNavController(view).popBackStack();
-                logInContent();
+
+                Navigation.findNavController(view).popBackStack();
+                //logInContent();
 
             }
         });
@@ -95,56 +103,47 @@ public class LoginFragment extends Fragment {
     }
 
 
-    private void checkUser(){
-        FirebaseUser user = mAuth.getCurrentUser();
-        if(user == null){
-            // user is not logged in
-            Toast.makeText(getContext(),"login in plz",Toast.LENGTH_LONG).show();
-            logInContent();
+    private void emailSignIn(){
+
+
+        String inputEmail = binding.emailInput.getText().toString();
+        String inputPassword = binding.passwordInput.getText().toString();
+
+        if(inputEmail.isEmpty()){
+            Toast.makeText(getContext(), "input email plz", Toast.LENGTH_SHORT).show();
+        }else if(inputPassword.isEmpty()){
+            Toast.makeText(getContext(), "input password plz", Toast.LENGTH_SHORT).show();
         }else{
-            // user logged in
-            Toast.makeText(getContext(),"you already logged in",Toast.LENGTH_LONG).show();
-            logOutContent();
+            mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
+                    .addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(getContext(), "Authentication with Email success.",
+                                        Toast.LENGTH_SHORT).show();
+
+                                checkUser();
+
+                            } else {
+
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(getContext(), "Authentication with Email failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
+
+
+
     }
 
 
-    private void logInContent(){
-
-        binding.signInButton.setVisibility(View.VISIBLE);
-        binding.logoutButton.setVisibility(View.GONE);
-
-        binding.email.setVisibility(View.GONE);
-        binding.avatar.setVisibility(View.GONE);
-    }
-
-    private void logOutContent(){
-
-        binding.logoutButton.setVisibility(View.VISIBLE);
-        binding.signInButton.setVisibility(View.GONE);
-        binding.email.setVisibility(View.VISIBLE);
-        binding.avatar.setVisibility(View.VISIBLE);
-        setInfo();
-    }
-
-    private void setInfo(){
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if(account == null) {};
-
-        binding.email.setText(account.getEmail());
-
-        String avatarPath = String.valueOf(account.getPhotoUrl());
-        Picasso.get()
-                .load(avatarPath)
-                .resize(150, 150)
-                .centerCrop()
-                .into(binding.avatar);
-    }
-
-
-
-
-    private void signIn() {
+    private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInResultLauncher.launch(signInIntent);
     }
@@ -188,19 +187,111 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(getContext(),"sign in successfully",Toast.LENGTH_LONG).show();
-                            logOutContent();
+                            Toast.makeText(getContext(),"Google sign in successfully",Toast.LENGTH_LONG).show();
+
+                            checkUser();
+
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getContext(),"fail to sign in",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),"fail to Google sign in",Toast.LENGTH_LONG).show();
 
                         }
 
                     }
                 });
     }
+
+
+
+    private void checkUser(){
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
+
+        if(user == null){
+            // user is not logged in
+            Toast.makeText(getContext(),"login in plz",Toast.LENGTH_LONG).show();
+            logInContent();
+
+
+        }else if (user.getEmail().split("@")[1].equals("gmail.com")){
+            // user logged in with Google
+            Toast.makeText(getContext(),"you already logged in with Google",Toast.LENGTH_LONG).show();
+            logOutContentForGoogle();
+
+        }else{
+            // user logged in with Email
+            Toast.makeText(getContext(),"you already logged in with Email",Toast.LENGTH_LONG).show();
+            logOutContentForEmail();
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+    private void logInContent(){
+
+        binding.googleSignInButton.setVisibility(View.VISIBLE);
+        binding.logoutButton.setVisibility(View.GONE);
+
+        binding.email.setVisibility(View.GONE);
+        binding.avatar.setVisibility(View.GONE);
+        binding.emailInput.setVisibility(View.VISIBLE);
+        binding.passwordInput.setVisibility(View.VISIBLE);
+        binding.emailSignInButton.setVisibility(View.VISIBLE);
+    }
+
+    private void logOutContentForGoogle(){
+
+        binding.logoutButton.setVisibility(View.VISIBLE);
+        binding.googleSignInButton.setVisibility(View.GONE);
+        binding.email.setVisibility(View.VISIBLE);
+        binding.avatar.setVisibility(View.VISIBLE);
+        binding.emailInput.setVisibility(View.GONE);
+        binding.passwordInput.setVisibility(View.GONE);
+        binding.emailSignInButton.setVisibility(View.GONE);
+        setInfo();
+
+    }
+
+    private void logOutContentForEmail(){
+
+
+        binding.logoutButton.setVisibility(View.VISIBLE);
+        binding.emailInput.setVisibility(View.GONE);
+        binding.passwordInput.setVisibility(View.GONE);
+        binding.emailSignInButton.setVisibility(View.GONE);
+        binding.email.setVisibility(View.GONE);
+        binding.avatar.setVisibility(View.GONE);
+        binding.googleSignInButton.setVisibility(View.GONE);
+
+    }
+
+
+
+    private void setInfo(){
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+        if(account == null) {};
+
+        binding.email.setText(account.getEmail());
+
+        String avatarPath = String.valueOf(account.getPhotoUrl());
+        Picasso.get()
+                .load(avatarPath)
+                .resize(150, 150)
+                .centerCrop()
+                .into(binding.avatar);
+    }
+
 
 
 
