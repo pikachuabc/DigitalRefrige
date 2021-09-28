@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/select_date"
                 android:text="@={itemDetailViewModel.timeStr}"
-                android:textColorHint="@color/white"
+                android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edit_text_description" />
