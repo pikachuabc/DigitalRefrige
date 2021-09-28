@@ -3,14 +3,18 @@ package com.example.digitalrefrige.views.login;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -18,13 +22,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentLoginBinding;
-import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.example.digitalrefrige.views.common.ProgressDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -39,15 +44,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
 
-import java.util.concurrent.Executor;
-
 
 public class LoginFragment extends Fragment {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private FragmentLoginBinding binding;
-
+    private ProgressDialog dialog;
 
 
     @Override
@@ -61,7 +64,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        binding = FragmentLoginBinding.inflate(inflater,container,false);
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.Auth_id))
@@ -70,7 +73,6 @@ public class LoginFragment extends Fragment {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this.getActivity(), gso);
         checkUser();
-
 
 
         binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -91,11 +93,11 @@ public class LoginFragment extends Fragment {
         binding.logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"sign out successfully",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "sign out successfully", Toast.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().signOut();
 
-                Navigation.findNavController(view).popBackStack();
-                //logInContent();
+                //Navigation.findNavController(view).popBackStack();
+                logInContent();
 
             }
         });
@@ -103,17 +105,17 @@ public class LoginFragment extends Fragment {
     }
 
 
-    private void emailSignIn(){
+    private void emailSignIn() {
 
 
         String inputEmail = binding.emailInput.getText().toString();
         String inputPassword = binding.passwordInput.getText().toString();
 
-        if(inputEmail.isEmpty()){
+        if (inputEmail.isEmpty()) {
             Toast.makeText(getContext(), "input email plz", Toast.LENGTH_SHORT).show();
-        }else if(inputPassword.isEmpty()){
+        } else if (inputPassword.isEmpty()) {
             Toast.makeText(getContext(), "input password plz", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
                     .addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
@@ -139,7 +141,6 @@ public class LoginFragment extends Fragment {
         }
 
 
-
     }
 
 
@@ -155,13 +156,13 @@ public class LoginFragment extends Fragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
+                        showProgress();
                         Intent data = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
                     }
                 }
             });
-
 
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -187,7 +188,7 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(getContext(),"Google sign in successfully",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Google sign in successfully", Toast.LENGTH_LONG).show();
 
                             checkUser();
 
@@ -195,7 +196,7 @@ public class LoginFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getContext(),"fail to Google sign in",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "fail to Google sign in", Toast.LENGTH_LONG).show();
 
                         }
 
@@ -204,41 +205,37 @@ public class LoginFragment extends Fragment {
     }
 
 
-
-    private void checkUser(){
+    private void checkUser() {
         FirebaseUser user = mAuth.getCurrentUser();
 
 
-
-        if(user == null){
+        if (user == null) {
             // user is not logged in
-            Toast.makeText(getContext(),"login in plz",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "login in plz", Toast.LENGTH_LONG).show();
             logInContent();
 
 
-        }else if (user.getEmail().split("@")[1].equals("gmail.com")){
+        } else if (user.getEmail().split("@")[1].equals("gmail.com")) {
             // user logged in with Google
-            Toast.makeText(getContext(),"you already logged in with Google",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "you already logged in with Google", Toast.LENGTH_LONG).show();
             logOutContentForGoogle();
 
-        }else{
+        } else {
             // user logged in with Email
-            Toast.makeText(getContext(),"you already logged in with Email",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "you already logged in with Email", Toast.LENGTH_LONG).show();
             logOutContentForEmail();
 
         }
 
-
-
+        if (dialog != null) {
+            dialog.dismiss();
+        }
 
 
     }
 
 
-
-
-
-    private void logInContent(){
+    private void logInContent() {
 
         binding.googleSignInButton.setVisibility(View.VISIBLE);
         binding.logoutButton.setVisibility(View.GONE);
@@ -250,7 +247,7 @@ public class LoginFragment extends Fragment {
         binding.emailSignInButton.setVisibility(View.VISIBLE);
     }
 
-    private void logOutContentForGoogle(){
+    private void logOutContentForGoogle() {
 
         binding.logoutButton.setVisibility(View.VISIBLE);
         binding.googleSignInButton.setVisibility(View.GONE);
@@ -263,7 +260,7 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void logOutContentForEmail(){
+    private void logOutContentForEmail() {
 
 
         binding.logoutButton.setVisibility(View.VISIBLE);
@@ -277,10 +274,11 @@ public class LoginFragment extends Fragment {
     }
 
 
-
-    private void setInfo(){
+    private void setInfo() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if(account == null) {};
+        if (account == null) {
+        }
+        ;
 
         binding.email.setText(account.getEmail());
 
@@ -293,11 +291,10 @@ public class LoginFragment extends Fragment {
     }
 
 
-
-
-
-
-
+    public void showProgress() {
+        dialog = new ProgressDialog();
+        dialog.show(getParentFragmentManager(), "progressing");
+    }
 
 
 }
