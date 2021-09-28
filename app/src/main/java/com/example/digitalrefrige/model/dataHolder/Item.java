@@ -15,15 +15,17 @@ public class Item {
     private String name;
     private String description;
     private Date createDate;
+    private String photoPath;
 
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    public Item(String name, String description, Date createDate) {
+    public Item(String name, String description, Date createDate, String photoPath) {
         this.name = name;
         this.description = description;
         this.createDate = createDate;
+        this.photoPath = photoPath;
     }
 
     public String getName() {
@@ -58,5 +60,11 @@ public class Item {
         this.createDate = createDate;
     }
 
+    public String getPhotoPath() {
+        return photoPath;
+    }
 
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 }
