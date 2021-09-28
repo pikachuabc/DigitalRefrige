@@ -12,7 +12,7 @@
         android:title="dashboard" />
 
     <item
-        android:id="@+id/navigation_login"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="logIn" />
 

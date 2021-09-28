@@ -3,18 +3,12 @@ package com.example.digitalrefrige.views.login;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -22,13 +16,15 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentLoginBinding;
+import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
+import com.example.digitalrefrige.viewModel.UserProfileViewModel;
 import com.example.digitalrefrige.views.common.ProgressDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,73 +36,51 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.squareup.picasso.Picasso;
 
 
 public class LoginFragment extends Fragment {
 
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
+
     private FragmentLoginBinding binding;
     private ProgressDialog dialog;
 
+    public UserProfileViewModel userProfileViewModel;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-    }
+
+    ActivityResultLauncher<Intent> googleSignInResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        showProgressingCircle();
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        handleGoogleSignInResult(task);
+                    }
+                }
+            });
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.Auth_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this.getActivity(), gso);
-        checkUser();
-
-
-        binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                googleSignIn();
-            }
-        });
-
-        binding.emailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                emailSignIn();
-            }
-        });
-
-
-        binding.logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "sign out successfully", Toast.LENGTH_LONG).show();
-                FirebaseAuth.getInstance().signOut();
-
-                //Navigation.findNavController(view).popBackStack();
-                logInContent();
-
-            }
-        });
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
+        binding.googleSignInButton.setOnClickListener(button -> googleSignIn());
+        binding.emailSignInButton.setOnClickListener(button -> emailSignIn());
+    }
 
     private void emailSignIn() {
-
+        Toast.makeText(getContext(), "input email plz", Toast.LENGTH_SHORT).show();
 
         String inputEmail = binding.emailInput.getText().toString();
         String inputPassword = binding.passwordInput.getText().toString();
@@ -116,21 +90,18 @@ public class LoginFragment extends Fragment {
         } else if (inputPassword.isEmpty()) {
             Toast.makeText(getContext(), "input password plz", Toast.LENGTH_SHORT).show();
         } else {
-            mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
-                    .addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
+            userProfileViewModel.mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(getContext(), "Authentication with Email success.",
                                         Toast.LENGTH_SHORT).show();
-
-                                checkUser();
+                                NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_profile);
 
                             } else {
-
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getContext(), "Authentication with Email failed.",
@@ -145,27 +116,12 @@ public class LoginFragment extends Fragment {
 
 
     private void googleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        signInResultLauncher.launch(signInIntent);
+        Intent signInIntent = userProfileViewModel.mGoogleSignInClient.getSignInIntent();
+        googleSignInResultLauncher.launch(signInIntent);
     }
 
-    ActivityResultLauncher<Intent> signInResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        showProgress();
-                        Intent data = result.getData();
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        handleSignInResult(task);
-                    }
-                }
-            });
 
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
@@ -179,18 +135,18 @@ public class LoginFragment extends Fragment {
 
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
+        userProfileViewModel.mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(getContext(), "Google sign in successfully", Toast.LENGTH_LONG).show();
-
-                            checkUser();
+                            if (dialog != null) {
+                                dialog.dismiss();
+                            }
+                            NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_profile);
 
 
                         } else {
@@ -205,93 +161,7 @@ public class LoginFragment extends Fragment {
     }
 
 
-    private void checkUser() {
-        FirebaseUser user = mAuth.getCurrentUser();
-
-
-        if (user == null) {
-            // user is not logged in
-            Toast.makeText(getContext(), "login in plz", Toast.LENGTH_LONG).show();
-            logInContent();
-
-
-        } else if (user.getEmail().split("@")[1].equals("gmail.com")) {
-            // user logged in with Google
-            Toast.makeText(getContext(), "you already logged in with Google", Toast.LENGTH_LONG).show();
-            logOutContentForGoogle();
-
-        } else {
-            // user logged in with Email
-            Toast.makeText(getContext(), "you already logged in with Email", Toast.LENGTH_LONG).show();
-            logOutContentForEmail();
-
-        }
-
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-
-
-    }
-
-
-    private void logInContent() {
-
-        binding.googleSignInButton.setVisibility(View.VISIBLE);
-        binding.logoutButton.setVisibility(View.GONE);
-
-        binding.email.setVisibility(View.GONE);
-        binding.avatar.setVisibility(View.GONE);
-        binding.emailInput.setVisibility(View.VISIBLE);
-        binding.passwordInput.setVisibility(View.VISIBLE);
-        binding.emailSignInButton.setVisibility(View.VISIBLE);
-    }
-
-    private void logOutContentForGoogle() {
-
-        binding.logoutButton.setVisibility(View.VISIBLE);
-        binding.googleSignInButton.setVisibility(View.GONE);
-        binding.email.setVisibility(View.VISIBLE);
-        binding.avatar.setVisibility(View.VISIBLE);
-        binding.emailInput.setVisibility(View.GONE);
-        binding.passwordInput.setVisibility(View.GONE);
-        binding.emailSignInButton.setVisibility(View.GONE);
-        setInfo();
-
-    }
-
-    private void logOutContentForEmail() {
-
-
-        binding.logoutButton.setVisibility(View.VISIBLE);
-        binding.emailInput.setVisibility(View.GONE);
-        binding.passwordInput.setVisibility(View.GONE);
-        binding.emailSignInButton.setVisibility(View.GONE);
-        binding.email.setVisibility(View.GONE);
-        binding.avatar.setVisibility(View.GONE);
-        binding.googleSignInButton.setVisibility(View.GONE);
-
-    }
-
-
-    private void setInfo() {
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if (account == null) {
-        }
-        ;
-
-        binding.email.setText(account.getEmail());
-
-        String avatarPath = String.valueOf(account.getPhotoUrl());
-        Picasso.get()
-                .load(avatarPath)
-                .resize(150, 150)
-                .centerCrop()
-                .into(binding.avatar);
-    }
-
-
-    public void showProgress() {
+    public void showProgressingCircle() {
         dialog = new ProgressDialog();
         dialog.show(getParentFragmentManager(), "progressing");
     }
