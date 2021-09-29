@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +24,15 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentLoginBinding;
-import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.UserProfileViewModel;
 import com.example.digitalrefrige.views.common.ProgressDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
@@ -77,18 +74,23 @@ public class LoginFragment extends Fragment {
         userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
         binding.googleSignInButton.setOnClickListener(button -> googleSignIn());
         binding.emailSignInButton.setOnClickListener(button -> emailSignIn());
+        binding.emailSignUpButton.setOnClickListener(button -> register());
+    }
+
+    private void register(){
+        NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_register);
     }
 
     private void emailSignIn() {
-        Toast.makeText(getContext(), "input email plz", Toast.LENGTH_SHORT).show();
+
 
         String inputEmail = binding.emailInput.getText().toString();
         String inputPassword = binding.passwordInput.getText().toString();
 
-        if (inputEmail.isEmpty()) {
-            Toast.makeText(getContext(), "input email plz", Toast.LENGTH_SHORT).show();
-        } else if (inputPassword.isEmpty()) {
-            Toast.makeText(getContext(), "input password plz", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(inputEmail)){
+            binding.emailSignInButton.setError("Enter your email");
+        }else if(TextUtils.isEmpty(inputPassword)){
+            binding.passwordInput.setError("Enter your password");
         } else {
             userProfileViewModel.mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
                     .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
