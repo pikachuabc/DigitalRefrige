@@ -1,6 +1,6 @@
-//plugins {
-//    id 'com.android.application'
-//}
+plugins {
+    id 'com.android.application'
+}
 apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'dagger.hilt.android.plugin'

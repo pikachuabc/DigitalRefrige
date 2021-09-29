@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ItemDetailViewModel extends ViewModel {
     private ItemRepository repository;
     private Item curItem;
-    private String timeStr;
 
     @Inject
     public ItemDetailViewModel(ItemRepository repo) {
@@ -33,8 +32,8 @@ public class ItemDetailViewModel extends ViewModel {
 
     public void bindWithItem(int id) {
         if (id == ItemDetailFragment.CREATE_NEW_ITEM) {
-            // we are adding a new item thus need a holder
-            curItem = new Item("", "", Calendar.getInstance().getTime());
+            // we are adding a new item thus need a temporary holder
+            curItem = new Item("", "", Calendar.getInstance().getTime(),"none");
         } else {
             curItem = repository.findItemById(id);
         }
