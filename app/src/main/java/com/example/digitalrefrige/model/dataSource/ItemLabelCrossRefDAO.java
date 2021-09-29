@@ -19,11 +19,11 @@ import java.util.List;
 public interface ItemLabelCrossRefDAO {
 
     @Transaction
-    @Query("SELECT * FROM item_table")
+    @Query("SELECT * FROM label_table")
     LiveData<List<LabelWithItems>> getLabelOfItems();
 
     @Transaction
-    @Query("SELECT * FROM label_table")
+    @Query("SELECT * FROM item_table")
     LiveData<List<ItemWithLabels>> getItemOfLabels();
 
     @Insert
