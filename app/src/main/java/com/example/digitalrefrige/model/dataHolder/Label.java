@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 public class Label {
     @PrimaryKey(autoGenerate = true)
     private int id;
+
     private String title;
 
     public Label(String title){
