@@ -16,8 +16,9 @@
         android:id="@+id/button_add_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_add_24"
         android:layout_gravity="bottom|end"
-        android:layout_margin="32dp"/>
+        android:layout_margin="32dp"
+        android:src="@drawable/ic_baseline_add_24"
+        android:backgroundTint="@color/reeking_yellow"/>
 
 </FrameLayout>
