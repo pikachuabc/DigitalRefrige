@@ -2,6 +2,7 @@ package com.example.digitalrefrige.model.dataSource;
 
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -11,6 +12,7 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 
 import java.util.List;
 
+@Dao
 public interface LabelDAO {
     @Query("select * from label_table")
     LiveData<List<Label>> getAllLabels();
@@ -24,6 +26,6 @@ public interface LabelDAO {
     @Delete
     void deleteLabel(Label label);
 
-    @Query("select * from label_table where id=:id")
+    @Query("select * from label_table where labelId=:id")
     Label findLabelById(int id);
 }

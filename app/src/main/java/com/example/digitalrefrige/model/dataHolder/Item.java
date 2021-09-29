@@ -21,7 +21,7 @@ public class Item {
 
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int itemId;
 
     public Item(String name, String description, Date createDate) {
         this.name = name;
@@ -45,12 +45,12 @@ public class Item {
         this.description = description;
     }
 
-    public int getId() {
-        return id;
+    public int getItemId() {
+        return itemId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public Date getCreateDate() {

@@ -25,7 +25,7 @@ public interface ItemDAO {
     @Delete
     void deleteItem(Item item);
 
-    @Query("select * from item_table where id=:id")
+    @Query("select * from item_table where itemId=:id")
     Item findItemById(int id);
 
 }

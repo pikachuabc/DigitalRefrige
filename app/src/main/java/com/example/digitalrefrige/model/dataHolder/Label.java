@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "label_table")
 public class Label {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int labelId;
 
     private String title;
 
@@ -25,11 +25,11 @@ public class Label {
         return this.title;
     }
 
-    public int getId() {
-        return id;
+    public int getLabelId() {
+        return labelId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLabelId(int labelId) {
+        this.labelId = labelId;
     }
 }

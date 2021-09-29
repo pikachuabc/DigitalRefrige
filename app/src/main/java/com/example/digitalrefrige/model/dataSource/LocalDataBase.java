@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.utils.Converters;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,13 +21,18 @@ import java.util.Date;
 /**
  * Establishing local database with some dummy data
  */
-@Database(entities = Item.class, version = 1)
+@Database(entities = {Item.class, Label.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class LocalDataBase extends RoomDatabase {
 
     private static LocalDataBase instance;
 
     public abstract ItemDAO itemDAO();
+
+    public abstract LabelDAO labelDAO();
+
+    public abstract ItemLabelCrossRefDAO itemLabelCrossRefDAO();
+
 
     public static LocalDataBase getInstance(Context context) {
         if (instance != null) {
@@ -43,6 +49,8 @@ public abstract class LocalDataBase extends RoomDatabase {
                                     super.onCreate(db);
                                     new Thread(() -> {
                                         ItemDAO itemDAO = instance.itemDAO();
+                                        LabelDAO labelDAO = instance.labelDAO();
+                                        ItemLabelCrossRefDAO itemLabelCrossRefDAO = instance.itemLabelCrossRefDAO();
                                         Calendar calendar = Calendar.getInstance();
                                         for (int i = 0; i < 15; i++) {
                                             calendar.add(Calendar.DAY_OF_MONTH,1);

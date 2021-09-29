@@ -3,7 +3,10 @@ package com.example.digitalrefrige.utils.di;
 import android.content.Context;
 
 import com.example.digitalrefrige.model.ItemRepository;
+import com.example.digitalrefrige.model.LabelRepository;
+import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataSource.ItemDAO;
+import com.example.digitalrefrige.model.dataSource.LabelDAO;
 import com.example.digitalrefrige.model.dataSource.LocalDataBase;
 
 import javax.inject.Singleton;
@@ -32,7 +35,22 @@ public class LocalDatabaseModule {
 
     @Provides
     @Singleton
+    LabelDAO provideLabelDao(LocalDataBase dataBase) {
+        return dataBase.labelDAO();
+    }
+
+
+
+    @Provides
+    @Singleton
     ItemRepository provideItemRepo(ItemDAO itemDAO) {
         return new ItemRepository(itemDAO);
     }
+
+    @Provides
+    @Singleton
+    LabelRepository provideLabelRepo(LabelDAO labelDAO){
+        return  new LabelRepository(labelDAO);
+    }
+
 }
