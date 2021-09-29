@@ -14,7 +14,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         tools:context=".views.itemList.ItemDetailFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/item_name"
                 android:inputType="text"
+                android:layout_margin="16dp"
                 android:minHeight="48dp"
                 android:text="@={itemDetailViewModel.curItem.name}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/item_description"
+                android:layout_margin="16dp"
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
                 android:text="@={itemDetailViewModel.curItem.description}"
@@ -50,6 +51,7 @@
                 android:id="@+id/time_picker_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:hint="@string/select_date"
                 android:text="@={itemDetailViewModel.timeStr}"
                 android:textColorHint="@color/white"
@@ -63,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete_current_item"
+                android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button_update" />
@@ -72,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/update_current_item"
+                android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
@@ -81,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add_new_item"
+                android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,28 +96,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/take_photo"
+                android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button_add" />
 
             <ImageView
                 android:id="@+id/imageView_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_baseline_camera_24"
                 tools:srcCompat="@tools:sample/avatars" />
 
-             <TextView
-                android:id="@+id/photoPath"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@={itemDetailViewModel.curItem.photoPath}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -33,6 +33,8 @@ import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,25 +90,31 @@ public class ItemDetailFragment extends Fragment {
 
     private void renderImage() {
         String curItemPhotoUri = itemDetailViewModel.getCurItem().getPhotoPath();
-        ContentResolver contentResolver = getContext().getContentResolver();
-        try {
-            if (Build.VERSION.SDK_INT < 28) {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
-                binding.imageViewItem.setImageBitmap(bitmap);
-            } else {
-                new Thread(() -> {
-                    ImageDecoder.Source source = ImageDecoder.createSource(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
-                    try {
-                        Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-                        binding.imageViewItem.post(() -> binding.imageViewItem.setImageBitmap(bitmap));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Picasso.get()
+                .load(Uri.fromFile(new File(curItemPhotoUri)))
+                .fit()
+                .centerCrop()
+                .into(binding.imageViewItem);
+
+//        ContentResolver contentResolver = getContext().getContentResolver();
+//        try {
+//            if (Build.VERSION.SDK_INT < 28) {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
+//                binding.imageViewItem.setImageBitmap(bitmap);
+//            } else {
+//                new Thread(() -> {
+//                    ImageDecoder.Source source = ImageDecoder.createSource(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
+//                    try {
+//                        Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+//                        binding.imageViewItem.post(() -> binding.imageViewItem.setImageBitmap(bitmap));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -213,10 +221,7 @@ public class ItemDetailFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         itemDetailViewModel.getCurItem().setPhotoPath(image.getAbsolutePath());
-        binding.photoPath.setText(image.getAbsolutePath());
-
         // Save a file: path for use with ACTION_VIEW intents
         return image;
     }
