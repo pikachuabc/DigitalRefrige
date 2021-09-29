@@ -2,10 +2,11 @@ package com.example.digitalrefrige.utils.di;
 
 import android.content.Context;
 
+import com.example.digitalrefrige.model.ItemLabelCrossRefRepository;
 import com.example.digitalrefrige.model.ItemRepository;
 import com.example.digitalrefrige.model.LabelRepository;
-import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataSource.ItemDAO;
+import com.example.digitalrefrige.model.dataSource.ItemLabelCrossRefDAO;
 import com.example.digitalrefrige.model.dataSource.LabelDAO;
 import com.example.digitalrefrige.model.dataSource.LocalDataBase;
 
@@ -39,7 +40,11 @@ public class LocalDatabaseModule {
         return dataBase.labelDAO();
     }
 
-
+    @Provides
+    @Singleton
+    ItemLabelCrossRefDAO provideItemLabelCrossRefDAO(LocalDataBase dataBase){
+        return dataBase.itemLabelCrossRefDAO();
+    }
 
     @Provides
     @Singleton
@@ -50,7 +55,13 @@ public class LocalDatabaseModule {
     @Provides
     @Singleton
     LabelRepository provideLabelRepo(LabelDAO labelDAO){
-        return  new LabelRepository(labelDAO);
+        return new LabelRepository(labelDAO);
+    }
+
+    @Provides
+    @Singleton
+    ItemLabelCrossRefRepository provideItemLabelCrossRefRepo(ItemLabelCrossRefDAO itemLabelCrossRefDAO){
+        return new ItemLabelCrossRefRepository(itemLabelCrossRefDAO);
     }
 
 }
