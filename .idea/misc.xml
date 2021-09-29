@@ -17,6 +17,8 @@
         <entry key="app/src/main/res/drawable/ic_oval.xml" value="0.5354166666666667" />
         <entry key="app/src/main/res/drawable/ic_trash.xml" value="0.5354166666666667" />
         <entry key="app/src/main/res/drawable/ic_user_male_circle_svgrepo_com.xml" value="0.5354166666666667" />
+        <entry key="app/src/main/res/font/raleway.xml" value="0.5494791666666666" />
+        <entry key="app/src/main/res/font/raleway_1.xml" value="0.3380208333333333" />
         <entry key="app/src/main/res/layout/acticity_second.xml" value="0.2328125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="app/src/main/res/layout/card_item_card.xml" value="0.19519927536231885" />
@@ -27,7 +29,7 @@
         <entry key="app/src/main/res/layout/fragment_logout.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/fragment_the_other.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_time_picker.xml" value="0.5192708333333333" />
-        <entry key="app/src/main/res/layout/item_card.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/item_card.xml" value="0.5" />
         <entry key="app/src/main/res/menu/bottom_nav_meau.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.5354166666666667" />
       </map>

@@ -72,8 +72,8 @@
                 android:layout_height="100dp"
                 android:text="@string/update_current_item"
                 android:background="@drawable/ic_oval"
-                android:layout_marginRight="50dp"
                 android:layout_marginTop="50dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
 
@@ -81,10 +81,11 @@
                 android:id="@+id/button_add"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:text="@string/add_new_item"
-                android:background="@drawable/ic_oval"
-                android:layout_marginLeft="50dp"
                 android:layout_marginTop="50dp"
+                android:background="@drawable/ic_oval"
+                android:fontFamily="More Fonts..."
+                android:text="@string/add_new_item"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
