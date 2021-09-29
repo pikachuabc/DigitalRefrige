@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
-    android:layout_marginTop="16dp">
+    android:layout_marginTop="16dp"
+    app:cardCornerRadius="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,13 +42,16 @@
             android:layout_below="@id/text_view_title"
             android:layout_marginLeft="76dp"
             />
-
-        <ImageView
-            android:id="@+id/image_view_food_photo"
+        <androidx.cardview.widget.CardView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            tools:srcCompat="@tools:sample/avatars" />
-
+            app:cardCornerRadius="10dp">
+            <ImageView
+                android:id="@+id/image_view_food_photo"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/img_4857" />
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
