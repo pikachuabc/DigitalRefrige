@@ -95,26 +95,6 @@ public class ItemDetailFragment extends Fragment {
                 .fit()
                 .centerCrop()
                 .into(binding.imageViewItem);
-
-//        ContentResolver contentResolver = getContext().getContentResolver();
-//        try {
-//            if (Build.VERSION.SDK_INT < 28) {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
-//                binding.imageViewItem.setImageBitmap(bitmap);
-//            } else {
-//                new Thread(() -> {
-//                    ImageDecoder.Source source = ImageDecoder.createSource(contentResolver, Uri.fromFile(new File(curItemPhotoUri)));
-//                    try {
-//                        Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-//                        binding.imageViewItem.post(() -> binding.imageViewItem.setImageBitmap(bitmap));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }).start();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -134,16 +114,7 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         // TODO save image to storage
-                        Intent res = result.getData();
                         renderImage();
-//                        Toast.makeText(getContext(), path, Toast.LENGTH_SHORT).show();
-//                        if (res == null) {
-//                            return;
-//                        }
-//                        Bundle extras = res.getExtras();
-//                        Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                        binding.imageViewItem.setImageBitmap(imageBitmap);
-//                        Toast.makeText(getContext(), "camera returned", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -196,6 +167,7 @@ public class ItemDetailFragment extends Fragment {
 
     public void launchCamera(View view) {
         Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // if doesn't work on emulator, get ride of this if
         if (takePicIntent.resolveActivity(getContext().getPackageManager()) != null) {
             File photo = null;
             try {
