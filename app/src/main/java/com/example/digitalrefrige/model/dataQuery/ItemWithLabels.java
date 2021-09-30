@@ -11,7 +11,8 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 import java.util.List;
 
 public class ItemWithLabels {
-    @Embedded public Item item;
+    @Embedded
+    public Item item;
     @Relation(
             parentColumn = "itemId",
             entityColumn = "labelId",

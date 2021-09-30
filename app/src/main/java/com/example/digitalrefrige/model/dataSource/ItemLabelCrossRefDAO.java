@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
+import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.model.dataQuery.LabelWithItems;
 
@@ -26,8 +27,11 @@ public interface ItemLabelCrossRefDAO {
     @Query("SELECT * FROM item_table")
     LiveData<List<ItemWithLabels>> getItemOfLabels();
 
+    @Query("SELECT * FROM label_table WHERE label_table.labelId IN (SELECT itemlabelcrossref.labelId FROM itemlabelcrossref WHERE itemlabelcrossref.itemId=:itemId)")
+    LiveData<List<Label>> getLabelsByItem(long itemId);
+
     @Insert
-    void insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
+    long insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
 
     @Update
     void updateItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);

@@ -18,7 +18,7 @@ public interface LabelDAO {
     LiveData<List<Label>> getAllLabels();
 
     @Insert
-    void insertLabel(Label label);
+    long insertLabel(Label label);
 
     @Update
     void updateLabel(Label label);
@@ -27,5 +27,5 @@ public interface LabelDAO {
     void deleteLabel(Label label);
 
     @Query("select * from label_table where labelId=:id")
-    Label findLabelById(int id);
+    Label findLabelById(long id);
 }

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Entity(tableName = "item_table")
 public class Item {
-    private int quality;
+    private int quantity;
     private String name;
     private String description;
     private Date createDate;
@@ -21,7 +21,7 @@ public class Item {
 
 
     @PrimaryKey(autoGenerate = true)
-    private int itemId;
+    private long itemId;
 
     public Item(String name, String description, Date createDate) {
         this.name = name;
@@ -45,11 +45,11 @@ public class Item {
         this.description = description;
     }
 
-    public int getItemId() {
+    public long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(long itemId) {
         this.itemId = itemId;
     }
 
@@ -61,9 +61,13 @@ public class Item {
         this.createDate = createDate;
     }
 
-    public void setQuality(int quality){ this.quality = quality; }
+    public int getQuantity() {
+        return quantity;
+    }
 
-    public int getQuality(){ return this.quality; }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public void setExpireDate(Date expireDate){ this.expireDate = expireDate; }
 

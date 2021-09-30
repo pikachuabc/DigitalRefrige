@@ -32,14 +32,27 @@ public class ItemLabelCrossRefRepository {
 
     }
 
-    public LiveData<List<LabelWithItems>> getAllLabelList(){ return labelListWithItems; }
+    public LiveData<List<LabelWithItems>> getAllLabelList() {
+        return labelListWithItems;
+    }
 
     public LiveData<List<ItemWithLabels>> getAllItemList() {
         return itemListWithLabels;
     }
 
-    public void insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef){
-        executorService.execute(() -> itemLabelCrossRefDAO.insertItemLabelCrossRef(itemLabelCrossRef));}
+    public LiveData<List<Label>> getLabelsByItem(long itemId) {
+        return itemLabelCrossRefDAO.getLabelsByItem(itemId);
+    }
+
+    public long insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef) {
+        Future<Long> insertRes = executorService.submit(() -> itemLabelCrossRefDAO.insertItemLabelCrossRef(itemLabelCrossRef));
+        try {
+            return insertRes.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
+        }
+    }
 
     public void updateItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef) {
         executorService.execute(() -> itemLabelCrossRefDAO.updateItemLabelCrossRef(itemLabelCrossRef));

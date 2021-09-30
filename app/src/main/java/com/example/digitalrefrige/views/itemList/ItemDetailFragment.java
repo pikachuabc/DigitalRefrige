@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -30,13 +33,16 @@ import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
+import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,17 +58,33 @@ public class ItemDetailFragment extends Fragment {
     private ItemDetailViewModel itemDetailViewModel;
     ActivityResultLauncher<Intent> cameraLauncher;
 
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        // inject viewModel
-        itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // hide bottom bar
         ((MainActivity) getActivity()).mainBottomBar(false);
 
-        // prepare viewModel and bind model into xml(view)
-        int itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
+        // Inflate the layout for this fragment
+        binding = FragmentItemDetailBinding.inflate(inflater, container, false);
+
+        // config adapter for the recyclerView
+        RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
+        labelRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        final LabelListAdapter labelListAdapter = new LabelListAdapter();
+        labelRecyclerView.setAdapter(labelListAdapter);
+
+        // inject viewModel
+        itemDetailViewModel = new ViewModelProvider(requireActivity()).get(ItemDetailViewModel.class);
+        long itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
         itemDetailViewModel.bindWithItem(itemId);
         binding.setItemDetailViewModel(itemDetailViewModel);
+        itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
+            @Override
+            public void onChanged(List<Label> labels) {
+                labelListAdapter.submitList(labels);
+            }
+        });
 
         // set button listener
         binding.timePickerButton.setOnClickListener(this::showTimePickerDialog);
@@ -77,13 +99,6 @@ public class ItemDetailFragment extends Fragment {
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
         }
 
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentItemDetailBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

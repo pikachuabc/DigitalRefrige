@@ -74,7 +74,7 @@
                 android:text="@string/update_current_item"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView_labels_in_detail_fragment" />
 
             <Button
                 android:id="@+id/button_add"
@@ -104,6 +104,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_baseline_camera_24"
                 tools:srcCompat="@tools:sample/avatars" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_labels_in_detail_fragment"
+                android:layout_width="377dp"
+                android:layout_height="233dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

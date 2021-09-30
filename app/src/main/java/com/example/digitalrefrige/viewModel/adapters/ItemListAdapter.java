@@ -1,7 +1,6 @@
 package com.example.digitalrefrige.viewModel.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,16 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
-
 import com.example.digitalrefrige.utils.Converters;
-import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
 import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolder> {
 
-    public ItemListAdapter() {
-        super(DIFF_CALLBACK);
-    }
 
     /**
      * callBack configuration to decide if there are changes at current index position in  the
@@ -34,7 +28,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
     private static final DiffUtil.ItemCallback<Item> DIFF_CALLBACK = new DiffUtil.ItemCallback<Item>() {
         @Override
         public boolean areItemsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
-            return oldItem.getId() == newItem.getId();
+            return oldItem.getItemId() == newItem.getItemId();
         }
 
         @Override
@@ -44,6 +38,10 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
                     oldItem.getCreateDate().equals(newItem.getCreateDate());
         }
     };
+
+    public ItemListAdapter() {
+        super(DIFF_CALLBACK);
+    }
 
     @NonNull
     @Override
@@ -66,7 +64,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         private TextView textViewName;
         private TextView textViewDescription;
         private TextView createDate;
-        private int itemID;
+        private Long itemID;
 
         public ItemHolder(@NonNull ItemCardBinding binding) {
             super(binding.getRoot());
@@ -88,7 +86,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             textViewName.setText(item.getName());
             textViewDescription.setText(item.getDescription());
             createDate.setText(Converters.dateToString(item.getCreateDate()));
-            itemID = item.getId();
+            itemID = item.getItemId();
         }
 
     }

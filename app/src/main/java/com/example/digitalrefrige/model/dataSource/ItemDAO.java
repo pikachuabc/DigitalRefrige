@@ -17,7 +17,7 @@ public interface ItemDAO {
     LiveData<List<Item>> getAllItems();
 
     @Insert
-    void insertItem(Item item);
+    long insertItem(Item item);
 
     @Update
     void updateItem(Item item);
@@ -26,6 +26,6 @@ public interface ItemDAO {
     void deleteItem(Item item);
 
     @Query("select * from item_table where itemId=:id")
-    Item findItemById(int id);
+    Item findItemById(long id);
 
 }

@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.utils.Converters;
 
@@ -21,7 +22,7 @@ import java.util.Date;
 /**
  * Establishing local database with some dummy data
  */
-@Database(entities = {Item.class, Label.class}, version = 1)
+@Database(entities = {Item.class, Label.class, ItemLabelCrossRef.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class LocalDataBase extends RoomDatabase {
 
@@ -52,9 +53,19 @@ public abstract class LocalDataBase extends RoomDatabase {
                                         LabelDAO labelDAO = instance.labelDAO();
                                         ItemLabelCrossRefDAO itemLabelCrossRefDAO = instance.itemLabelCrossRefDAO();
                                         Calendar calendar = Calendar.getInstance();
-                                        for (int i = 0; i < 15; i++) {
-                                            calendar.add(Calendar.DAY_OF_MONTH,1);
+                                        for (int i = 1; i <= 15; i++) {
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1);
                                             itemDAO.insertItem(new Item("item" + i, "description" + i, calendar.getTime()));
+                                        }
+                                        for (int i = 1; i <= 5; i++) {
+                                            labelDAO.insertLabel(new Label("lABEL_" + i));
+                                        }
+                                        long tempLabelId = 1;
+                                        for (int i = 1; i <= 15; i++) {
+                                            if (tempLabelId == 5) tempLabelId = 1;
+                                            itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef((long) i, tempLabelId));
+                                            itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef((long) i, tempLabelId + 1));
+                                            tempLabelId++;
                                         }
                                     }).start();
                                 }

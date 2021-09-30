@@ -22,12 +22,18 @@ public class LabelRepository {
         allLabels = labelDAO.getAllLabels();
     }
 
-    public LiveData<List<Label>> getAllNotes() {
+    public LiveData<List<Label>> getAllLabels() {
         return allLabels;
     }
 
-    public void insertLabel(Label label) {
-        executorService.execute(() -> labelDAO.insertLabel(label));
+    public long insertLabel(Label label) {
+        Future<Long> insertRes = executorService.submit(() -> labelDAO.insertLabel(label));
+        try {
+            return insertRes.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
+        }
     }
 
     public void updateLabel(Label label) {

@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_item_detail" >
         <argument
             android:name="itemID"
-            app:argType="integer" />
+            app:argType="long" />
     </fragment>
 
 
