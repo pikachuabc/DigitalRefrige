@@ -1,8 +1,11 @@
 package com.example.digitalrefrige.viewModel.adapters;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavDirections;
@@ -11,10 +14,14 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.utils.Converters;
 import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolder> {
 
@@ -35,7 +42,8 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
             return oldItem.getName().equals(newItem.getName()) &&
                     oldItem.getDescription().equals(newItem.getDescription()) &&
-                    oldItem.getCreateDate().equals(newItem.getCreateDate());
+                    oldItem.getCreateDate().equals(newItem.getCreateDate()) &&
+                    oldItem.getImgUrl().equals(newItem.getImgUrl());
         }
     };
 
@@ -64,13 +72,15 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         private TextView textViewName;
         private TextView textViewDescription;
         private TextView createDate;
-        private Long itemID;
+        private ImageView itemImage;
+        private long itemID;
 
         public ItemHolder(@NonNull ItemCardBinding binding) {
             super(binding.getRoot());
             textViewName = binding.textViewTitle;
             textViewDescription = binding.textViewDescription;
             createDate = binding.textViewCreateDate;
+            itemImage = binding.imageViewFoodPhoto;
 
             binding.getRoot().setOnClickListener(view -> {
                 int position = getAdapterPosition();
@@ -87,6 +97,14 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             textViewDescription.setText(item.getDescription());
             createDate.setText(Converters.dateToString(item.getCreateDate()));
             itemID = item.getItemId();
+            String uri = item.getImgUrl();
+            if (uri != null && !uri.equals("")) {
+                Picasso.get()
+                        .load(Uri.fromFile(new File(uri)))
+                        .fit()
+                        .centerCrop()
+                        .into(itemImage);
+            }
         }
 
     }

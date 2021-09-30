@@ -36,7 +36,7 @@ public class ItemDetailViewModel extends ViewModel {
     public void bindWithItem(long id) {
         if (id == ItemDetailFragment.CREATE_NEW_ITEM) {
             // we are adding a new item thus need a holder
-            curItem = new Item("", "", Calendar.getInstance().getTime());
+            curItem = new Item("", "", Calendar.getInstance().getTime(),"");
         } else {
             curItem = itemRepository.findItemById(id);
         }

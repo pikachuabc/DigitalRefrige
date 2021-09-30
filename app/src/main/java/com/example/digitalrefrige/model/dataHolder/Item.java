@@ -23,10 +23,11 @@ public class Item {
     @PrimaryKey(autoGenerate = true)
     private long itemId;
 
-    public Item(String name, String description, Date createDate) {
+    public Item(String name, String description, Date createDate, String imgUrl) {
         this.name = name;
         this.description = description;
         this.createDate = createDate;
+        this.imgUrl = imgUrl;
     }
 
     public String getName() {
