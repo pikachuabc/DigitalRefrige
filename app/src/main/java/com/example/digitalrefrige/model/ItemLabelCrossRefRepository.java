@@ -2,14 +2,11 @@ package com.example.digitalrefrige.model;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.model.dataQuery.LabelWithItems;
-import com.example.digitalrefrige.model.dataSource.ItemDAO;
 import com.example.digitalrefrige.model.dataSource.ItemLabelCrossRefDAO;
-import com.example.digitalrefrige.model.dataSource.LabelDAO;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
