@@ -41,7 +41,7 @@ public abstract class LocalDataBase extends RoomDatabase {
         } else {
             synchronized (Context.class) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context.getApplicationContext(), LocalDataBase.class, "note_database")
+                    instance = Room.databaseBuilder(context.getApplicationContext(), LocalDataBase.class, "local_database")
                             .fallbackToDestructiveMigration()
                             // pre-define data in our database
                             .addCallback(new Callback() {

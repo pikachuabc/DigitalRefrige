@@ -3,6 +3,7 @@ package com.example.digitalrefrige.views.itemList;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -12,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -20,6 +22,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,12 +40,16 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,11 +96,19 @@ public class ItemDetailFragment extends Fragment {
         // set button listener
         binding.timePickerButton.setOnClickListener(this::showTimePickerDialog);
         binding.buttonCamera.setOnClickListener(this::launchCamera);
+
+        // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
             binding.buttonAdd.setOnClickListener(this::onAddButtonClicked);
         } else {
+            // render item image if exist
+            String curItemPhotoUri = itemDetailViewModel.getCurItem().getImgUrl();
+            if (curItemPhotoUri!=null && !curItemPhotoUri.equals("")) {
+                renderImage();
+            }
+
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
@@ -111,12 +126,7 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         // TODO save image to storage
-                        Intent res  = result.getData();
-                        if (res==null) return;
-                        Bundle extras = res.getExtras();
-                        Bitmap imageBitmap = (Bitmap) extras.get("data");
-                        binding.imageViewItem.setImageBitmap(imageBitmap);
-                        Toast.makeText(getContext(), "camera returned", Toast.LENGTH_SHORT).show();
+                        renderImage();
                     }
                 }
         );
@@ -169,9 +179,44 @@ public class ItemDetailFragment extends Fragment {
 
     public void launchCamera(View view) {
         Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // if doesn't work on emulator, get ride of this if
         if (takePicIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            File photo = null;
+            try {
+                photo = createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (photo != null) {
+                Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
+                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            }
             cameraLauncher.launch(takePicIntent);
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        itemDetailViewModel.getCurItem().setImgUrl(image.getAbsolutePath());
+        // Save a file: path for use with ACTION_VIEW intents
+        return image;
+    }
+
+    private void renderImage() {
+        String curItemPhotoUri = itemDetailViewModel.getCurItem().getImgUrl();
+        Picasso.get()
+                .load(Uri.fromFile(new File(curItemPhotoUri)))
+                .fit()
+                .centerCrop()
+                .into(binding.imageViewItem);
     }
 
 
