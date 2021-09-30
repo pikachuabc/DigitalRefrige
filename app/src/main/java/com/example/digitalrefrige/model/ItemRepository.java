@@ -30,12 +30,18 @@ public class ItemRepository {
         allItems = itemDAO.getAllItems();
     }
 
-    public LiveData<List<Item>> getAllNotes() {
+    public LiveData<List<Item>> getAllItems() {
         return allItems;
     }
 
-    public void insertItem(Item item) {
-        executorService.execute(() -> itemDAO.insertItem(item));
+    public long insertItem(Item item) {
+        Future<Long> insertRes = executorService.submit(() -> itemDAO.insertItem(item));
+        try {
+            return insertRes.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
+        }
     }
 
     public void updateItem(Item item) {
@@ -46,7 +52,7 @@ public class ItemRepository {
         executorService.execute(() -> itemDAO.deleteItem(item));
     }
 
-    public Item findItemById(int id) {
+    public Item findItemById(long id) {
         Future<Item> itemFuture = executorService.submit(() -> itemDAO.findItemById(id));
         try {
             return itemFuture.get();

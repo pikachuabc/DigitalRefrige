@@ -1,15 +1,14 @@
 package com.example.digitalrefrige.viewModel;
 
-import android.app.Application;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.digitalrefrige.model.ItemLabelCrossRefRepository;
 import com.example.digitalrefrige.model.ItemRepository;
+import com.example.digitalrefrige.model.LabelRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.Label;
+import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.utils.Converters;
 import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
 
@@ -22,20 +21,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ItemDetailViewModel extends ViewModel {
-    private ItemRepository repository;
+    private ItemRepository itemRepository;
     private Item curItem;
 
+    private ItemLabelCrossRefRepository itemLabelCrossRefRepository;
+
+
     @Inject
-    public ItemDetailViewModel(ItemRepository repo) {
-        repository = repo;
+    public ItemDetailViewModel(ItemRepository itemRepo, ItemLabelCrossRefRepository itemLabelCrossRefRepo) {
+        itemRepository = itemRepo;
+        itemLabelCrossRefRepository = itemLabelCrossRefRepo;
     }
 
-    public void bindWithItem(int id) {
+    public void bindWithItem(long id) {
         if (id == ItemDetailFragment.CREATE_NEW_ITEM) {
-            // we are adding a new item thus need a temporary holder
-            curItem = new Item("", "", Calendar.getInstance().getTime(),"none");
+            // we are adding a new item thus need a holder
+            curItem = new Item("", "", Calendar.getInstance().getTime());
         } else {
-            curItem = repository.findItemById(id);
+            curItem = itemRepository.findItemById(id);
         }
 
     }
@@ -48,16 +51,16 @@ public class ItemDetailViewModel extends ViewModel {
         this.curItem = curItem;
     }
 
-    public void insertItem(Item item) {
-        repository.insertItem(item);
+    public long insertItem(Item item) {
+        return itemRepository.insertItem(item);
     }
 
     public void updateItem(Item item) {
-        repository.updateItem(item);
+        itemRepository.updateItem(item);
     }
 
     public void deleteCurItem() {
-        repository.deleteItem(curItem);
+        itemRepository.deleteItem(curItem);
         curItem = null;
     }
 
@@ -67,5 +70,10 @@ public class ItemDetailViewModel extends ViewModel {
 
     public void setTimeStr(String timeStr) {
         this.curItem.setCreateDate(Converters.strToDate(timeStr));
+    }
+
+    public LiveData<List<Label>> getAllLabelsAssociatedWithItem() {
+        return itemLabelCrossRefRepository.getLabelsByItem(curItem.getItemId());
+
     }
 }

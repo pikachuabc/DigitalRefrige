@@ -12,20 +12,21 @@ import java.util.Date;
  */
 @Entity(tableName = "item_table")
 public class Item {
+    private int quantity;
     private String name;
     private String description;
     private Date createDate;
-    private String photoPath;
+    private Date expireDate;
+    private String imgUrl;
 
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long itemId;
 
-    public Item(String name, String description, Date createDate, String photoPath) {
+    public Item(String name, String description, Date createDate) {
         this.name = name;
         this.description = description;
         this.createDate = createDate;
-        this.photoPath = photoPath;
     }
 
     public String getName() {
@@ -44,12 +45,12 @@ public class Item {
         this.description = description;
     }
 
-    public int getId() {
-        return id;
+    public long getItemId() {
+        return itemId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
     }
 
     public Date getCreateDate() {
@@ -60,11 +61,20 @@ public class Item {
         this.createDate = createDate;
     }
 
-    public String getPhotoPath() {
-        return photoPath;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
+
+    public void setExpireDate(Date expireDate){ this.expireDate = expireDate; }
+
+    public Date getExpireDate(){return this.expireDate;}
+
+    public void setImgUrl(String imgUrl){ this.imgUrl = imgUrl;}
+
+    public String getImgUrl(){return this.imgUrl; }
+
 }

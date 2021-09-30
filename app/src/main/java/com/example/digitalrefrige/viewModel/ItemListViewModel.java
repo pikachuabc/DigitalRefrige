@@ -21,15 +21,15 @@ public class ItemListViewModel extends ViewModel {
     @Inject
     public ItemListViewModel(ItemRepository repo) {
         repository = repo;
-        allItems = repository.getAllNotes();
+        allItems = repository.getAllItems();
     }
 
     public LiveData<List<Item>> getAllItems() {
         return allItems;
     }
 
-    public void insertItem(Item item) {
-        repository.insertItem(item);
+    public long insertItem(Item item) {
+        return repository.insertItem(item);
     }
 
     public void updateItem(Item item) {
