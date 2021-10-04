@@ -1,6 +1,7 @@
 package com.example.digitalrefrige.viewModel;
 
 import android.os.Build;
+import android.util.Log;
 import android.widget.Filter;
 import android.widget.Filterable;
 
@@ -29,10 +30,13 @@ public class ItemListViewModel extends ViewModel implements Filterable {
     private Filter itemFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
+            if (allItems.getValue() == null) return null;
             List<Item> filteredList = new ArrayList<>();
             if (charSequence == null || charSequence.length() == 0) {
+                // match all items
                 filteredList.addAll(allItems.getValue());
             } else {
+                // filter with given pattern
                 String filterPattern = charSequence.toString().toLowerCase().trim();
                 for (Item item : allItems.getValue()) {
                     if (item.getName().contains(filterPattern)
@@ -48,6 +52,7 @@ public class ItemListViewModel extends ViewModel implements Filterable {
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            if (filterResults == null) return;
             updateFilteredItemList((List) filterResults.values);
         }
     };
@@ -60,17 +65,19 @@ public class ItemListViewModel extends ViewModel implements Filterable {
     }
 
     public void updateFilteredItemList(List<Item> list) {
-        List<Item> newFilteredItems = new ArrayList<>(filteredData.getValue());
-        List<Item> needRemove = new ArrayList<>();
-        for (Item item : newFilteredItems) {
-            if (!list.contains(item)) {
-                needRemove.add(item);
-            } else {
-                list.remove(item);
-            }
-        }
-        newFilteredItems.removeAll(needRemove);
-        newFilteredItems.addAll(list);
+        Log.d("MyLog", "update list with size" + list.size());
+        List<Item> newFilteredItems = new ArrayList<>(list);
+//        List<Item> needRemove = new ArrayList<>();
+//        List<Item> needAdd = new ArrayList<>();
+//        for (Item item : newFilteredItems) {
+//            if (!list.contains(item)) {
+//                needRemove.add(item);
+//            }
+//        }
+//        newFilteredItems.removeAll(needRemove);
+//
+//
+//        newFilteredItems.addAll(list);
         filteredData.setValue(newFilteredItems);
     }
 

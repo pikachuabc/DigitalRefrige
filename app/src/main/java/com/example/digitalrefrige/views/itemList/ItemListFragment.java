@@ -2,6 +2,8 @@ package com.example.digitalrefrige.views.itemList;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +63,14 @@ public class ItemListFragment extends Fragment {
         binding.itemFilterSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("MyLog", "onQueryTextSubmit triggered with pattern: " + query);
+                itemListViewModel.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.d("MyLog", "onQueryTextChange triggered with pattern: " + newText);
                 itemListViewModel.getFilter().filter(newText);
                 return false;
             }
@@ -86,11 +91,19 @@ public class ItemListFragment extends Fragment {
 
             }
         });
+        SearchView searchBox = binding.itemFilterSearchView;
         itemListViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
-                System.out.println("=============room data changed" + items.size());
-                itemListViewModel.updateFilteredItemList(items);
+                if (items.size() == 0) return;
+                Log.d("MyLog", "allItem changed, current size: " + items.size());
+                if (TextUtils.isEmpty(searchBox.getQuery())) {
+                    // no query available in searchView, put all items into filteredData
+                    itemListViewModel.updateFilteredItemList(items);
+                } else {
+                    // make changes on current queried item list
+                    searchBox.setQuery(searchBox.getQuery(), true);
+                }
             }
         });
 
