@@ -139,7 +139,7 @@ public class ItemDetailFragment extends Fragment {
                 String msg = i + "-" + (i1 + 1) + "-" + i2;
                 binding.timePickerButton.setText(msg);
             }
-        },itemDetailViewModel.getCurItem().getCreateDate());
+        },itemDetailViewModel.getCurItem().getExpireDate());
         newFragment.show(getParentFragmentManager(), "timePicker");
     }
 

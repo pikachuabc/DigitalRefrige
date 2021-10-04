@@ -65,11 +65,11 @@ public class ItemDetailViewModel extends ViewModel {
     }
 
     public String getTimeStr() {
-        return Converters.dateToString(curItem.getCreateDate());
+        return Converters.dateToString(curItem.getExpireDate());
     }
 
     public void setTimeStr(String timeStr) {
-        this.curItem.setCreateDate(Converters.strToDate(timeStr));
+        this.curItem.setExpireDate(Converters.strToDate(timeStr));
     }
 
     public LiveData<List<Label>> getAllLabelsAssociatedWithItem() {

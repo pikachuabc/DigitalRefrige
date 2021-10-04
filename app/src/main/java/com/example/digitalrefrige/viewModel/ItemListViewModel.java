@@ -1,6 +1,5 @@
 package com.example.digitalrefrige.viewModel;
 
-import android.os.Build;
 import android.util.Log;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -10,10 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.digitalrefrige.model.ItemRepository;
+import com.example.digitalrefrige.model.LabelRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +22,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class ItemListViewModel extends ViewModel implements Filterable {
 
-    private ItemRepository repository;
+    private ItemRepository itemRepository;
+    private LabelRepository labelRepository;
     private LiveData<List<Item>> allItems;
     private MutableLiveData<List<Item>> filteredData;
 
@@ -58,26 +58,16 @@ public class ItemListViewModel extends ViewModel implements Filterable {
     };
 
     @Inject
-    public ItemListViewModel(ItemRepository repo) {
-        repository = repo;
-        allItems = repository.getAllItems();
+    public ItemListViewModel(ItemRepository itemRepo,LabelRepository labelRepo) {
+        itemRepository = itemRepo;
+        labelRepository = labelRepo;
+        allItems = itemRepository.getAllItems();
         filteredData = new MutableLiveData<>(new ArrayList<>());
     }
 
     public void updateFilteredItemList(List<Item> list) {
         Log.d("MyLog", "update list with size" + list.size());
         List<Item> newFilteredItems = new ArrayList<>(list);
-//        List<Item> needRemove = new ArrayList<>();
-//        List<Item> needAdd = new ArrayList<>();
-//        for (Item item : newFilteredItems) {
-//            if (!list.contains(item)) {
-//                needRemove.add(item);
-//            }
-//        }
-//        newFilteredItems.removeAll(needRemove);
-//
-//
-//        newFilteredItems.addAll(list);
         filteredData.setValue(newFilteredItems);
     }
 
@@ -91,15 +81,15 @@ public class ItemListViewModel extends ViewModel implements Filterable {
     }
 
     public long insertItem(Item item) {
-        return repository.insertItem(item);
+        return itemRepository.insertItem(item);
     }
 
     public void updateItem(Item item) {
-        repository.updateItem(item);
+        itemRepository.updateItem(item);
     }
 
     public void deleteItem(Item item) {
-        repository.deleteItem(item);
+        itemRepository.deleteItem(item);
     }
 
     @Override

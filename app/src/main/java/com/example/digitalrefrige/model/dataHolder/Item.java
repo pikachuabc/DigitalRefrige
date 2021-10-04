@@ -15,7 +15,6 @@ public class Item {
     private int quantity;
     private String name;
     private String description;
-    private Date createDate;
     private Date expireDate;
     private String imgUrl;
 
@@ -23,10 +22,10 @@ public class Item {
     @PrimaryKey(autoGenerate = true)
     private long itemId;
 
-    public Item(String name, String description, Date createDate, String imgUrl) {
+    public Item(String name, String description, Date expireDate, String imgUrl) {
         this.name = name;
         this.description = description;
-        this.createDate = createDate;
+        this.expireDate = expireDate;
         this.imgUrl = imgUrl;
     }
 
@@ -52,14 +51,6 @@ public class Item {
 
     public void setItemId(long itemId) {
         this.itemId = itemId;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     public int getQuantity() {

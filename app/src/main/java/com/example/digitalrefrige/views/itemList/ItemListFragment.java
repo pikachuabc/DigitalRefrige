@@ -85,10 +85,9 @@ public class ItemListFragment extends Fragment {
                 List<Item> newList = new ArrayList<>(items);
                 // order by date
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    newList.sort(Comparator.comparing(Item::getCreateDate));
+                    newList.sort(Comparator.comparing(Item::getExpireDate));
                 }
                 itemListAdapter.submitList(newList);
-
             }
         });
         SearchView searchBox = binding.itemFilterSearchView;
