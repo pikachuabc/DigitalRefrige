@@ -3,10 +3,13 @@ package com.example.digitalrefrige.viewModel.adapters;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
@@ -20,9 +23,10 @@ import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolder> {
-
 
     /**
      * callBack configuration to decide if there are changes at current index position in  the
@@ -61,6 +65,9 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         Item item = getItem(position);
         holder.bind(item);
     }
+
+
+
 
 
     /**
@@ -105,6 +112,11 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             }
         }
 
+    }
+
+    @Override
+    public void submitList(@Nullable List<Item> list) {
+        super.submitList(list);
     }
 }
 
