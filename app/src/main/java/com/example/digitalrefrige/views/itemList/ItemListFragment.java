@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,8 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.FragmentItemListBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.Label;
+import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
+import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -63,23 +67,20 @@ public class ItemListFragment extends Fragment {
         binding.itemFilterSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("MyLog", "onQueryTextSubmit triggered with pattern: " + query);
-                itemListViewModel.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("MyLog", "onQueryTextChange triggered with pattern: " + newText);
                 itemListViewModel.getFilter().filter(newText);
-                return false;
+                return true;
             }
         });
 
 
         // inject viewModel and start observing
         itemListViewModel = new ViewModelProvider(requireActivity()).get(ItemListViewModel.class);
-        itemListViewModel.getFilteredData().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+        itemListViewModel.getFilteredItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
                 List<Item> newList = new ArrayList<>(items);
@@ -94,15 +95,22 @@ public class ItemListFragment extends Fragment {
         itemListViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
-                if (items.size() == 0) return;
-                Log.d("MyLog", "allItem changed, current size: " + items.size());
-                if (TextUtils.isEmpty(searchBox.getQuery())) {
-                    // no query available in searchView, put all items into filteredData
-                    itemListViewModel.updateFilteredItemList(items);
-                } else {
-                    // make changes on current queried item list
-                    searchBox.setQuery(searchBox.getQuery(), true);
+                itemListViewModel.getFilter().filter(searchBox.getQuery());
+            }
+        });
+        itemListViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
+            @Override
+            public void onChanged(List<Label> labels) {
+                if (itemListViewModel.getCurSelectedLabel().size() == 0) {
+                    itemListViewModel.setCurSelectedLabel(new ArrayList<>(labels));
                 }
+                itemListViewModel.getFilter().filter(searchBox.getQuery());
+            }
+        });
+        itemListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<ItemWithLabels>>() {
+            @Override
+            public void onChanged(List<ItemWithLabels> itemWithLabels) {
+                itemListViewModel.getFilter().filter(searchBox.getQuery());
             }
         });
 
@@ -131,6 +139,22 @@ public class ItemListFragment extends Fragment {
             }
         });
 
+        binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Label> allLabels = new ArrayList<>(itemListViewModel.getAllLabels().getValue());
+                List<Label> curSelected = new ArrayList<>(itemListViewModel.getCurSelectedLabel());
+                DialogFragment dialog = new LabelSelectorDialogFragment(allLabels, curSelected, new LabelSelectorDialogFragment.OnLabelsChosenListener() {
+                    @Override
+                    public void onPositiveClicked(List<Label> selectedLabels) {
+                        //Log.d("MyLog", "selector returned");
+                        itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
+                        itemListViewModel.getFilter().filter(searchBox.getQuery());
+                    }
+                });
+                dialog.show(getChildFragmentManager(), "LabelSelectorFragment");
+            }
+        });
 
         return binding.getRoot();
     }
@@ -141,4 +165,5 @@ public class ItemListFragment extends Fragment {
         super.onDestroy();
         binding = null;
     }
+
 }

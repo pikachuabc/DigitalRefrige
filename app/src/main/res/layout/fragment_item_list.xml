@@ -13,27 +13,34 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:contentInsetStart="0dp"
-              >
+                app:contentInsetStart="8dp">
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <androidx.appcompat.widget.SearchView
-                        android:id="@+id/item_filter_searchView"
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/label_picker_button"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        android:text="Label"/>
+
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/item_filter_searchView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         app:iconifiedByDefault="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/label_picker_button"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:queryBackground="@android:color/transparent"
                         app:queryHint="search anything..." />
                 </androidx.constraintlayout.widget.ConstraintLayout>
