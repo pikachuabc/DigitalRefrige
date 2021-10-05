@@ -86,9 +86,7 @@ public class ItemListFragment extends Fragment {
             public void onChanged(List<Item> items) {
                 List<Item> newList = new ArrayList<>(items);
                 // order by date
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    newList.sort(Comparator.comparing(Item::getExpireDate));
-                }
+                newList.sort(Comparator.comparing(Item::getExpireDate));
                 itemListAdapter.submitList(newList);
             }
         });

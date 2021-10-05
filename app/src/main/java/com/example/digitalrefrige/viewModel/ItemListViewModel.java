@@ -1,5 +1,6 @@
 package com.example.digitalrefrige.viewModel;
 
+import android.os.Build;
 import android.util.Log;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -45,38 +47,12 @@ public class ItemListViewModel extends ViewModel implements Filterable {
             try {
                 Log.d("MyLog", "\nStart filtering with config:\npattern:" + charSequence + "\n" + "labels:" + curSelectedLabel.toString());
                 if (allItems.getValue() == null) return null;
-                // first filter item name
-                if (charSequence == null || charSequence.length() == 0) {
-                    // match all items
-                    filteredList.addAll(allItems.getValue());
-                } else {
-                    // filter with given pattern
-                    String filterPattern = charSequence.toString().toLowerCase().trim();
-                    for (Item item : allItems.getValue()) {
-                        if (item.getName().toLowerCase().contains(filterPattern)
-                                || item.getDescription().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(item);
-                        }
-                    }
-                }
-                // then filter label
-                List<Item> needRemove = new ArrayList<>();
-                List<ItemWithLabels> itemWithLabels = allItemsWithLabels.getValue();
-                Map<Item, List<Label>> tempMap = new HashMap<>();
-                for (ItemWithLabels item : itemWithLabels) {
-                    tempMap.put(item.item, item.labels);
-                }
-                outer:
-                for (Item item : filteredList) {
-                    List<Label> labelsOfCurItem = tempMap.get(item);
-                    for (Label label : labelsOfCurItem) {
-                        if (curSelectedLabel.contains(label)) {
-                            continue outer;
-                        }
-                    }
-                    needRemove.add(item);
-                }
-                filteredList.removeAll(needRemove);
+                filteredList.addAll(allItems.getValue());
+                filteredList = filteredList.stream()
+                        .filter(x -> nameFilter(charSequence, x))
+                        .filter(x -> labelFilter(x))
+                        .collect(Collectors.toList());
+
             } catch (NullPointerException e) {
                 Log.d("MyLog", "filtering failed");
             }
@@ -90,6 +66,7 @@ public class ItemListViewModel extends ViewModel implements Filterable {
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             if (filterResults == null) return;
+            Object res = filterResults.values;
             updateFilteredItemList((List) filterResults.values);
         }
     };
@@ -111,6 +88,30 @@ public class ItemListViewModel extends ViewModel implements Filterable {
         Log.d("MyLog", "filteredItems change to size " + list.size());
         List<Item> newFilteredItems = new ArrayList<>(list);
         filteredItems.setValue(newFilteredItems);
+    }
+
+    public boolean nameFilter(CharSequence charSequence, Item item) {
+        if (charSequence == null || charSequence.length() == 0) return true;
+        String filterPattern = charSequence.toString().toLowerCase().trim();
+        return item.getName().toLowerCase().contains(filterPattern)
+                || item.getDescription().toLowerCase().contains(filterPattern);
+
+    }
+
+    public boolean labelFilter(Item item) {
+        List<ItemWithLabels> itemWithLabels = allItemsWithLabels.getValue();
+        Map<Item, List<Label>> tempMap = new HashMap<>();
+        for (ItemWithLabels curItemWithLabels : itemWithLabels) {
+            tempMap.put(curItemWithLabels.item, curItemWithLabels.labels);
+        }
+        List<Label> labelsOfCurItem = tempMap.get(item);
+        for (Label label : labelsOfCurItem) {
+            if (curSelectedLabel.contains(label)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
 
