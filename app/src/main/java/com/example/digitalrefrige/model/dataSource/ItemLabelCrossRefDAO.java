@@ -28,14 +28,22 @@ public interface ItemLabelCrossRefDAO {
     LiveData<List<ItemWithLabels>> getItemOfLabels();
 
     @Query("SELECT * FROM label_table WHERE label_table.labelId IN (SELECT itemlabelcrossref.labelId FROM itemlabelcrossref WHERE itemlabelcrossref.itemId=:itemId)")
-    LiveData<List<Label>> getLabelsByItem(long itemId);
+    List<Label> getLabelsByItem(long itemId);
+
+    @Transaction
+    default void updateItemLabels(ItemWithLabels itemWithLabels) {
+        long itemId = itemWithLabels.item.getItemId();
+        deleteItemLabelCrossRef(itemId);
+        for (Label label : itemWithLabels.labels) {
+            insertItemLabelCrossRef(new ItemLabelCrossRef(itemId, label.getLabelId()));
+        }
+    }
+
 
     @Insert
     long insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
 
-    @Update
-    void updateItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
 
-    @Delete
-    void deleteItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
+    @Query("DELETE from itemlabelcrossref where itemId=:itemId")
+    void deleteItemLabelCrossRef(long itemId);
 }

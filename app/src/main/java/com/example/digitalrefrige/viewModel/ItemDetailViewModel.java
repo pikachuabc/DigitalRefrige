@@ -8,6 +8,7 @@ import com.example.digitalrefrige.model.ItemLabelCrossRefRepository;
 import com.example.digitalrefrige.model.ItemRepository;
 import com.example.digitalrefrige.model.LabelRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.utils.Converters;
@@ -27,7 +28,9 @@ public class ItemDetailViewModel extends ViewModel {
     private Item curItem;
     private LabelRepository labelRepository;
     private LiveData<List<Label>> allLabels;
-    private LiveData<List<Label>> labelsAssociatedWithCurItem;
+
+    private MutableLiveData<List<Label>> labelsAssociatedWithCurItem;
+
 
     private ItemLabelCrossRefRepository itemLabelCrossRefRepository;
 
@@ -47,7 +50,7 @@ public class ItemDetailViewModel extends ViewModel {
             labelsAssociatedWithCurItem = new MutableLiveData<>(new ArrayList<>());
         } else {
             curItem = itemRepository.findItemById(id);
-            labelsAssociatedWithCurItem = itemLabelCrossRefRepository.getLabelsByItem(id);
+            labelsAssociatedWithCurItem = new MutableLiveData<>(itemLabelCrossRefRepository.getLabelsByItem(id));
         }
 
     }
@@ -60,12 +63,21 @@ public class ItemDetailViewModel extends ViewModel {
         this.curItem = curItem;
     }
 
-    public long insertItem(Item item) {
-        return itemRepository.insertItem(item);
+    public void insertItem(Item item, List<Label> labels) {
+        long itemId = itemRepository.insertItem(item);
+        item.setItemId(itemId);
+        ItemWithLabels itemWithLabels = new ItemWithLabels();
+        itemWithLabels.item = item;
+        itemWithLabels.labels = labels;
+        itemLabelCrossRefRepository.updateItemLabels(itemWithLabels);
     }
 
-    public void updateItem(Item item) {
+    public void updateItem(Item item, List<Label> labels) {
         itemRepository.updateItem(item);
+        ItemWithLabels itemWithLabels = new ItemWithLabels();
+        itemWithLabels.item = item;
+        itemWithLabels.labels = labels;
+        itemLabelCrossRefRepository.updateItemLabels(itemWithLabels);
     }
 
     public void deleteCurItem() {
@@ -81,11 +93,12 @@ public class ItemDetailViewModel extends ViewModel {
         return allLabels;
     }
 
+
     public void setTimeStr(String timeStr) {
         this.curItem.setExpireDate(Converters.strToDate(timeStr));
     }
 
-    public LiveData<List<Label>> getAllLabelsAssociatedWithItem() {
+    public MutableLiveData<List<Label>> getAllLabelsAssociatedWithItem() {
         return labelsAssociatedWithCurItem;
 
     }

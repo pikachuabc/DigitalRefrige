@@ -79,7 +79,7 @@ public class ItemDetailFragment extends Fragment {
 
         // config adapter for the recyclerView
         RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
-        labelRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        labelRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         final LabelListAdapter labelListAdapter = new LabelListAdapter();
         labelRecyclerView.setAdapter(labelListAdapter);
 
@@ -114,7 +114,7 @@ public class ItemDetailFragment extends Fragment {
         } else {
             // render item image if exist
             String curItemPhotoUri = itemDetailViewModel.getCurItem().getImgUrl();
-            if (curItemPhotoUri!=null && !curItemPhotoUri.equals("")) {
+            if (curItemPhotoUri != null && !curItemPhotoUri.equals("")) {
                 renderImage();
             }
 
@@ -133,7 +133,7 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onPositiveClicked(List<Label> selectedLabels) {
                         //Log.d("MyLog", "selector returned");
-//                        itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
+                        itemDetailViewModel.getAllLabelsAssociatedWithItem().setValue(new ArrayList<>(selectedLabels));
 //                        refreshItemList();
                     }
                 });
@@ -166,7 +166,7 @@ public class ItemDetailFragment extends Fragment {
                 String msg = i + "-" + (i1 + 1) + "-" + i2;
                 binding.timePickerButton.setText(msg);
             }
-        },itemDetailViewModel.getCurItem().getExpireDate());
+        }, itemDetailViewModel.getCurItem().getExpireDate());
         newFragment.show(getParentFragmentManager(), "timePicker");
     }
 
@@ -183,7 +183,7 @@ public class ItemDetailFragment extends Fragment {
         binding.editTextDescription.clearFocus();
         if (!"".equals(itemDetailViewModel.getCurItem().getName())) {
             // TODO need get date from text
-            itemDetailViewModel.insertItem(itemDetailViewModel.getCurItem());
+            itemDetailViewModel.insertItem(itemDetailViewModel.getCurItem(), itemDetailViewModel.getAllLabelsAssociatedWithItem().getValue());
             Navigation.findNavController(view).popBackStack();
             Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
         } else {
@@ -196,7 +196,7 @@ public class ItemDetailFragment extends Fragment {
         binding.editTextDescription.clearFocus();
         if (!"".equals(itemDetailViewModel.getCurItem().getName())) {
             // TODO need get date from text
-            itemDetailViewModel.updateItem(itemDetailViewModel.getCurItem());
+            itemDetailViewModel.updateItem(itemDetailViewModel.getCurItem(), itemDetailViewModel.getAllLabelsAssociatedWithItem().getValue());
             Navigation.findNavController(view).popBackStack();
             Toast.makeText(getContext(), "Item updated", Toast.LENGTH_SHORT).show();
         } else {
