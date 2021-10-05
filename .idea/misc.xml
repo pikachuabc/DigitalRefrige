@@ -15,7 +15,7 @@
         <entry key="app/src/main/res/layout/card_item_card.xml" value="0.19519927536231885" />
         <entry key="app/src/main/res/layout/fragement_tst.xml" value="0.12760416666666666" />
         <entry key="app/src/main/res/layout/fragment_item_detail.xml" value="0.2955611863558903" />
-        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_label_selector_dialog.xml" value="0.12604166666666666" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_logout.xml" value="0.25052083333333336" />

@@ -39,6 +39,7 @@ import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
+import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
 import com.squareup.picasso.Picasso;
 
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -86,10 +88,17 @@ public class ItemDetailFragment extends Fragment {
         long itemId = ItemDetailFragmentArgs.fromBundle(getArguments()).getItemID();
         itemDetailViewModel.bindWithItem(itemId);
         binding.setItemDetailViewModel(itemDetailViewModel);
+
         itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
             @Override
             public void onChanged(List<Label> labels) {
                 labelListAdapter.submitList(labels);
+            }
+        });
+
+        itemDetailViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
+            @Override
+            public void onChanged(List<Label> labels) {
             }
         });
 
@@ -113,6 +122,24 @@ public class ItemDetailFragment extends Fragment {
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
         }
+
+        binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Label> allLabels = new ArrayList<>(itemDetailViewModel.getAllLabels().getValue());
+                List<Label> curSelected = new ArrayList<>(itemDetailViewModel.getAllLabelsAssociatedWithItem().getValue());
+
+                DialogFragment dialog = new LabelSelectorDialogFragment(allLabels, curSelected, new LabelSelectorDialogFragment.OnLabelsChosenListener() {
+                    @Override
+                    public void onPositiveClicked(List<Label> selectedLabels) {
+                        //Log.d("MyLog", "selector returned");
+//                        itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
+//                        refreshItemList();
+                    }
+                });
+                dialog.show(getChildFragmentManager(), "LabelSelectorFragment");
+            }
+        });
 
         return binding.getRoot();
     }

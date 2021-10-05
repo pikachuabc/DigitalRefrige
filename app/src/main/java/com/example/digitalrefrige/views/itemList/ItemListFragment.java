@@ -20,6 +20,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.FragmentItemListBinding;
@@ -57,7 +58,7 @@ public class ItemListFragment extends Fragment {
         // set main nav bar visible
         ((MainActivity) getActivity()).mainBottomBar(true);
         // config adapter for the recyclerView
-        RecyclerView itemListRecyclerView = binding.recyclerView;
+        RecyclerView itemListRecyclerView = binding.itemListRecyclerView;
         itemListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         itemListRecyclerView.setHasFixedSize(true);
         final ItemListAdapter itemListAdapter = new ItemListAdapter();
@@ -91,11 +92,10 @@ public class ItemListFragment extends Fragment {
                 itemListAdapter.submitList(newList);
             }
         });
-        SearchView searchBox = binding.itemFilterSearchView;
         itemListViewModel.getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
-                itemListViewModel.getFilter().filter(searchBox.getQuery());
+                refreshItemList();
             }
         });
         itemListViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
@@ -103,14 +103,15 @@ public class ItemListFragment extends Fragment {
             public void onChanged(List<Label> labels) {
                 if (itemListViewModel.getCurSelectedLabel().size() == 0) {
                     itemListViewModel.setCurSelectedLabel(new ArrayList<>(labels));
+                } else {
+                    refreshItemList();
                 }
-                itemListViewModel.getFilter().filter(searchBox.getQuery());
             }
         });
         itemListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<ItemWithLabels>>() {
             @Override
             public void onChanged(List<ItemWithLabels> itemWithLabels) {
-                itemListViewModel.getFilter().filter(searchBox.getQuery());
+                refreshItemList();
             }
         });
 
@@ -149,14 +150,35 @@ public class ItemListFragment extends Fragment {
                     public void onPositiveClicked(List<Label> selectedLabels) {
                         //Log.d("MyLog", "selector returned");
                         itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
-                        itemListViewModel.getFilter().filter(searchBox.getQuery());
+                        refreshItemList();
                     }
                 });
                 dialog.show(getChildFragmentManager(), "LabelSelectorFragment");
             }
         });
 
+        // resolve scroll conflict between recyclerView and SwipeRefreshLayout
+        itemListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition = recyclerView.getChildCount() == 0 ? 0 : recyclerView.getChildAt(0).getTop();
+                binding.refreshList.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+        });
+        binding.refreshList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItemList();
+                binding.refreshList.setRefreshing(false);
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    public void refreshItemList() {
+        itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
     }
 
 
