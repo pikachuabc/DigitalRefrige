@@ -31,8 +31,9 @@ public class ItemDetailViewModel extends ViewModel {
 
     private MutableLiveData<List<Label>> labelsAssociatedWithCurItem;
 
-
     private ItemLabelCrossRefRepository itemLabelCrossRefRepository;
+
+    private String tempUrl;
 
 
     @Inject
@@ -52,6 +53,8 @@ public class ItemDetailViewModel extends ViewModel {
             curItem = itemRepository.findItemById(id);
             labelsAssociatedWithCurItem = new MutableLiveData<>(itemLabelCrossRefRepository.getLabelsByItem(id));
         }
+
+        tempUrl = curItem.getImgUrl();
 
     }
 
@@ -83,6 +86,14 @@ public class ItemDetailViewModel extends ViewModel {
     public void deleteCurItem() {
         itemRepository.deleteItem(curItem);
         curItem = null;
+    }
+
+    public String getTempUrl() {
+        return tempUrl;
+    }
+
+    public void setTempUrl(String tempUrl) {
+        this.tempUrl = tempUrl;
     }
 
     public String getTimeStr() {

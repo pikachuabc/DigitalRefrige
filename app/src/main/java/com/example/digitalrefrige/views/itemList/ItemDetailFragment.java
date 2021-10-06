@@ -1,12 +1,13 @@
 package com.example.digitalrefrige.views.itemList;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -24,31 +25,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
-import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
-import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +63,7 @@ public class ItemDetailFragment extends Fragment {
     private FragmentItemDetailBinding binding;
     private ItemDetailViewModel itemDetailViewModel;
     ActivityResultLauncher<Intent> cameraLauncher;
+    ActivityResultLauncher<Intent> photoLibraryLauncher;
 
 
     @Override
@@ -104,7 +102,7 @@ public class ItemDetailFragment extends Fragment {
 
         // set button listener
         binding.timePickerButton.setOnClickListener(this::showTimePickerDialog);
-        binding.buttonCamera.setOnClickListener(this::launchCamera);
+        binding.buttonCamera.setOnClickListener(this::launchCameraOrSelectFromGallery);
 
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
@@ -153,7 +151,34 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         // TODO save image to storage
+
+                        if (result.getResultCode() == RESULT_OK) {
+                            String curUrl = itemDetailViewModel.getCurItem().getImgUrl();
+                            // if the item doesn't has any pic before, remain empty
+                            if (!"".equals(curUrl)) new File(curUrl).delete();
+                            itemDetailViewModel.getCurItem().setImgUrl(itemDetailViewModel.getTempUrl());
+                        } else {
+                            // user cancel ope, delete current image file and restore image to previous one
+                            new File(itemDetailViewModel.getTempUrl()).delete();
+                            itemDetailViewModel.setTempUrl(itemDetailViewModel.getCurItem().getImgUrl());
+                        }
                         renderImage();
+                    }
+                }
+        );
+
+        photoLibraryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+
+                        if (result.getData() != null) {
+                            String imageUri = result.getData().getData().toString();
+                            itemDetailViewModel.setTempUrl(imageUri);
+                            itemDetailViewModel.getCurItem().setImgUrl(imageUri);
+                            renderImage();
+                        }
                     }
                 }
         );
@@ -182,7 +207,6 @@ public class ItemDetailFragment extends Fragment {
         binding.editTextName.clearFocus();
         binding.editTextDescription.clearFocus();
         if (!"".equals(itemDetailViewModel.getCurItem().getName())) {
-            // TODO need get date from text
             itemDetailViewModel.insertItem(itemDetailViewModel.getCurItem(), itemDetailViewModel.getAllLabelsAssociatedWithItem().getValue());
             Navigation.findNavController(view).popBackStack();
             Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
@@ -204,22 +228,37 @@ public class ItemDetailFragment extends Fragment {
         }
     }
 
-    public void launchCamera(View view) {
-        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // if doesn't work on emulator, get ride of this if
-        if (takePicIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            File photo = null;
-            try {
-                photo = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void launchCameraOrSelectFromGallery(View view) {
+        String[] availableMode = new String[]{"LIBRARY", "CAMERA"};
+        DialogFragment dialogFragment = new picSelectorDialogFragment(availableMode, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    Intent selectPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    photoLibraryLauncher.launch(selectPhoto);
+
+                } else if (i == 1) {
+                    Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // if doesn't work on emulator, get ride of this if
+                    if (takePicIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                        File photo = null;
+                        try {
+                            photo = createImageFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (photo != null) {
+                            Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
+                            takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                        }
+                        cameraLauncher.launch(takePicIntent);
+                    }
+                }
             }
-            if (photo != null) {
-                Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
-                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            }
-            cameraLauncher.launch(takePicIntent);
-        }
+        });
+        dialogFragment.show(getParentFragmentManager(), "picSelector");
+
+
     }
 
     private File createImageFile() throws IOException {
@@ -232,13 +271,15 @@ public class ItemDetailFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-        itemDetailViewModel.getCurItem().setImgUrl(image.getAbsolutePath());
+        itemDetailViewModel.setTempUrl(image.getAbsolutePath());
         // Save a file: path for use with ACTION_VIEW intents
         return image;
     }
 
     private void renderImage() {
-        String curItemPhotoUri = itemDetailViewModel.getCurItem().getImgUrl();
+        String curItemPhotoUri = itemDetailViewModel.getTempUrl();
+        Log.d("MyLog", "rendering image: "+curItemPhotoUri);
+        if (curItemPhotoUri.equals("")) return;
         Picasso.get()
                 .load(Uri.fromFile(new File(curItemPhotoUri)))
                 .fit()
