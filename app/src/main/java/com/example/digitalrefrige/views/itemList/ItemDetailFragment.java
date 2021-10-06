@@ -45,7 +45,11 @@ import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,20 +159,15 @@ public class ItemDetailFragment extends Fragment {
                         // TODO save image to storage
 
                         if (result.getResultCode() == RESULT_OK) {
-                            String curUrl = itemDetailViewModel.getCurItem().getImgUrl();
-                            // if the item doesn't has any pic before, remain empty
-                            if (!"".equals(curUrl)) new File(curUrl).delete();
                             itemDetailViewModel.getCurItem().setImgUrl(itemDetailViewModel.getTempUrl());
                         } else {
-                            // user cancel ope, delete current image file and restore image to previous one
-                            new File(itemDetailViewModel.getTempUrl()).delete();
+                            // user didn't take a photo
                             itemDetailViewModel.setTempUrl(itemDetailViewModel.getCurItem().getImgUrl());
                         }
                         renderImage();
                     }
                 }
         );
-
         photoLibraryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -176,9 +175,22 @@ public class ItemDetailFragment extends Fragment {
                     public void onActivityResult(ActivityResult result) {
 
                         if (result.getData() != null) {
-                            String imageUri = result.getData().getData().toString();
-                            itemDetailViewModel.setTempUrl(imageUri);
-                            itemDetailViewModel.getCurItem().setImgUrl(imageUri);
+                            // copy image from gallery in case user delete from gallery
+                            Uri uri = result.getData().getData();
+                            try {
+                                File photo = createImageFile();
+                                InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                                FileOutputStream os = new FileOutputStream(photo);
+                                copyStream(is, os);
+                                is.close();
+                                os.close();
+                                Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
+                                String imageUri = photoUri.toString();
+                                itemDetailViewModel.setTempUrl(imageUri);
+                                itemDetailViewModel.getCurItem().setImgUrl(imageUri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             renderImage();
                         }
                     }
@@ -280,7 +292,7 @@ public class ItemDetailFragment extends Fragment {
 
     private void renderImage() {
         String uri = itemDetailViewModel.getTempUrl();
-        Log.d("MyLog", "rendering image: "+uri);
+        Log.d("MyLog", "rendering image: " + uri);
         if (uri.equals("")) return;
         Picasso.get()
                 .load(Uri.parse(uri))
@@ -290,5 +302,14 @@ public class ItemDetailFragment extends Fragment {
     }
 
 
+    public static void copyStream(InputStream input, OutputStream output)
+            throws IOException {
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+    }
 
 }
