@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.PathUtils;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -249,6 +251,7 @@ public class ItemDetailFragment extends Fragment {
                         }
                         if (photo != null) {
                             Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
+                            itemDetailViewModel.setTempUrl(photoUri.toString());
                             takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                         }
                         cameraLauncher.launch(takePicIntent);
@@ -271,21 +274,21 @@ public class ItemDetailFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-        itemDetailViewModel.setTempUrl(image.getAbsolutePath());
         // Save a file: path for use with ACTION_VIEW intents
         return image;
     }
 
     private void renderImage() {
-        String curItemPhotoUri = itemDetailViewModel.getTempUrl();
-        Log.d("MyLog", "rendering image: "+curItemPhotoUri);
-        if (curItemPhotoUri.equals("")) return;
+        String uri = itemDetailViewModel.getTempUrl();
+        Log.d("MyLog", "rendering image: "+uri);
+        if (uri.equals("")) return;
         Picasso.get()
-                .load(Uri.fromFile(new File(curItemPhotoUri)))
+                .load(Uri.parse(uri))
                 .fit()
                 .centerCrop()
                 .into(binding.imageViewItem);
     }
+
 
 
 }

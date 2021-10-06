@@ -102,7 +102,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             String uri = item.getImgUrl();
             if (uri != null && !uri.equals("")) {
                 Picasso.get()
-                        .load(Uri.fromFile(new File(uri)))
+                        .load(Uri.parse(uri))
                         .fit()
                         .centerCrop()
                         .into(itemImage);
