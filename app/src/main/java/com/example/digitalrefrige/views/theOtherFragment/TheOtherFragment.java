@@ -1,10 +1,14 @@
 package com.example.digitalrefrige.views.theOtherFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,10 @@ import com.example.digitalrefrige.viewModel.ItemListViewModel;
 import com.example.digitalrefrige.viewModel.LabelListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
+import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
+import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
+import com.example.digitalrefrige.views.labelList.LabelListFragment;
+import com.example.digitalrefrige.views.login.LoginFragment;
 
 import java.util.List;
 
@@ -39,36 +47,20 @@ public class TheOtherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        labelListViewModel = new ViewModelProvider(requireActivity()).get(LabelListViewModel.class);
+
         binding = FragmentTheOtherBinding.inflate(inflater, container, false);
-        RecyclerView labelListRecyclerView = binding.labelListRecyclerView;
-        labelListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        labelListRecyclerView.setHasFixedSize(true);
-        final LabelListAdapter labelListAdapter = new LabelListAdapter();
-        labelListRecyclerView.setAdapter(labelListAdapter);
-
-
-        // inject viewModel and start observing
-
-        labelListViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
+        // button to label list
+        binding.labelListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(List<Label> label) {
-                labelListAdapter.submitList(label);
+            public void onClick(View view) {
+                NavDirections action = TheOtherFragmentDirections.actionNavigationTheOtherToLabelListFragment();
+                Navigation.findNavController(view).navigate(action);
             }
         });
-
-        labelListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<LabelWithItems>>() {
-            @Override
-            public void onChanged(List<LabelWithItems> labelWithItems) {
-
-            }
-        });
-
-
-
 
         return binding.getRoot();
 
     }
+
 
 }

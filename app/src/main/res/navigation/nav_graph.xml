@@ -9,15 +9,14 @@
         android:id="@+id/navigation_item_list"
         android:name="com.example.digitalrefrige.views.itemList.ItemListFragment"
         android:label="fragment_item_list"
-        tools:layout="@layout/fragment_item_list" >
+        tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailFragment"
             app:destination="@id/itemDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            />
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -35,7 +34,11 @@
         android:id="@+id/navigation_the_other"
         android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
         android:label="fragment_the_other"
-        tools:layout="@layout/fragment_the_other" />
+        tools:layout="@layout/fragment_the_other" >
+        <action
+            android:id="@+id/action_navigation_the_other_to_labelListFragment"
+            app:destination="@id/labelListFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_login"
@@ -55,8 +58,11 @@
         android:name="com.example.digitalrefrige.views.login.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" />
-
-
+    <fragment
+        android:id="@+id/labelListFragment"
+        android:name="com.example.digitalrefrige.views.labelList.LabelListFragment"
+        android:label="fragment_label_list"
+        tools:layout="@layout/fragment_label_list" />
 
 
 </navigation>
