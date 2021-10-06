@@ -58,6 +58,7 @@
         android:name="com.example.digitalrefrige.views.login.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" />
+
     <fragment
         android:id="@+id/labelListFragment"
         android:name="com.example.digitalrefrige.views.labelList.LabelListFragment"
