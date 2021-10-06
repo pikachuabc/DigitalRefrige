@@ -1,53 +1,41 @@
 package com.example.digitalrefrige;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
+
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Switch;
-import android.widget.Toast;
 
-import com.example.digitalrefrige.R;
+import android.view.View;
+
+
 import com.example.digitalrefrige.databinding.ActivityMainBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.viewModel.ItemListViewModel;
+
+
+import java.util.Calendar;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    //Notification Channel id
-    private final String CHANNEL_ID = "expiry";
 
     private ActivityMainBinding binding;
+    private ItemListViewModel itemListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +55,36 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Notification
-        int notificationId = 7;
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
-        createNotificationChannel();
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_document)
-                .setContentTitle("Expiring")
-                .setContentText("Apple in 10 days")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notificationId, builder.build());
+//        int notificationId = 7;
+//        Intent intent = new Intent(this, MainActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
+//        createNotificationChannel();
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.ic_document)
+//                .setContentTitle("Expiring")
+//                .setContentText("Apple in 10 days")
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                .setContentIntent(pendingIntent)
+//                .setAutoCancel(true);
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        notificationManager.notify(notificationId, builder.build());
+
+        itemListViewModel = new ViewModelProvider(MainActivity.this).get(ItemListViewModel.class);
+        LiveData<List<Item>> newList = itemListViewModel.getAllItems();
+        if(newList.getValue()!=null){
+            for(Item i:newList.getValue()){
+                System.out.println("EXP:"+i.getExpireDate().toString());
+            }
+        }
 
 
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Long secondsNextMorning = getSecondsNext(9, 0);
+        Intent intentMorning = new Intent(this,AlarmBroadcastReceiver.class);
+        intentMorning.setAction("CLOCK_IN");
+        PendingIntent piMorning = PendingIntent.getBroadcast(this, 0, intentMorning, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+secondsNextMorning,piMorning);
 
     }
 
@@ -102,20 +103,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
+    //get time difference between current time and assigned time
+    private Long getSecondsNext(int hour,int minute) {
+        long systemTime = System.currentTimeMillis();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        long selectTime = calendar.getTimeInMillis();
+        if(systemTime > selectTime) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            selectTime = calendar.getTimeInMillis();
+        }
+
+        return selectTime - systemTime;
+    }
 }
