@@ -30,6 +30,7 @@ import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -164,6 +165,13 @@ public class ItemListFragment extends Fragment {
 
             }
         });
+        binding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                binding.refreshList.setEnabled(verticalOffset == 0);
+            }
+        });
+
         binding.refreshList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
