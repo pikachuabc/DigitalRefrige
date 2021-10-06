@@ -104,6 +104,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
                 Picasso.get()
                         .load(Uri.parse(uri))
                         .fit()
+                        .rotate(90)
                         .centerCrop()
                         .into(itemImage);
             }
