@@ -17,7 +17,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        if(intent.getAction().equals("CLOCK_IN")) {
+        if(intent.getAction().equals("NOTIFY")) {
             Intent mIntent = new Intent(context, MainActivity.class);
             PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
             createNotificationChannel();
@@ -25,7 +25,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context,CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_document)
                     .setContentTitle("Expiring")
-                    .setContentText("Apple in 999 days")
+                    .setContentText("You have expiring item(s)")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(mPendingIntent)
                     .setAutoCancel(true);
