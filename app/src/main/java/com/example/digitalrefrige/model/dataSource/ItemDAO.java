@@ -28,4 +28,10 @@ public interface ItemDAO {
     @Query("select * from item_table where itemId=:id")
     Item findItemById(long id);
 
+    @Query("select * from item_table where julianday(date(expireDate/1000, 'unixepoch'))-julianday('now') between 0 and :interval")
+    List<Item> getExpiringItems(int interval);
+
+    @Query("select * from item_table where julianday(date(expireDate/1000, 'unixepoch'))-julianday('now')<0")
+    List<Item> getExpiredItems();
+
 }

@@ -3,8 +3,6 @@ package com.example.digitalrefrige;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -22,12 +20,11 @@ import android.view.View;
 
 
 import com.example.digitalrefrige.databinding.ActivityMainBinding;
-import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.services.AlarmBroadcastReceiver;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
 
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        Intent alarmIntent = new Intent(this,AlarmBroadcastReceiver.class);
+        Intent alarmIntent = new Intent(this, AlarmBroadcastReceiver.class);
         alarmIntent.setAction("NOTIFY");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);

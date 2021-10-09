@@ -33,6 +33,24 @@ public class ItemRepository {
     public LiveData<List<Item>> getAllItems() {
         return allItems;
     }
+    public List<Item> getExpiringItems(int interval) {
+        Future<List<Item>> exp = executorService.submit(() -> itemDAO.getExpiringItems(interval));
+        try {
+            return exp.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public List<Item> getExpiredItems() {
+        Future<List<Item>> exp = executorService.submit(() -> itemDAO.getExpiredItems());
+        try {
+            return exp.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public long insertItem(Item item) {
         Future<Long> insertRes = executorService.submit(() -> itemDAO.insertItem(item));
