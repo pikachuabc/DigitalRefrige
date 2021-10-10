@@ -53,7 +53,7 @@ public class LabelSelectorDialogFragment extends DialogFragment {
                 checkStatus[i] = true;
             }
         }
-        builder.setTitle("select label to filter").setMultiChoiceItems(allLabelStr, checkStatus, new DialogInterface.OnMultiChoiceClickListener() {
+            builder.setTitle("select label to filter").setMultiChoiceItems(allLabelStr, checkStatus, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                 if (b) {

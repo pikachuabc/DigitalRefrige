@@ -10,12 +10,14 @@ import java.util.Objects;
  */
 @Entity(tableName = "label_table")
 public class Label {
+    public static Label NONE_LABEL = new Label("UNDEFINED");
+
     @PrimaryKey(autoGenerate = true)
     private long labelId;
 
     private String title;
 
-    public Label(String title){
+    public Label(String title) {
         this.title = title;
     }
 
@@ -23,7 +25,7 @@ public class Label {
         this.title = title;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return this.title;
     }
 
@@ -55,4 +57,5 @@ public class Label {
                 ", title='" + title + '\'' +
                 '}';
     }
+
 }
