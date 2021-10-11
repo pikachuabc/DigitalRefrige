@@ -57,9 +57,10 @@ public class UserProfileFragment extends Fragment {
         if (user != null) {
             showProfileInfo(user);
         } else {
-            // navigate to login
-            // Navigation.findNavController(view).navigate(R.id.navigation_login);
+            // show button which navigate to login
             goLogin();
+            binding.backUpStorage.setOnClickListener(button ->
+                    Toast.makeText(getContext(), "login first", Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -80,13 +81,11 @@ public class UserProfileFragment extends Fragment {
                 .centerCrop()
                 .into(avatar);
         avatarLp.gravity = Gravity.CENTER;
-        //avatarLp.setMargins(28, 48, 0, 0);
 
         LayoutParams emailLp = new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         emailLp.gravity = Gravity.CENTER;
         email.setText(user.getEmail());
-        email.setFontFeatureSettings("bold");
 
         userProfileStatus.addView(avatar, avatarLp);
         userProfileStatus.addView(email, emailLp);
@@ -99,7 +98,7 @@ public class UserProfileFragment extends Fragment {
             Toast.makeText(getContext(), "sign out successfully", Toast.LENGTH_LONG).show();
             userProfileViewModel.mAuth.signOut();
             userProfileViewModel.mGoogleSignInClient.signOut();
-            // navigate to loginFragment after logout
+            // navigate to this Fragment after logout
             Navigation.findNavController(view).navigate(R.id.navigation_profile);
         });
 
