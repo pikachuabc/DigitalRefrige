@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.digitalrefrige.R;
+import com.example.digitalrefrige.utils.Converters;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class NfcActivity extends AppCompatActivity {
                 long dayDifferences = calDateDifferenceWithCurrent(payload.substring(3));
                 System.out.println("CheckNFC: "+payload);
                 nfcTextView = findViewById(R.id.nfc_textview);
-                nfcTextView.setText("The item is expiring in "+ Long.toString(dayDifferences)+" days");
+                nfcTextView.setText("The item is expiring in "+ Long.toString(dayDifferences)+" days\n"+payload.substring(3));
 
 
             }
@@ -49,21 +50,27 @@ public class NfcActivity extends AppCompatActivity {
     }
 
     private long calDateDifferenceWithCurrent(String selectDateString){
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-            Date selectDate = simpleDateFormat.parse(selectDateString);
-            Date currentDate = new Date();
-            long differenceInTime = selectDate.getTime() - currentDate.getTime();
-            long difference_In_Days
-                    = TimeUnit
-                    .MILLISECONDS
-                    .toDays(differenceInTime)
-                    % 365;
-            return difference_In_Days;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
+//        try {
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+//            Date selectDate = simpleDateFormat.parse(selectDateString);
+//            Date currentDate = new Date();
+//            long differenceInTime = selectDate.getTime() - currentDate.getTime();
+//            long difference_In_Days
+//                    = TimeUnit
+//                    .MILLISECONDS
+//                    .toDays(differenceInTime)
+//                    % 365;
+//            return difference_In_Days;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return 0;
+//        }
+
+        Date selectDate = Converters.strToDate(selectDateString);
+        Date currentDate = new Date();
+        long differenceInTime = selectDate.getTime() - currentDate.getTime();
+        long difference_In_Days = TimeUnit.MILLISECONDS.toDays(differenceInTime) % 365;
+        return difference_In_Days;
 
     }
 
