@@ -3,10 +3,13 @@ package com.example.digitalrefrige.viewModel.adapters;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
@@ -20,9 +23,10 @@ import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolder> {
-
 
     /**
      * callBack configuration to decide if there are changes at current index position in  the
@@ -40,7 +44,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
             return oldItem.getName().equals(newItem.getName()) &&
                     oldItem.getDescription().equals(newItem.getDescription()) &&
-                    oldItem.getCreateDate().equals(newItem.getCreateDate()) &&
+                    oldItem.getExpireDate().equals(newItem.getExpireDate()) &&
                     oldItem.getImgUrl().equals(newItem.getImgUrl());
         }
     };
@@ -69,7 +73,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
     class ItemHolder extends RecyclerView.ViewHolder {
         private TextView textViewName;
         private TextView textViewDescription;
-        private TextView createDate;
+        private TextView expireDate;
         private ImageView itemImage;
         private long itemID;
 
@@ -77,7 +81,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             super(binding.getRoot());
             textViewName = binding.textViewTitle;
             textViewDescription = binding.textViewDescription;
-            createDate = binding.textViewCreateDate;
+            expireDate = binding.textViewExpireDate;
             itemImage = binding.imageViewFoodPhoto;
 
             binding.getRoot().setOnClickListener(view -> {
@@ -93,18 +97,24 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             // bond item content into to this holder
             textViewName.setText(item.getName());
             textViewDescription.setText(item.getDescription());
-            createDate.setText(Converters.dateToString(item.getCreateDate()));
+            expireDate.setText(Converters.dateToString(item.getExpireDate()));
             itemID = item.getItemId();
             String uri = item.getImgUrl();
             if (uri != null && !uri.equals("")) {
                 Picasso.get()
-                        .load(Uri.fromFile(new File(uri)))
+                        .load(Uri.parse(uri))
                         .fit()
+                        .rotate(90)
                         .centerCrop()
                         .into(itemImage);
             }
         }
 
+    }
+
+    @Override
+    public void submitList(@Nullable List<Item> list) {
+        super.submitList(list);
     }
 }
 

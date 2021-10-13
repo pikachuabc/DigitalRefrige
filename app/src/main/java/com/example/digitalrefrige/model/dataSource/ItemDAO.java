@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface ItemDAO {
-    @Query("select * from item_table order by createDate")
+    @Query("select * from item_table order by expireDate")
     LiveData<List<Item>> getAllItems();
 
     @Insert
