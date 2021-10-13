@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="80dp"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:contentInsetStart="8dp">
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,6 @@
                             android:id="@+id/label_picker_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="Label"/>
@@ -43,22 +42,69 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:iconifiedByDefault="false"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/label_picker_button"
                             app:layout_constraintTop_toTopOf="parent"
                             app:queryBackground="@android:color/transparent"
                             app:queryHint="search anything..." />
+
+                        <Button
+                            android:id="@+id/button_all"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:text="All" />
+
+                        <Button
+                            android:id="@+id/button_expiring"
+                            android:layout_width="106dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="expiring" />
+
+                        <Button
+                            android:id="@+id/button_expired"
+                            android:layout_width="106dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:text="expired" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
 
+
+<!--            <Button-->
+<!--                android:id="@+id/button_add"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:layout_marginTop="50dp"-->
+<!--                android:background="@drawable/ic_oval"-->
+<!--                android:fontFamily="More Fonts..."-->
+<!--                android:text="@string/add_new_item"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.501"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />-->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/item_list_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 tools:listitem="@layout/item_card" />
 
