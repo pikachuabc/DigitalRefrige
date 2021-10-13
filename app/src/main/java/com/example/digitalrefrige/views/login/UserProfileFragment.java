@@ -1,12 +1,15 @@
 package com.example.digitalrefrige.views.login;
 
 import android.media.Image;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.compose.ui.layout.LayoutIdParentData;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +19,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,15 +33,29 @@ import android.widget.Toast;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentUserProfileBinding;
+import com.example.digitalrefrige.model.dataHolder.Item;
+import com.example.digitalrefrige.model.dataHolder.Label;
+import com.example.digitalrefrige.model.dataSource.ItemDAO;
+import com.example.digitalrefrige.model.dataSource.LocalDataBase;
 import com.example.digitalrefrige.viewModel.UserProfileViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class UserProfileFragment extends Fragment {
 
     private FragmentUserProfileBinding binding;
     public UserProfileViewModel userProfileViewModel;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -56,6 +74,8 @@ public class UserProfileFragment extends Fragment {
         FirebaseUser user = userProfileViewModel.mAuth.getCurrentUser();
         if (user != null) {
             showProfileInfo(user);
+            System.out.println("having user...");
+            binding.backUpStorage.setOnClickListener(button -> storeData());
         } else {
             // show button which navigate to login
             goLogin();
@@ -121,4 +141,32 @@ public class UserProfileFragment extends Fragment {
         userProfileStatus.addView(signInsignUp, lp);
 
     }
+
+
+
+    public void storeData() {
+
+        LiveData<List<Item>> list = LocalDataBase.getInstance(getContext()).itemDAO().getAllItems();
+
+        list.observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+            @Override
+            public void onChanged(List<Item> items) {
+
+                for(Item i: items){
+                    db.collection("item_table")
+                            .document(i.getName())
+                            .set(i);
+                }
+            }
+        });
+
+
+
+
+
+    }
+
+
+
+
 }
