@@ -50,13 +50,6 @@ public class TheOtherFragment extends Fragment {
 
         binding = FragmentTheOtherBinding.inflate(inflater, container, false);
         // button to label list
-        binding.labelListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavDirections action = TheOtherFragmentDirections.actionNavigationTheOtherToLabelListFragment();
-                Navigation.findNavController(view).navigate(action);
-            }
-        });
 
         return binding.getRoot();
 

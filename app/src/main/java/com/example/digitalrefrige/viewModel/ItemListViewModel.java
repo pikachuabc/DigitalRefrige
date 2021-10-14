@@ -33,11 +33,32 @@ public class ItemListViewModel extends ViewModel implements Filterable {
     private LabelRepository labelRepository;
     private ItemLabelCrossRefRepository itemLabelCrossRefRepository;
 
+    /**
+     * items liveData from database for observing instant change from database
+     * and change recyclerview accordingly
+     */
     private LiveData<List<Item>> allItems;
+
+    /**
+     * labels liveData from database for observing instant change from database
+     * and change recyclerview accordingly
+     */
     private LiveData<List<Label>> allLabels;
+
+    /**
+     * items labels relationships from database for filtering and recyclerview updating
+     */
     private LiveData<List<ItemWithLabels>> allItemsWithLabels;
 
+    /**
+     * labels current selected
+     */
     private List<Label> curSelectedLabel;
+
+
+    /**
+     * actual item list(filtered) shown in the recyclerview
+     */
     private MutableLiveData<List<Item>> filteredItems;
 
     private Filter itemFilter = new Filter() {
@@ -66,7 +87,6 @@ public class ItemListViewModel extends ViewModel implements Filterable {
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             if (filterResults == null) return;
-            Object res = filterResults.values;
             updateFilteredItemList((List) filterResults.values);
         }
     };
@@ -105,6 +125,9 @@ public class ItemListViewModel extends ViewModel implements Filterable {
             tempMap.put(curItemWithLabels.item, curItemWithLabels.labels);
         }
         List<Label> labelsOfCurItem = tempMap.get(item);
+        // handle items with no labels
+        if (labelsOfCurItem.size()==0 && curSelectedLabel.contains(Label.NONE_LABEL)) return true;
+
         for (Label label : labelsOfCurItem) {
             if (curSelectedLabel.contains(label)) {
                 return true;

@@ -60,7 +60,8 @@ public class ItemListFragment extends Fragment {
         ((MainActivity) getActivity()).mainBottomBar(true);
         // config adapter for the recyclerView
         RecyclerView itemListRecyclerView = binding.itemListRecyclerView;
-        itemListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        itemListRecyclerView.setLayoutManager(layoutManager);
         itemListRecyclerView.setHasFixedSize(true);
         final ItemListAdapter itemListAdapter = new ItemListAdapter();
         itemListRecyclerView.setAdapter(itemListAdapter);
@@ -100,8 +101,12 @@ public class ItemListFragment extends Fragment {
         itemListViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
             @Override
             public void onChanged(List<Label> labels) {
+                // TODO supposed to merge change into current selected
                 if (itemListViewModel.getCurSelectedLabel().size() == 0) {
-                    itemListViewModel.setCurSelectedLabel(new ArrayList<>(labels));
+                    List<Label> temp = new ArrayList<>();
+                    temp.add(Label.NONE_LABEL);
+                    temp.addAll(labels);
+                    itemListViewModel.setCurSelectedLabel(temp);
                 } else {
                     refreshItemList();
                 }
@@ -142,7 +147,9 @@ public class ItemListFragment extends Fragment {
         binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Label> allLabels = new ArrayList<>(itemListViewModel.getAllLabels().getValue());
+                List<Label> allLabels = new ArrayList<>();
+                allLabels.add(Label.NONE_LABEL);
+                allLabels.addAll(itemListViewModel.getAllLabels().getValue());
                 List<Label> curSelected = new ArrayList<>(itemListViewModel.getCurSelectedLabel());
                 DialogFragment dialog = new LabelSelectorDialogFragment(allLabels, curSelected, new LabelSelectorDialogFragment.OnLabelsChosenListener() {
                     @Override
@@ -160,9 +167,7 @@ public class ItemListFragment extends Fragment {
         itemListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                int topRowVerticalPosition = recyclerView.getChildCount() == 0 ? 0 : recyclerView.getChildAt(0).getTop();
-                binding.refreshList.setEnabled(topRowVerticalPosition >= 0);
-
+                binding.refreshList.setEnabled(layoutManager.findFirstCompletelyVisibleItemPosition() == 0);
             }
         });
         binding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
