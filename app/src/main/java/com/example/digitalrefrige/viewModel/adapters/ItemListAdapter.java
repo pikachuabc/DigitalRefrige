@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.utils.Converters;
@@ -104,9 +105,10 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
                 Picasso.get()
                         .load(Uri.parse(uri))
                         .fit()
-                        .rotate(90)
                         .centerCrop()
                         .into(itemImage);
+            }else{
+                Picasso.get().load(R.drawable.img_4857).into(itemImage);
             }
         }
 
