@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.nfc.FormatException;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -35,12 +37,15 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.FragmentItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Label;
+import com.example.digitalrefrige.utils.NfcUtils;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.example.digitalrefrige.views.common.WriteNfcDialog;
 import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
 import com.squareup.picasso.Picasso;
 
@@ -115,6 +120,7 @@ public class ItemDetailFragment extends Fragment {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
             binding.buttonAdd.setOnClickListener(this::onAddButtonClicked);
+            binding.nfcTrigger.setOnClickListener(this::onNfcButtonClicked);
         } else {
             // render item image if exist
             String curItemPhotoUri = itemDetailViewModel.getCurItem().getImgUrl();
@@ -125,6 +131,7 @@ public class ItemDetailFragment extends Fragment {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+            binding.nfcTrigger.setOnClickListener(this::onNfcButtonClicked);
         }
 
         binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
@@ -240,6 +247,10 @@ public class ItemDetailFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Need item name", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void onNfcButtonClicked(View view) {
+        new WriteNfcDialog().show(getParentFragmentManager(),"writedialog");
     }
 
     public void launchCameraOrSelectFromGallery(View view) {
