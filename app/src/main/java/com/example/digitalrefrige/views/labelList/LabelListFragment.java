@@ -1,12 +1,14 @@
 package com.example.digitalrefrige.views.labelList;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,11 +26,13 @@ import com.example.digitalrefrige.viewModel.LabelListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.itemList.ItemDetailFragmentArgs;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class LabelListFragment extends Fragment {
     public LabelListViewModel labelListViewModel;
     private FragmentLabelListBinding binding;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,16 +54,13 @@ public class LabelListFragment extends Fragment {
         labelListViewModel.getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
             @Override
             public void onChanged(List<Label> label) {
+                Log.d(String.valueOf(label.size()),"dddd");
                 labelListAdapter.submitList(label);
-            }
-        });
-
-        labelListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<LabelWithItems>>() {
-            @Override
-            public void onChanged(List<LabelWithItems> labelWithItems) {
 
             }
         });
+
+
 
         // enable swipe delete on our recyclerView
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -90,6 +91,7 @@ public class LabelListFragment extends Fragment {
         }else{
             Toast.makeText(getContext(), "label added", Toast.LENGTH_SHORT).show();
         }
+
     }
 
 }
