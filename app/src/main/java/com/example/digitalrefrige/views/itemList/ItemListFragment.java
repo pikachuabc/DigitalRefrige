@@ -1,9 +1,6 @@
 package com.example.digitalrefrige.views.itemList;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +53,7 @@ public class ItemListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         binding = FragmentItemListBinding.inflate(inflater, container, false);
-        // set main nav bar visible
-        ((MainActivity) getActivity()).mainBottomBar(true);
+
         // config adapter for the recyclerView
         RecyclerView itemListRecyclerView = binding.itemListRecyclerView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
@@ -139,7 +135,7 @@ public class ItemListFragment extends Fragment {
         binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(ItemDetailFragment.CREATE_NEW_ITEM);
+                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
                 Navigation.findNavController(view).navigate(directions);
             }
         });
