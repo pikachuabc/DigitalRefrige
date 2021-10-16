@@ -8,11 +8,10 @@ import com.example.digitalrefrige.model.ItemLabelCrossRefRepository;
 import com.example.digitalrefrige.model.ItemRepository;
 import com.example.digitalrefrige.model.LabelRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
-import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.utils.Converters;
-import com.example.digitalrefrige.views.itemList.ItemDetailFragment;
+import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,7 +44,7 @@ public class ItemDetailViewModel extends ViewModel {
     }
 
     public void bindWithItem(long id) {
-        if (id == ItemDetailFragment.CREATE_NEW_ITEM) {
+        if (id == ItemDetailActivity.CREATE_NEW_ITEM) {
             // we are adding a new item thus need a holder
             curItem = new Item("", "", Calendar.getInstance().getTime(), "");
             labelsAssociatedWithCurItem = new MutableLiveData<>(new ArrayList<>());

@@ -24,7 +24,6 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.LabelWithItems;
 import com.example.digitalrefrige.viewModel.LabelListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
-import com.example.digitalrefrige.views.itemList.ItemDetailFragmentArgs;
 
 import java.util.Arrays;
 import java.util.List;

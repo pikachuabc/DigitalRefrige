@@ -11,7 +11,7 @@
         android:label="fragment_item_list"
         tools:layout="@layout/fragment_item_list">
         <action
-            android:id="@+id/action_itemListFragment_to_itemDetailFragment"
+            android:id="@+id/action_itemListFragment_to_itemDetailActivity"
             app:destination="@id/itemDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -19,15 +19,15 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
-    <fragment
+    <activity
         android:id="@+id/itemDetailFragment"
-        android:name="com.example.digitalrefrige.views.itemList.ItemDetailFragment"
+        android:name="com.example.digitalrefrige.views.itemList.ItemDetailActivity"
         android:label="fragment_item_detail"
-        tools:layout="@layout/fragment_item_detail" >
+        tools:layout="@layout/activity_item_detail" >
         <argument
             android:name="itemID"
             app:argType="long" />
-    </fragment>
+    </activity>
 
 
     <fragment
