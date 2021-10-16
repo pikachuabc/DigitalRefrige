@@ -322,7 +322,7 @@ public class ItemDetailFragment extends Fragment {
 
     private void renderImage() {
         String uri = itemDetailViewModel.getTempUrl();
-        Log.d("MyLog", "rendering image: " + uri);
+        //Log.d("MyLog", "rendering image: " + uri);
         if (uri.equals("")) return;
         Picasso.get()
                 .load(Uri.parse(uri))
