@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Converters {
     @TypeConverter
@@ -43,17 +45,32 @@ public class Converters {
 
     @InverseMethod("strToQuantity")
     public static String quantityToStr(int quantity) {
-        Log.d("Converters","get "+quantity);
+//        Log.d("Converters","get "+quantity);
         return quantity + "";
     }
 
     public static int strToQuantity(String quantity) {
-        Log.d("Converters","set "+quantity);
+//        Log.d("Converters","set "+quantity);
         try {
+            quantity = replaceBlank(quantity);
             return Integer.parseInt(quantity);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         return 0;
     }
+
+
+    public static String replaceBlank(String str) {
+            String dest = "";
+            if (str!=null) {
+                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+                Matcher m = p.matcher(str);
+                dest = m.replaceAll("");
+            }
+            return dest;
+        }
+
+
+
 }

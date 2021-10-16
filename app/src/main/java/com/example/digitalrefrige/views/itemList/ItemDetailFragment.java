@@ -170,7 +170,7 @@ public class ItemDetailFragment extends Fragment {
 
 
         int curNum = itemDetailViewModel.getCurItem().getQuantity();
-        Log.d("check", curNum + "");
+
         if (curNum < 100) {
             itemDetailViewModel.getCurItem().setQuantity(curNum + 1);
         } else {
