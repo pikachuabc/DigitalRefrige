@@ -40,4 +40,16 @@ public class Converters {
         return new Date();
     }
 
+    public static String quantityToStr(int quantity){
+        return quantity+"";
+    }
+
+    public static int strToQuantity(String quantity){
+        try{
+            return Integer.parseInt(quantity);
+        } catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

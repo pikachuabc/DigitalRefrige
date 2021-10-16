@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +95,7 @@ public class ItemDetailFragment extends Fragment {
         itemDetailViewModel.bindWithItem(itemId);
         binding.setItemDetailViewModel(itemDetailViewModel);
 
+
         itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
             @Override
             public void onChanged(List<Label> labels) {
@@ -109,6 +112,8 @@ public class ItemDetailFragment extends Fragment {
         // set button listener
         binding.timePickerButton.setOnClickListener(this::showTimePickerDialog);
         binding.buttonCamera.setOnClickListener(this::launchCameraOrSelectFromGallery);
+        binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
+        binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
 
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
@@ -125,6 +130,7 @@ public class ItemDetailFragment extends Fragment {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+
         }
 
         binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +152,30 @@ public class ItemDetailFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    private void onMinusNumberButtonClicked(View view) {
+
+        int curNum = itemDetailViewModel.getCurItem().getQuantity();
+        if(curNum > 1){
+            itemDetailViewModel.getCurItem().setQuantity(curNum-1);
+        }else{
+            Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void onAddNumberButtonClicked(View view) {
+
+
+        int curNum = itemDetailViewModel.getCurItem().getQuantity();
+        Log.d("check",curNum+"");
+        if(curNum < 100){
+
+            itemDetailViewModel.getCurItem().setQuantity(curNum+1);
+        }else{
+            Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -113,4 +113,11 @@ public class ItemDetailViewModel extends ViewModel {
         return labelsAssociatedWithCurItem;
 
     }
+    public String getQuantityStr(){
+        return Converters.quantityToStr(curItem.getQuantity());
+    }
+    public void setQuantityStr(String quantityStr){
+        curItem.setQuantity(Converters.strToQuantity(quantityStr));
+    }
+
 }
