@@ -58,6 +58,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the  factory method to
@@ -78,6 +80,52 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        // TODO save image to storage
+
+                        if (result.getResultCode() == RESULT_OK) {
+                            itemDetailViewModel.getCurItem().setImgUrl(itemDetailViewModel.getTempUrl());
+                        } else {
+                            // user didn't take a photo
+                            itemDetailViewModel.setTempUrl(itemDetailViewModel.getCurItem().getImgUrl());
+                        }
+                        renderImage();
+                    }
+                }
+        );
+        photoLibraryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+
+                        if (result.getData() != null) {
+                            // copy image from gallery in case user delete from gallery
+                            Uri uri = result.getData().getData();
+                            try {
+                                File photo = createImageFile();
+                                InputStream is = getContentResolver().openInputStream(uri);
+                                FileOutputStream os = new FileOutputStream(photo);
+                                copyStream(is, os);
+                                is.close();
+                                os.close();
+                                Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.digitalrefrige.fileprovider", photo);
+                                String imageUri = photoUri.toString();
+                                itemDetailViewModel.setTempUrl(imageUri);
+                                itemDetailViewModel.getCurItem().setImgUrl(imageUri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            renderImage();
+                        }
+                    }
+                }
+        );
 
         // Inflate the layout for this activity
         binding = ActivityItemDetailBinding.inflate(getLayoutInflater());
@@ -129,7 +177,6 @@ public class ItemDetailActivity extends AppCompatActivity {
                     }
                 }
         );
-
 
 
         // config adapter for the recyclerView
@@ -199,7 +246,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             }
         });
 
-        return binding.getRoot();
     }
 
     private void onMinusNumberButtonClicked(View view) {
@@ -209,7 +255,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         if (curNum > 1) {
             itemDetailViewModel.getCurItem().setQuantity(curNum - 1);
         } else {
-            Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "invalid quantity", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -222,59 +268,10 @@ public class ItemDetailActivity extends AppCompatActivity {
         if (curNum < 100) {
             itemDetailViewModel.getCurItem().setQuantity(curNum + 1);
         } else {
-            Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "invalid quantity", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        // TODO save image to storage
-
-                        if (result.getResultCode() == RESULT_OK) {
-                            itemDetailViewModel.getCurItem().setImgUrl(itemDetailViewModel.getTempUrl());
-                        } else {
-                            // user didn't take a photo
-                            itemDetailViewModel.setTempUrl(itemDetailViewModel.getCurItem().getImgUrl());
-                        }
-                        renderImage();
-                    }
-                }
-        );
-        photoLibraryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-
-                        if (result.getData() != null) {
-                            // copy image from gallery in case user delete from gallery
-                            Uri uri = result.getData().getData();
-                            try {
-                                File photo = createImageFile();
-                                InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                                FileOutputStream os = new FileOutputStream(photo);
-                                copyStream(is, os);
-                                is.close();
-                                os.close();
-                                Uri photoUri = FileProvider.getUriForFile(getContext(), "com.example.digitalrefrige.fileprovider", photo);
-                                String imageUri = photoUri.toString();
-                                itemDetailViewModel.setTempUrl(imageUri);
-                                itemDetailViewModel.getCurItem().setImgUrl(imageUri);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            renderImage();
-                        }
-                    }
-                }
-        );
-    }
 
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment(new DatePickerDialog.OnDateSetListener() {
