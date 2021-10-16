@@ -1,5 +1,6 @@
 package com.example.digitalrefrige.utils;
 
+import android.util.Log;
 import android.widget.EditText;
 
 import androidx.databinding.InverseMethod;
@@ -40,14 +41,17 @@ public class Converters {
         return new Date();
     }
 
-    public static String quantityToStr(int quantity){
-        return quantity+"";
+    @InverseMethod("strToQuantity")
+    public static String quantityToStr(int quantity) {
+        Log.d("Converters","get "+quantity);
+        return quantity + "";
     }
 
-    public static int strToQuantity(String quantity){
-        try{
+    public static int strToQuantity(String quantity) {
+        Log.d("Converters","set "+quantity);
+        try {
             return Integer.parseInt(quantity);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         return 0;
