@@ -5,6 +5,7 @@
 
     <data>
 
+        <import type="com.example.digitalrefrige.utils.Converters" />
         <variable
             name="itemDetailViewModel"
             type="com.example.digitalrefrige.viewModel.ItemDetailViewModel" />
@@ -171,11 +172,8 @@
                     android:id="@+id/quantityNum"
                     android:layout_width="102dp"
                     android:layout_height="41dp"
-                    android:autoText="true"
                     android:ems="10"
-
-                    android:inputType="number"
-                    android:text="@={itemDetailViewModel.quantityStr}"
+                    android:text="@={Converters.quantityToStr(itemDetailViewModel.curItem.quantity)}"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
                     app:layout_constraintEnd_toStartOf="@+id/add_num_button"
                     app:layout_constraintHorizontal_bias="0.486"

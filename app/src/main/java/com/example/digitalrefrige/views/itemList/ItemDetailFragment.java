@@ -157,9 +157,10 @@ public class ItemDetailFragment extends Fragment {
     private void onMinusNumberButtonClicked(View view) {
 
         int curNum = itemDetailViewModel.getCurItem().getQuantity();
-        if(curNum > 1){
-            itemDetailViewModel.getCurItem().setQuantity(curNum-1);
-        }else{
+
+        if (curNum > 1) {
+            itemDetailViewModel.getCurItem().setQuantity(curNum - 1);
+        } else {
             Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
         }
 
@@ -169,11 +170,10 @@ public class ItemDetailFragment extends Fragment {
 
 
         int curNum = itemDetailViewModel.getCurItem().getQuantity();
-        Log.d("check",curNum+"");
-        if(curNum < 100){
-
-            itemDetailViewModel.getCurItem().setQuantity(curNum+1);
-        }else{
+        Log.d("check", curNum + "");
+        if (curNum < 100) {
+            itemDetailViewModel.getCurItem().setQuantity(curNum + 1);
+        } else {
             Toast.makeText(getContext(), "invalid quantity", Toast.LENGTH_SHORT).show();
         }
     }

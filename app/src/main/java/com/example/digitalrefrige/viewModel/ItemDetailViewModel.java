@@ -1,5 +1,7 @@
 package com.example.digitalrefrige.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -112,12 +114,6 @@ public class ItemDetailViewModel extends ViewModel {
     public MutableLiveData<List<Label>> getAllLabelsAssociatedWithItem() {
         return labelsAssociatedWithCurItem;
 
-    }
-    public String getQuantityStr(){
-        return Converters.quantityToStr(curItem.getQuantity());
-    }
-    public void setQuantityStr(String quantityStr){
-        curItem.setQuantity(Converters.strToQuantity(quantityStr));
     }
 
 }
