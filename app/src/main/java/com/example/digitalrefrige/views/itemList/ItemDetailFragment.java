@@ -297,7 +297,6 @@ public class ItemDetailFragment extends Fragment {
         Picasso.get()
                 .load(Uri.parse(uri))
                 .fit()
-                .rotate(90)
                 .centerCrop()
                 .into(binding.imageViewItem);
     }
