@@ -95,8 +95,8 @@
 
                 <Button
                     android:id="@+id/button_update"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
                     android:background="@drawable/ic_oval"
                     android:text="@string/update_current_item"
@@ -106,8 +106,8 @@
 
                 <Button
                     android:id="@+id/button_add"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width= "wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="332dp"
                     android:background="@drawable/ic_oval"
                     android:fontFamily="More Fonts..."

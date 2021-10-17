@@ -22,12 +22,49 @@
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="90dp"
+                    android:background="@color/white"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:contentInsetStart="8dp">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
+
+
+                        <Button
+                            android:id="@+id/button_all"
+                            android:layout_width="106dp"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="35dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintTop_toTopOf="parent"
+
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:text="All" />
+
+                        <Button
+                            android:id="@+id/button_expiring"
+                            android:layout_width="106dp"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="35dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="expiring" />
+
+                        <Button
+                            android:id="@+id/button_expired"
+                            android:layout_width="106dp"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="35dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/ic_oval"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:text="expired" />
 
                         <Button
                             android:id="@+id/label_picker_button"
@@ -47,37 +84,6 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:queryBackground="@android:color/transparent"
                             app:queryHint="search anything..." />
-
-                        <Button
-                            android:id="@+id/button_all"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="25dp"
-                            android:background="@drawable/ic_oval"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="All" />
-
-                        <Button
-                            android:id="@+id/button_expiring"
-                            android:layout_width="106dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/ic_oval"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:text="expiring" />
-
-                        <Button
-                            android:id="@+id/button_expired"
-                            android:layout_width="106dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/ic_oval"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="expired" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

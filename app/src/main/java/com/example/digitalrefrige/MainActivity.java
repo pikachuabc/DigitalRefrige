@@ -4,11 +4,13 @@ package com.example.digitalrefrige;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
 
@@ -24,6 +26,8 @@ import android.view.View;
 import com.example.digitalrefrige.databinding.ActivityMainBinding;
 import com.example.digitalrefrige.services.AlarmBroadcastReceiver;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
+import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
+import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 
 
 import java.util.Calendar;
@@ -55,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
+        binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
+                navController.navigate(directions);
+            }
+        });
     }
 
     // enable back in appbar when not at top-level destination
