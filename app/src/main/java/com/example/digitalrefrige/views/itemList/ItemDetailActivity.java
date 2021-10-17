@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.nfc.FormatException;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Environment;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,10 +41,12 @@ import android.widget.Toast;
 import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.ActivityItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Label;
+import com.example.digitalrefrige.utils.NfcUtils;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
+import com.example.digitalrefrige.views.common.WriteNfcDialog;
 import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
 import com.squareup.picasso.Picasso;
 
@@ -76,10 +80,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> cameraLauncher;
     ActivityResultLauncher<Intent> photoLibraryLauncher;
 
+    private NfcUtils nfcUtils;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        nfcUtils = new NfcUtils(this);
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -209,6 +216,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.buttonCamera.setOnClickListener(this::launchCameraOrSelectFromGallery);
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
+        binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
 
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
@@ -248,6 +256,29 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nfcUtils.enableForegroundDispatch();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nfcUtils.disableForegroundDispatch();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        try {
+            nfcUtils.writeNFCToTag("2021-12-12", intent);
+            Toast.makeText(this, "写入成功: 2021-12-12",Toast.LENGTH_LONG).show();
+        }catch (IOException | FormatException e) {
+            Toast.makeText(this, "写入失败: "+e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void onMinusNumberButtonClicked(View view) {
 
         int curNum = itemDetailViewModel.getCurItem().getQuantity();
@@ -271,7 +302,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "invalid quantity", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment(new DatePickerDialog.OnDateSetListener() {
@@ -393,4 +423,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    public void onNfcDialogButtonClicked(View view) {
+        new WriteNfcDialog().show(getSupportFragmentManager(),"writedialog");
+    }
 }

@@ -24,7 +24,7 @@ public class NfcUtils {
     private IntentFilter[] mIntentFilter = null;
     private PendingIntent mPendingIntent = null;
     private String[][] mTechList = null;
-    private Activity activity;
+    private final Activity activity;
 
     public NfcUtils(Activity activity) {
         this.activity = activity;
@@ -46,17 +46,13 @@ public class NfcUtils {
 
         IntentFilter ndefFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
-            //文本类型
             ndefFilter.addDataType("text/plain");
         } catch (IntentFilter.MalformedMimeTypeException e) {
             e.printStackTrace();
         }
 
-        //intentFilter过滤----非ndef
         IntentFilter techFilter = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-        //intentFilter过滤器列表
         mIntentFilter = new IntentFilter[]{ndefFilter, techFilter};
-        //匹配的数据格式列表
         mTechList = new String[][]{
                 {MifareClassic.class.getName()},
                 {NfcA.class.getName()},
@@ -64,25 +60,19 @@ public class NfcUtils {
                 {NdefFormatable.class.getName()}};
     }
 
-    /**
-     * Nfc监听intent
-     */
+    //Monitor NFC
     public void enableForegroundDispatch() {
         if (mNfcAdapter != null && mNfcAdapter.isEnabled()) {
             mNfcAdapter.enableForegroundDispatch(activity, mPendingIntent, mIntentFilter, mTechList);
         }
     }
 
-    /**
-     * 取消监听Nfc
-     */
+    //Cancel NFC monitor
     public void disableForegroundDispatch() {
         if (mNfcAdapter != null && mNfcAdapter.isEnabled()) {
             mNfcAdapter.disableForegroundDispatch(activity);
         }
     }
-
-    public Tag getNFCTag(Intent intent) {return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);}
 
     public void writeNFCToTag(String text, Intent intent) throws IOException, FormatException {
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -114,7 +104,6 @@ public class NfcUtils {
                 format.connect();
                 //格式化并将信息写入标签
                 format.format(ndefMessage);
-            } else {
             }
         }
     }
