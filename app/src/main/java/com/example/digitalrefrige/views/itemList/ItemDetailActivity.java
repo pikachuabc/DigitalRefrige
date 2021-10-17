@@ -216,7 +216,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.buttonCamera.setOnClickListener(this::launchCameraOrSelectFromGallery);
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
-        binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
+
+        if(nfcUtils.getmNfcAdapter() == null) {
+            binding.nfcTrigger.setVisibility(View.GONE);
+        } else {
+            binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
+        }
 
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {

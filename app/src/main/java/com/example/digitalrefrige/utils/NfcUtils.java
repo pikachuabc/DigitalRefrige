@@ -34,9 +34,9 @@ public class NfcUtils {
 
     private void check() {
         mNfcAdapter = NfcAdapter.getDefaultAdapter(activity);
-        if (mNfcAdapter == null) {
-            Toast.makeText(activity, "Device not support NFC", Toast.LENGTH_SHORT).show();
-        }
+//        if (mNfcAdapter == null) {
+//            Toast.makeText(activity, "Device not support NFC", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void init() {
@@ -58,6 +58,11 @@ public class NfcUtils {
                 {NfcA.class.getName()},
                 {Ndef.class.getName()},
                 {NdefFormatable.class.getName()}};
+    }
+
+
+    public NfcAdapter getmNfcAdapter() {
+        return mNfcAdapter;
     }
 
     //Monitor NFC
