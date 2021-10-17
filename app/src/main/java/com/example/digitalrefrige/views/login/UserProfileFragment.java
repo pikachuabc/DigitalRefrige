@@ -46,6 +46,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -146,21 +149,47 @@ public class UserProfileFragment extends Fragment {
 
     public void storeData() {
 
-        LiveData<List<Item>> list = LocalDataBase.getInstance(getContext()).itemDAO().getAllItems();
+        LiveData<List<Item>> itemList = LocalDataBase.getInstance(getContext()).itemDAO().getAllItems();
+        LiveData<List<Label>> labelList = LocalDataBase.getInstance(getContext()).labelDAO().getAllLabels();
 
-        list.observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
+
+
+
+
+
+        itemList.observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
             @Override
             public void onChanged(List<Item> items) {
-
                 for(Item i: items){
                     db.collection("item_table")
                             .document(i.getName())
                             .set(i);
                 }
+
+                LinearLayout userProfileStatus = binding.userProfileStatus;
+                LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                String time = format.format(calendar.getTime());
+                TextView timeNotify = new TextView(getContext());
+                timeNotify.setText(time);
+                userProfileStatus.addView(timeNotify, lp);
+
             }
         });
 
-
+        labelList.observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
+            @Override
+            public void onChanged(List<Label> labels) {
+                for(Label l: labels){
+                    db.collection("label_table")
+                            .document(l.getTitle())
+                            .set(l);
+                }
+            }
+        });
 
 
 
