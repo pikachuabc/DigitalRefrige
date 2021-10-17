@@ -27,6 +27,10 @@ public interface ItemLabelCrossRefDAO {
     @Query("SELECT * FROM item_table")
     LiveData<List<ItemWithLabels>> getItemOfLabels();
 
+    @Transaction
+    @Query("SELECT * FROM ItemLabelCrossRef")
+    LiveData<List<ItemLabelCrossRef>> getAllCrossRefs();
+
     @Query("SELECT * FROM label_table WHERE label_table.labelId IN (SELECT itemlabelcrossref.labelId FROM itemlabelcrossref WHERE itemlabelcrossref.itemId=:itemId)")
     List<Label> getLabelsByItem(long itemId);
 
