@@ -88,7 +88,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             binding.getRoot().setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
+                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(itemID);
                     Navigation.findNavController(view).navigate(directions);
                 }
             });

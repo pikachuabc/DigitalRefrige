@@ -75,11 +75,4 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void mainBottomBar(boolean visibility) {
-        if (!visibility) {
-            binding.navView.setVisibility(View.GONE);
-        } else {
-            binding.navView.setVisibility(View.VISIBLE);
-        }
-    }
 }

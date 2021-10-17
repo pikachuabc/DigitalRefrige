@@ -5,22 +5,23 @@
 
     <data>
 
+        <import type="com.example.digitalrefrige.utils.Converters" />
         <variable
             name="itemDetailViewModel"
             type="com.example.digitalrefrige.viewModel.ItemDetailViewModel" />
         <!--        <import type="com.example.digitalrefrige.utils.Converters"/>-->
+
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
-            tools:context=".views.itemList.ItemDetailFragment">
+            tools:context=".views.itemList.ItemDetailActivity">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -107,7 +108,7 @@
                     android:id="@+id/button_add"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="332dp"
                     android:background="@drawable/ic_oval"
                     android:fontFamily="More Fonts..."
                     android:text="@string/add_new_item"
@@ -145,9 +146,50 @@
                     android:id="@+id/recyclerView_labels_in_detail_fragment"
                     android:layout_width="377dp"
                     android:layout_height="233dp"
+                    android:layout_marginTop="64dp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/label_picker_button" />
+
+                <Button
+                    android:id="@+id/add_num_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="+"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/minus_num_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="-"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <EditText
+                    android:id="@+id/quantityNum"
+                    android:layout_width="102dp"
+                    android:layout_height="41dp"
+                    android:ems="10"
+                    android:text="@={Converters.quantityToStr(itemDetailViewModel.curItem.quantity)}"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
+                    app:layout_constraintEnd_toStartOf="@+id/add_num_button"
+                    app:layout_constraintHorizontal_bias="0.486"
+                    app:layout_constraintStart_toEndOf="@+id/minus_num_button"
+                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
+                    app:layout_constraintVertical_bias="0.652" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

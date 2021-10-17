@@ -12,6 +12,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -45,6 +46,15 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentUserProfileBinding.inflate(inflater, container, false);
+
+        binding.tags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavDirections action = UserProfileFragmentDirections.actionNavigationProfileToLabelListFragment();
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -101,6 +111,7 @@ public class UserProfileFragment extends Fragment {
             // navigate to this Fragment after logout
             Navigation.findNavController(view).navigate(R.id.navigation_profile);
         });
+
 
     }
 
