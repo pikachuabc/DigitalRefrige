@@ -54,6 +54,13 @@ public class UserProfileFragment extends Fragment {
                 Navigation.findNavController(view).navigate(action);
             }
         });
+        binding.expire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavDirections action = UserProfileFragmentDirections.actionNavigationProfileToExpireFragment();
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
 
         return binding.getRoot();
     }

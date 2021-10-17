@@ -14,4 +14,5 @@
     <string name="Auth_id" translatable="false">117429326790-duhh4hgrj4g9a5ij4segdvblc6u5p8hn.apps.googleusercontent.com</string>
     <string name="channel_name">expiry</string>
     <string name="channel_description">This channel store expiring items and remind user</string>
+    <string name="notification_state">notification_state</string>
 </resources>

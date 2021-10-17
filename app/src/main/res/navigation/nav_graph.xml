@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_navigation_profile_to_labelListFragment"
             app:destination="@id/labelListFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_expireFragment"
+            app:destination="@+id/expireNotificationFragment"/>
     </fragment>
 
     <fragment
@@ -64,6 +67,11 @@
         android:name="com.example.digitalrefrige.views.labelList.LabelListFragment"
         android:label="fragment_label_list"
         tools:layout="@layout/fragment_label_list" />
+    <fragment
+        android:id="@+id/expireNotificationFragment"
+        android:name="com.example.digitalrefrige.views.login.ExpireFragment"
+        android:label="fragment_expire"
+        tools:layout="@layout/fragment_expire"/>
 
 
 </navigation>

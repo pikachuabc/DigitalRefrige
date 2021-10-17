@@ -6,10 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
+import androidx.preference.PreferenceManager;
 
 import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.R;
@@ -34,7 +37,17 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        List<Item> expiringItems = itemRepository.getExpiringItems(7);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        String intervalString = sharedPreferences.getString("expire_day", "");
+        int interval;
+        try {
+            interval = Integer.parseInt(intervalString);
+        } catch (NumberFormatException e){
+            interval = 7;
+        }
+
+        List<Item> expiringItems = itemRepository.getExpiringItems(interval);
 
         if (expiringItems!= null && !expiringItems.isEmpty()) {
                 if (intent.getAction().equals("NOTIFY")) {
@@ -45,7 +58,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_document)
                             .setContentTitle("Expiring")
-                            .setContentText("You have expiring item(s)")
+                            .setContentText("You have item(s) expiring in "+intervalString+" days")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(mPendingIntent)
                             .setAutoCancel(true);

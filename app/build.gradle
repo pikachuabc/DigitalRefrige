@@ -51,6 +51,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:17.6.0'
     implementation 'com.google.firebase:firebase-auth:21.0.1'
 
+    //Jetpack preference library
+    def preference_version = "1.1.1"
+    implementation "androidx.preference:preference:$preference_version"
+
     // navigation module support
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
