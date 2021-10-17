@@ -20,7 +20,6 @@ public class UserProfileViewModel extends ViewModel {
     public GoogleSignInClient mGoogleSignInClient;
     public FirebaseAuth mAuth;
     public FirebaseUser user;
-    public String lastUpdateTime;
 
 
     @Inject
@@ -28,17 +27,4 @@ public class UserProfileViewModel extends ViewModel {
         this.mGoogleSignInClient = mGoogleSignInClient;
         this.mAuth = mAuth;
     }
-
-    public void setUpdateTime(String t){
-        this.lastUpdateTime = t;
-    }
-
-    public String getUpdateTime() {
-        return this.lastUpdateTime;
-    }
-
-
-
-
-
 }
