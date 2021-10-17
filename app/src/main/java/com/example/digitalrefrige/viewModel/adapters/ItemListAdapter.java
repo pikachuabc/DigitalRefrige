@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ItemCardBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.utils.Converters;
@@ -87,7 +88,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
             binding.getRoot().setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailFragment(itemID);
+                    NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(itemID);
                     Navigation.findNavController(view).navigate(directions);
                 }
             });
@@ -104,9 +105,10 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
                 Picasso.get()
                         .load(Uri.parse(uri))
                         .fit()
-                        .rotate(90)
                         .centerCrop()
                         .into(itemImage);
+            }else{
+                Picasso.get().load(R.drawable.img_4857).into(itemImage);
             }
         }
 

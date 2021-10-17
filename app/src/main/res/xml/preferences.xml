@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="notifications"
+        android:title="Enable message notifications" />
+    <EditTextPreference
+
+        app:isPreferenceVisible="false"
+        android:defaultValue="3"
+        android:key="expire_day"
+        android:title="Set notification deadline"/>
+
+</PreferenceScreen>

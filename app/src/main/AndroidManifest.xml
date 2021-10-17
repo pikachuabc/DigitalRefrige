@@ -5,22 +5,32 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:name=".MainApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_egg_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_egg_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalRefrige">
+        <activity
+            android:name=".services.NfcActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -30,6 +40,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".views.itemList.ItemDetailActivity"
+            android:exported="true">
+
+        </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -43,11 +59,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <receiver android:name=".services.AlarmBroadcastReceiver"
-            android:permission="android.permission.SEND_SMS"
-            android:exported="false">
+
+        <receiver
+            android:name=".services.AlarmBroadcastReceiver"
+            android:exported="false"
+            android:permission="android.permission.SEND_SMS">
             <intent-filter>
-                <action android:name="NOTIFY"/>
+                <action android:name="NOTIFY" />
             </intent-filter>
         </receiver>
 
