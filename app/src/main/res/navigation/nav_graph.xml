@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailActivity"
-            app:destination="@id/itemDetailFragment"
+            app:destination="@id/itemDetailActivity"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -20,7 +20,7 @@
     </fragment>
 
     <activity
-        android:id="@+id/itemDetailFragment"
+        android:id="@+id/itemDetailActivity"
         android:name="com.example.digitalrefrige.views.itemList.ItemDetailActivity"
         android:label="fragment_item_detail"
         tools:layout="@layout/activity_item_detail" >
