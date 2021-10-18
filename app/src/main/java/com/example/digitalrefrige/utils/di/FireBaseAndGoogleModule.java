@@ -4,6 +4,8 @@ package com.example.digitalrefrige.utils.di;
 import android.content.Context;
 
 import com.example.digitalrefrige.R;
+import com.example.digitalrefrige.model.ItemRepository;
+import com.example.digitalrefrige.model.dataSource.ItemDAO;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

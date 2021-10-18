@@ -31,8 +31,14 @@ public class ItemRepository {
     }
 
     public LiveData<List<Item>> getAllItems() {
+
+        if (allItems == null) {
+            allItems = itemDAO.getAllItems();
+        }
+
         return allItems;
     }
+
     public List<Item> getExpiringItems(int interval) {
         Future<List<Item>> exp = executorService.submit(() -> itemDAO.getExpiringItems(interval));
         try {

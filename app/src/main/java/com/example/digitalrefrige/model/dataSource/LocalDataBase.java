@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Establishing local database with some dummy data
