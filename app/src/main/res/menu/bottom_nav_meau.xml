@@ -11,7 +11,7 @@
         android:title="ADD" />
 
     <item
-        android:id="@+id/navigation_login"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_user_male_circle"
         android:title="PROFILE" />
 
