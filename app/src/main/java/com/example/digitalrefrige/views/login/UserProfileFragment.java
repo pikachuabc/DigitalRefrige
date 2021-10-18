@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,20 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentUserProfileBinding.inflate(inflater, container, false);
+        binding.tags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavDirections action = UserProfileFragmentDirections.actionNavigationProfileToLabelListFragment();
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
+        binding.expire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavDirections action = UserProfileFragmentDirections.actionNavigationProfileToExpireFragment();
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
         return binding.getRoot();
     }
 
