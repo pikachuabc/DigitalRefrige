@@ -39,19 +39,11 @@ public class NfcActivity extends AppCompatActivity {
                 NdefMessage message = (NdefMessage) messages[0];
                 NdefRecord record = message.getRecords()[0];
                 String payload = new String(record.getPayload());
-                long dayDifferences = calDateDifferenceWithCurrent(payload.substring(3));
+                long dayDifferences = Converters.getDayDifferences(payload.substring(3));
                 nfcTextView = findViewById(R.id.nfc_textview);
                 nfcTextView.setText("The item is expiring in "+ Long.toString(dayDifferences)+" days\n"+payload.substring(3));
             }
         }
-    }
-
-    private long calDateDifferenceWithCurrent(String selectDateString){
-        Date selectDate = Converters.strToDate(selectDateString);
-        Date currentDate = new Date();
-        long differenceInTime = selectDate.getTime() - currentDate.getTime();
-        long difference_In_Days = TimeUnit.MILLISECONDS.toDays(differenceInTime) % 365;
-        return difference_In_Days;
     }
 
 

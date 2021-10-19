@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,8 +70,20 @@ public class Converters {
                 dest = m.replaceAll("");
             }
             return dest;
-        }
+    }
 
+    /**
+     *
+     * @param dateString "yyyy-MM-dd"
+     * @return day differences between current and input date
+     */
+    public static long getDayDifferences(String dateString){
+        Date selectDate = strToDate(dateString);
+        Date currentDate = new Date();
+        long differenceInTime = selectDate.getTime() - currentDate.getTime();
+        long dayDifferences = TimeUnit.MILLISECONDS.toDays(differenceInTime) % 365;
+        return dayDifferences;
+    }
 
 
 }
