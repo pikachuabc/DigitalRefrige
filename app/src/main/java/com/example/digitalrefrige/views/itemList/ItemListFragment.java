@@ -1,5 +1,6 @@
 package com.example.digitalrefrige.views.itemList;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.databinding.FragmentItemListBinding;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.Label;
@@ -180,6 +181,47 @@ public class ItemListFragment extends Fragment {
                 binding.refreshList.setRefreshing(false);
             }
         });
+
+        binding.buttonAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.buttonAll.setTextColor(Color.WHITE);
+                binding.buttonExpiring.setTextColor(Color.BLACK);
+                binding.buttonExpired.setTextColor(Color.BLACK);
+                itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.ALL_MODE);
+                itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
+            }
+        });
+        binding.buttonExpiring.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.buttonAll.setTextColor(Color.BLACK);
+                binding.buttonExpiring.setTextColor(Color.WHITE);
+                binding.buttonExpired.setTextColor(Color.BLACK);
+                itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRING_MODE);
+                int userSettingExpDays = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("expire_day", "-1"));
+                if (userSettingExpDays != -1) itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
+                itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
+            }
+        });
+        binding.buttonExpired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.buttonAll.setTextColor(Color.BLACK);
+                binding.buttonExpiring.setTextColor(Color.BLACK);
+                binding.buttonExpired.setTextColor(Color.WHITE);
+                itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRED_MODE);
+                itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
+            }
+        });
+
+        if (itemListViewModel.getCurrentSelectedExpiringDaysMode() == ItemListViewModel.ALL_MODE) {
+            binding.buttonAll.setTextColor(Color.WHITE);
+        } else if (itemListViewModel.getCurrentSelectedExpiringDaysMode() == ItemListViewModel.EXPIRING_MODE) {
+            binding.buttonExpiring.setTextColor(Color.WHITE);
+        } else if (itemListViewModel.getCurrentSelectedExpiringDaysMode() == ItemListViewModel.EXPIRED_MODE) {
+            binding.buttonExpired.setTextColor(Color.WHITE);
+        }
 
         return binding.getRoot();
     }
