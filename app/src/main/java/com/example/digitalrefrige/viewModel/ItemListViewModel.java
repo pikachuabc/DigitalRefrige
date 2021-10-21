@@ -84,7 +84,7 @@ public class ItemListViewModel extends ViewModel implements Filterable {
         protected FilterResults performFiltering(CharSequence charSequence) {
             List<Item> filteredList = new ArrayList<>();
             try {
-                Log.d("MyLog", "\nStart filtering with config:\npattern:" + charSequence + "\n" + "labels:" + curSelectedLabel.toString() + "\n" + "expDateMode:" + currentSelectedExpiringDaysMode + "\n" + "userSettingExpirationDate:" + userSettingExpirationDays);
+                Log.d("filter", "\nStart filtering with config:\npattern:" + charSequence + "\n" + "labels:" + curSelectedLabel.toString() + "\n" + "expDateMode:" + currentSelectedExpiringDaysMode + "\n" + "userSettingExpirationDate:" + userSettingExpirationDays);
                 if (allItems.getValue() == null) return null;
                 filteredList.addAll(allItems.getValue());
                 filteredList = filteredList.stream()
@@ -94,7 +94,7 @@ public class ItemListViewModel extends ViewModel implements Filterable {
                         .collect(Collectors.toList());
 
             } catch (NullPointerException e) {
-                Log.d("MyLog", "filtering failed");
+                Log.d("filter", "filtering failed");
             }
 
 
@@ -124,7 +124,7 @@ public class ItemListViewModel extends ViewModel implements Filterable {
 
     public void updateFilteredItemList(List<Item> list) {
         if (list == null) return;
-        Log.d("MyLog", "filteredItems change to size " + list.size());
+        Log.d("filter", "filteredItems change to size " + list.size());
         List<Item> newFilteredItems = new ArrayList<>(list);
         filteredItems.setValue(newFilteredItems);
     }

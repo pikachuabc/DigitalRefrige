@@ -166,7 +166,7 @@ public class LoginFragment extends Fragment {
 
 
     public void showProgressingCircle() {
-        dialog = new ProgressDialog();
+        dialog = new ProgressDialog("signing you in...");
         dialog.show(getParentFragmentManager(), "progressing");
     }
 

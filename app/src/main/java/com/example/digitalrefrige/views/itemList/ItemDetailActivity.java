@@ -3,9 +3,11 @@ package com.example.digitalrefrige.views.itemList;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.nfc.FormatException;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import com.example.digitalrefrige.utils.NfcUtils;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
+import com.example.digitalrefrige.views.common.ProgressDialog;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
 import com.example.digitalrefrige.views.common.WriteNfcDialog;
 import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
@@ -63,6 +66,12 @@ import java.util.List;
 import java.util.Locale;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,6 +90,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> photoLibraryLauncher;
 
     private NfcUtils nfcUtils;
+    private ProgressDialog dialog;
 
 
     @Override
@@ -137,7 +147,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         // Inflate the layout for this activity
         binding = ActivityItemDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Log.d("MyLog", "hahahahah================");
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -217,7 +226,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
 
-        if(nfcUtils.getmNfcAdapter() == null) {
+        if (nfcUtils.getmNfcAdapter() == null) {
             binding.nfcTrigger.setVisibility(View.GONE);
         } else {
             binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
@@ -250,12 +259,54 @@ public class ItemDetailActivity extends AppCompatActivity {
                 DialogFragment dialog = new LabelSelectorDialogFragment(allLabels, curSelected, new LabelSelectorDialogFragment.OnLabelsChosenListener() {
                     @Override
                     public void onPositiveClicked(List<Label> selectedLabels) {
-                        //Log.d("MyLog", "selector returned");
                         itemDetailViewModel.getAllLabelsAssociatedWithItem().setValue(new ArrayList<>(selectedLabels));
-//                        refreshItemList();
+
                     }
                 });
                 dialog.show(getSupportFragmentManager(), "LabelSelectorFragment");
+            }
+        });
+
+        binding.buttonRecognizeImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tempUri = itemDetailViewModel.getTempUrl();
+                if (tempUri.equals("")) {
+                    Toast.makeText(getApplicationContext(), "no images set so far", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (isNetworkConnected()) {
+                    try {
+                        File file = createImageFile();
+                        InputStream is = getContentResolver().openInputStream(Uri.parse(tempUri));
+                        FileOutputStream os = new FileOutputStream(file);
+                        copyStream(is, os);
+                        is.close();
+                        os.close();
+                        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                        itemDetailViewModel.getRemoteService().getCVResult(filePart).enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                itemDetailViewModel.getCurItem().setName(response.body());
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Log.d("temp", t.getMessage());
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog = new ProgressDialog("retrieving result...");
+                        dialog.show(getSupportFragmentManager(), "in progressing");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -278,9 +329,9 @@ public class ItemDetailActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         try {
             nfcUtils.writeNFCToTag("2021-12-12", intent);
-            Toast.makeText(this, "写入成功: 2021-12-12",Toast.LENGTH_LONG).show();
-        }catch (IOException | FormatException e) {
-            Toast.makeText(this, "写入失败: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "写入成功: 2021-12-12", Toast.LENGTH_LONG).show();
+        } catch (IOException | FormatException e) {
+            Toast.makeText(this, "写入失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -408,7 +459,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private void renderImage() {
         String uri = itemDetailViewModel.getTempUrl();
-        Log.d("MyLog", "rendering image: " + uri);
+        Log.d("image", "rendering image: " + uri);
         if (uri.equals("")) return;
         Picasso.get()
                 .load(Uri.parse(uri))
@@ -429,6 +480,12 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void onNfcDialogButtonClicked(View view) {
-        new WriteNfcDialog().show(getSupportFragmentManager(),"writedialog");
+        new WriteNfcDialog().show(getSupportFragmentManager(), "writedialog");
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }
