@@ -31,16 +31,16 @@
 
 
     <fragment
-        android:id="@+id/navigation_the_other"
-        android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
-        android:label="fragment_the_other"
-        tools:layout="@layout/fragment_the_other" />
-
-    <fragment
         android:id="@+id/navigation_login"
         android:name="com.example.digitalrefrige.views.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_register"
+            app:destination="@id/navigation_register" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment
@@ -54,13 +54,20 @@
         <action
             android:id="@+id/action_navigation_profile_to_expireFragment"
             app:destination="@+id/expireNotificationFragment"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_register"
         android:name="com.example.digitalrefrige.views.login.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_navigation_register_to_navigation_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
 
     <fragment
         android:id="@+id/labelListFragment"

@@ -19,6 +19,8 @@ import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataSource.LocalDataBase;
 import com.example.digitalrefrige.viewModel.UserProfileViewModel;
+import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
+import com.example.digitalrefrige.views.itemList.ItemListFragmentDirections;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -118,7 +120,8 @@ public class UserProfileFragment extends Fragment {
 
     public void goLogin(){
         binding.signinSignup.setOnClickListener(view -> {
-            Navigation.findNavController(view).navigate(R.id.navigation_login);
+            NavDirections directions = (NavDirections) UserProfileFragmentDirections.actionNavigationProfileToNavigationLogin();
+            Navigation.findNavController(view).navigate(directions);
         });
         binding.userProfileStatus.setVisibility(View.GONE);
         binding.logoutButton.setVisibility(View.GONE);

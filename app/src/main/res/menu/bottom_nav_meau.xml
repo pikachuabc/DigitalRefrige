@@ -6,9 +6,6 @@
         android:icon="@drawable/ic_home"
         android:title="HOME" />
 
-    <item
-        android:id="@+id/navigation_the_other"
-        android:title="ADD" />
 
     <item
         android:id="@+id/navigation_profile"

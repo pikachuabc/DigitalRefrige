@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.digitalrefrige.R;
@@ -43,29 +44,30 @@ public class RegisterFragment extends Fragment {
 
         userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
         binding.registerButton.setOnClickListener(button -> register());
-        binding.loginButton.setOnClickListener(button->login());
+        binding.loginButton.setOnClickListener(button -> login());
     }
 
-    private void login(){
-        NavHostFragment.findNavController(RegisterFragment.this).navigate(R.id.navigation_login);
+    private void login() {
+        NavDirections directions = (NavDirections) RegisterFragmentDirections.actionNavigationRegisterToNavigationLogin();
+        NavHostFragment.findNavController(RegisterFragment.this).navigate(directions);
 
     }
 
-    private void register(){
+    private void register() {
         String email = binding.emailInput.getText().toString();
         String password = binding.passwordInput.getText().toString();
         String confirmPassword = binding.passwordConfirm.getText().toString();
-        if(TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             binding.emailInput.setError("Enter your email");
-        }else if(TextUtils.isEmpty(password)){
+        } else if (TextUtils.isEmpty(password)) {
             binding.passwordInput.setError("Enter your password");
-        }else if(TextUtils.isEmpty(confirmPassword)){
+        } else if (TextUtils.isEmpty(confirmPassword)) {
             binding.passwordConfirm.setError("Confirm your password");
-        }else if(!password.equals(confirmPassword)){
+        } else if (!password.equals(confirmPassword)) {
             binding.passwordConfirm.setError("Different Password");
-        }else if(password.length() < 6){
+        } else if (password.length() < 6) {
             binding.passwordInput.setError("Length should be > 6");
-        }else{
+        } else {
             userProfileViewModel.mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
@@ -80,7 +82,7 @@ public class RegisterFragment extends Fragment {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "registerWithEmail:failure", task.getException());
-                                if(task.getException() instanceof FirebaseAuthUserCollisionException){
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                     binding.emailInput.setError("This email already in use");
                                 }
                                 Toast.makeText(getContext(), "Register with Email failed.",

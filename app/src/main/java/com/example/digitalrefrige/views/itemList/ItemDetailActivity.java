@@ -27,6 +27,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
@@ -196,10 +197,10 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
         // config adapter for the recyclerView
-        RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
-        labelRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        final LabelListAdapter labelListAdapter = new LabelListAdapter();
-        labelRecyclerView.setAdapter(labelListAdapter);
+//        RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
+//        labelRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        final LabelListAdapter labelListAdapter = new LabelListAdapter();
+//        labelRecyclerView.setAdapter(labelListAdapter);
 
         // inject viewModel
         itemDetailViewModel = new ViewModelProvider(this).get(ItemDetailViewModel.class);
@@ -207,12 +208,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         itemDetailViewModel.bindWithItem(itemId);
         binding.setItemDetailViewModel(itemDetailViewModel);
 
-        itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(this, new Observer<List<Label>>() {
-            @Override
-            public void onChanged(List<Label> labels) {
-                labelListAdapter.submitList(labels);
-            }
-        });
+//        itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(this, new Observer<List<Label>>() {
+//            @Override
+//            public void onChanged(List<Label> labels) {
+//                labelListAdapter.submitList(labels);
+//            }
+//        });
 
         itemDetailViewModel.getAllLabels().observe(this, new Observer<List<Label>>() {
             @Override
@@ -262,7 +263,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                         itemDetailViewModel.getAllLabelsAssociatedWithItem().setValue(new ArrayList<>(selectedLabels));
 
                     }
-                });
+                }, "Edit current labels");
                 dialog.show(getSupportFragmentManager(), "LabelSelectorFragment");
             }
         });
@@ -298,6 +299,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                             }
                         });
                         dialog = new ProgressDialog("retrieving result...");
+                        file.delete();
                         dialog.show(getSupportFragmentManager(), "in progressing");
                     } catch (Exception e) {
                         e.printStackTrace();

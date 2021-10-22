@@ -25,6 +25,7 @@ public class LabelSelectorDialogFragment extends DialogFragment {
     List<Label> allLabels;
     List<Label> preSelectedLabels;
     List<Label> selectedLabel = new ArrayList<>();
+    String dialogTitle;
 
 
     public interface OnLabelsChosenListener {
@@ -33,11 +34,12 @@ public class LabelSelectorDialogFragment extends DialogFragment {
 
     OnLabelsChosenListener listener;
 
-    public LabelSelectorDialogFragment(List<Label> allLabels, List<Label> preSelectedLabels, OnLabelsChosenListener listener) {
+    public LabelSelectorDialogFragment(List<Label> allLabels, List<Label> preSelectedLabels, OnLabelsChosenListener listener, String title) {
         this.allLabels = allLabels;
         this.listener = listener;
         this.preSelectedLabels = preSelectedLabels;
         selectedLabel.addAll(preSelectedLabels);
+        dialogTitle = title;
     }
 
     @NonNull
@@ -53,7 +55,7 @@ public class LabelSelectorDialogFragment extends DialogFragment {
                 checkStatus[i] = true;
             }
         }
-            builder.setTitle("select label to filter").setMultiChoiceItems(allLabelStr, checkStatus, new DialogInterface.OnMultiChoiceClickListener() {
+            builder.setTitle(dialogTitle).setMultiChoiceItems(allLabelStr, checkStatus, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                 if (b) {

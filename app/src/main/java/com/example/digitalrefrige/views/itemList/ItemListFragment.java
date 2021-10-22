@@ -133,13 +133,13 @@ public class ItemListFragment extends Fragment {
         }).attachToRecyclerView(itemListRecyclerView);
 
         // set Add Button
-        binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
-                Navigation.findNavController(view).navigate(directions);
-            }
-        });
+//        binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
+//                Navigation.findNavController(view).navigate(directions);
+//            }
+//        });
 
         binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +155,7 @@ public class ItemListFragment extends Fragment {
                         itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
                         refreshItemList();
                     }
-                });
+                }, "select labels for filter");
                 dialog.show(getChildFragmentManager(), "LabelSelectorFragment");
             }
         });

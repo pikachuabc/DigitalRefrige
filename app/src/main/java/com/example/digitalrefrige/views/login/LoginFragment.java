@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -79,8 +80,9 @@ public class LoginFragment extends Fragment {
         binding.emailSignUpButton.setOnClickListener(button -> register());
     }
 
-    private void register(){
-        NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_register);
+    private void register() {
+        NavDirections directions = (NavDirections) LoginFragmentDirections.actionNavigationLoginToNavigationRegister();
+        NavHostFragment.findNavController(LoginFragment.this).navigate(directions);
     }
 
     private void emailSignIn() {
@@ -89,9 +91,9 @@ public class LoginFragment extends Fragment {
         String inputEmail = binding.emailInput.getText().toString();
         String inputPassword = binding.passwordInput.getText().toString();
 
-        if(TextUtils.isEmpty(inputEmail)){
+        if (TextUtils.isEmpty(inputEmail)) {
             binding.emailSignInButton.setError("Enter your email");
-        }else if(TextUtils.isEmpty(inputPassword)){
+        } else if (TextUtils.isEmpty(inputPassword)) {
             binding.passwordInput.setError("Enter your password");
         } else {
             userProfileViewModel.mAuth.signInWithEmailAndPassword(inputEmail, inputPassword)
@@ -103,7 +105,8 @@ public class LoginFragment extends Fragment {
                                 Log.d(TAG, "signInWithEmail:success");
                                 Toast.makeText(getContext(), "Authentication with Email success.",
                                         Toast.LENGTH_SHORT).show();
-                                NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_profile);
+                                NavDirections directions = (NavDirections) LoginFragmentDirections.actionNavigationLoginToNavigationProfile();
+                                NavHostFragment.findNavController(LoginFragment.this).navigate(directions);
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -150,7 +153,8 @@ public class LoginFragment extends Fragment {
                             if (dialog != null) {
                                 dialog.dismiss();
                             }
-                            NavHostFragment.findNavController(LoginFragment.this).navigate(R.id.navigation_profile);
+                            NavDirections directions = (NavDirections) LoginFragmentDirections.actionNavigationLoginToNavigationProfile();
+                            NavHostFragment.findNavController(LoginFragment.this).navigate(directions);
 
 
                         } else {
