@@ -11,21 +11,22 @@ tools:context=".MainActivity">
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="?android:attr/windowBackground"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bottom_nav_box"
             app:menu="@menu/bottom_nav_meau" />
     </LinearLayout>
 
@@ -35,7 +36,7 @@ tools:context=".MainActivity">
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/reeking_yellow"
         android:elevation="8dp"
         android:src="@drawable/ic_baseline_add_24" />

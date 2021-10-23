@@ -223,6 +223,7 @@ public class ItemListFragment extends Fragment {
             binding.buttonExpired.setTextColor(Color.WHITE);
         }
 
+        binding.itemFilterSearchView.clearFocus();
         return binding.getRoot();
     }
 
