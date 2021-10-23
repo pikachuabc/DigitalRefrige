@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     tools:context=".views.itemList.ItemListFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,6 +21,7 @@
                 android:id="@+id/appBar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:elevation="0dp"
                 android:background="@drawable/app_bar_box">
 
                 <androidx.appcompat.widget.Toolbar
