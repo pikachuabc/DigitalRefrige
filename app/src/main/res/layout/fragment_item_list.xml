@@ -19,12 +19,12 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@drawable/app_bar_box">
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@color/white"
+                    android:layout_height="110dp"
                     app:contentInsetEnd="8dp"
                     app:contentInsetStart="8dp"
                     app:layout_scrollFlags="scroll|enterAlways">
@@ -33,12 +33,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="60dp"
+                            android:layout_height="50dp"
+                            android:src="@mipmap/ic_egg_foreground"
+                            android:layout_marginTop="10dp"
+                            app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
                         <HorizontalScrollView
+                            android:id="@+id/horizontalScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="49dp"
                             android:scrollbars="none"
-                            app:layout_constraintBottom_toBottomOf="parent"
 
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/item_filter_searchView"
                             app:layout_constraintStart_toStartOf="@+id/item_filter_searchView"
                             app:layout_constraintTop_toBottomOf="@+id/item_filter_searchView">
@@ -46,6 +57,7 @@
                             <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent">
+
                                 <Button
                                     android:id="@+id/label_picker_button"
                                     android:layout_width="wrap_content"
@@ -82,14 +94,19 @@
 
                         <androidx.appcompat.widget.SearchView
                             android:id="@+id/item_filter_searchView"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+
+                            app:searchIcon="@null"
                             app:iconifiedByDefault="false"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/imageView"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:queryBackground="@android:color/transparent"
+                            app:queryBackground="@drawable/search_view_box"
                             app:queryHint="search anything..." />
+
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

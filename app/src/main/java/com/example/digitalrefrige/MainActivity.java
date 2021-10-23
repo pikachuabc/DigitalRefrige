@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(directions);
             }
         });
+
+        getSupportActionBar().hide();
     }
 
     // enable back in appbar when not at top-level destination
