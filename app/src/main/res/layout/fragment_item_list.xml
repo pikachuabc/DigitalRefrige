@@ -37,7 +37,8 @@
 
                         <ImageView
                             android:id="@+id/imageView"
-                            android:layout_width="30dp"
+                            android:layout_width="40dp"
+                            android:paddingLeft="10dp"
                             android:layout_height="30dp"
                             android:src="@drawable/egg_search_icon"
                             android:layout_marginTop="10dp"
@@ -111,7 +112,7 @@
 
                         <androidx.appcompat.widget.SearchView
                             android:id="@+id/item_filter_searchView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
 
