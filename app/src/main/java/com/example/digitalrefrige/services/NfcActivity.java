@@ -14,7 +14,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.digitalrefrige.R;
+import com.example.digitalrefrige.model.ItemRepository;
 import com.example.digitalrefrige.utils.Converters;
+import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
 import com.example.digitalrefrige.views.itemList.ItemDetailActivityArgs;
 
@@ -23,9 +25,16 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class NfcActivity extends AppCompatActivity {
-    TextView nfcTextView;
-    Button nfcButton;
+    private TextView nfcTextView;
+    private Button nfcButton;
+    @Inject
+    ItemRepository itemRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +55,30 @@ public class NfcActivity extends AppCompatActivity {
                 String payload = new String(record.getPayload());
                 long itemID = Long.parseLong(payload.substring(3));
                 nfcTextView = findViewById(R.id.nfc_textview);
-                nfcTextView.setText("Click the button to view item");
                 nfcButton = findViewById(R.id.nfc_button);
-                nfcButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent =  new Intent(NfcActivity.this, ItemDetailActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putLong("itemID",itemID);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        finish();
 
-                    }
-                });
+                if(itemRepository.findItemById(itemID) == null){
+                    nfcTextView.setText("No item");
+                    nfcButton.setVisibility(View.GONE);
+                }else {
+                    nfcTextView.setText("Click the button to view item");
+
+                    nfcButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent =  new Intent(NfcActivity.this, ItemDetailActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putLong("itemID",itemID);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    });
+                }
+
+
+
             }
         }
     }
