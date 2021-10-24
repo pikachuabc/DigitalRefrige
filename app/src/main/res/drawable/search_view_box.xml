@@ -6,10 +6,10 @@
 
         <shape android:shape="rectangle">
 
+            <solid android:color="#DADADA"/>
+
             <!-- View border color and width -->
-            <stroke
-                android:width="1dp"
-                android:color="#BABABA" />
+
 
             <padding
                 android:left="10dp"

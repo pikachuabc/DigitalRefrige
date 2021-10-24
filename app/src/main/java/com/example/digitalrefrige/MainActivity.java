@@ -3,6 +3,7 @@ package com.example.digitalrefrige;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.text.HtmlCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -18,8 +19,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.text.Html;
 import android.view.View;
 
 
@@ -68,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().hide();
+//        getSupportActionBar().setTitle(Html.fromHtml("<font color='#717171'>My refrigerator</font>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+//        getSupportActionBar().setElevation(0);
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F5F5F5")));
     }
 
     // enable back in appbar when not at top-level destination

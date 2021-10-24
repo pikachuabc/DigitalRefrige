@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     tools:context=".views.itemList.ItemListFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,11 +21,12 @@
                 android:id="@+id/appBar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:elevation="0dp"
                 android:background="@drawable/app_bar_box">
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="100dp"
                     app:contentInsetEnd="8dp"
                     app:contentInsetStart="8dp"
                     app:layout_scrollFlags="scroll|enterAlways">
@@ -35,9 +37,10 @@
 
                         <ImageView
                             android:id="@+id/imageView"
-                            android:layout_width="60dp"
-                            android:layout_height="50dp"
-                            android:src="@mipmap/ic_egg_foreground"
+                            android:layout_width="40dp"
+                            android:paddingLeft="10dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/egg_search_icon"
                             android:layout_marginTop="10dp"
                             app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
                             app:layout_constraintStart_toStartOf="parent"
@@ -62,6 +65,9 @@
                                     android:id="@+id/label_picker_button"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:stateListAnimator="@null"
+                                    android:background="@drawable/filter_button_box"
+                                    android:textColor="@color/white"
                                     android:text="Label" />
 
                                 <Button
@@ -69,6 +75,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
+                                    app:backgroundTint="@null"
+                                    android:stateListAnimator="@null"
+                                    android:textColor="#7A7A7A"
+                                    android:background="@drawable/filter_button_box"
                                     android:text="All" />
 
                                 <Button
@@ -76,6 +86,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
+                                    app:backgroundTint="@null"
+                                    android:textColor="#7A7A7A"
+                                    android:stateListAnimator="@null"
+                                    android:background="@drawable/filter_button_box"
                                     android:text="expiring" />
 
                                 <Button
@@ -83,6 +97,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
+                                    app:backgroundTint="@null"
+                                    android:textColor="#7A7A7A"
+                                    android:stateListAnimator="@null"
+                                    android:background="@drawable/filter_button_box"
                                     android:text="expired" />
 
 
@@ -94,9 +112,9 @@
 
                         <androidx.appcompat.widget.SearchView
                             android:id="@+id/item_filter_searchView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="8dp"
 
                             app:searchIcon="@null"
                             app:iconifiedByDefault="false"
