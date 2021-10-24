@@ -99,14 +99,11 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onChanged(List<Label> labels) {
                 // TODO supposed to merge change into current selected
-                if (itemListViewModel.getCurSelectedLabel().size() == 0) {
-                    List<Label> temp = new ArrayList<>();
-                    temp.add(Label.NONE_LABEL);
-                    temp.addAll(labels);
-                    itemListViewModel.setCurSelectedLabel(temp);
-                } else {
-                    refreshItemList();
-                }
+                List<Label> temp = new ArrayList<>();
+                temp.add(Label.NONE_LABEL);
+                temp.addAll(labels);
+                itemListViewModel.setCurSelectedLabel(temp);
+                refreshItemList();
             }
         });
         itemListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<ItemWithLabels>>() {
@@ -200,7 +197,8 @@ public class ItemListFragment extends Fragment {
                 binding.buttonExpired.setTextColor(Color.BLACK);
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRING_MODE);
                 int userSettingExpDays = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("expire_day", "-1"));
-                if (userSettingExpDays != -1) itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
+                if (userSettingExpDays != -1)
+                    itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
             }
         });
