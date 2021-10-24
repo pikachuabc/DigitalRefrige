@@ -13,6 +13,7 @@ import android.nfc.tech.MifareClassic;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.nfc.tech.NfcA;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class NfcUtils {
     private void init() {
         Intent intent = new Intent(activity,activity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        mPendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+        mPendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_MUTABLE);
 
         IntentFilter ndefFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
@@ -84,9 +85,10 @@ public class NfcUtils {
         NdefRecord record = NdefRecord.createTextRecord("en",text);
         NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{record});
         int size = ndefMessage.toByteArray().length;
-        Ndef ndef = Ndef.get(tag);
 
-        if (ndef != null) {
+        Ndef ndef;
+        if (Ndef.get(tag) != null) {
+            ndef = Ndef.get(tag);
             ndef.connect();
             //判断是否支持可写
             if (!ndef.isWritable()) {
@@ -111,6 +113,8 @@ public class NfcUtils {
                 format.format(ndefMessage);
             }
         }
+
+
     }
 
 }
