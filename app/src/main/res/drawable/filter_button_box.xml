@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+    <item
+        android:top="8dp"
+        android:bottom="8dp">
 
         <shape android:shape="rectangle">
 
-            <solid android:color="#F5F5F5"/>
+            <solid android:color="#DADADA"/>
             <!-- View border color and width -->
-            <!-- The radius makes the corners rounded -->
 
+
+            <!-- The radius makes the corners rounded -->
+            <corners android:radius="10dp" />
         </shape>
     </item>
 </layer-list>
