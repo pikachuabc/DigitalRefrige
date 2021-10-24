@@ -66,7 +66,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -294,7 +293,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void exportICS(View v ){
         String title = itemDetailViewModel.getCurItem().getName();
         Date expireDate = itemDetailViewModel.getCurItem().getExpireDate();
-        String description = "Your "+ title + " is expering on " +expireDate + " !";
+        String description = itemDetailViewModel.getCurItem().getDescription();
 
         //reference 1: https://code.tutsplus.com/tutorials/android-essentials-adding-events-to-the-users-calendar--mobile-8363
         //reference 2: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#LAST_DATE
@@ -308,39 +307,18 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
         intent.putExtra("allDay", false);
-        //The recurrence rule for the event.,暂时不要
-        //intent.putExtra("rrule", "FREQ=YEARLY");
         intent.putExtra(CalendarContract.Events.CALENDAR_ID,eventCaldendarID);
-
-
-//        System.out.println("==================");
-//        System.out.println(cal.getTimeInMillis());
-//        System.out.println(EpochToDate(cal.getTimeInMillis(),"dd/MM/yyyy"));
-//        System.out.println("==================");
-        //现在采用的方式是每次output到calender直接用现在的日期+上x天后提醒,
-        //如果想采用输入两个日期的话可以改成joda time,但是import出问题
-        //早上九点钟,十五分钟的一个event
-
 
         intent.putExtra(CalendarContract.Events.TITLE, title);
         intent.putExtra(CalendarContract.Events.CALENDAR_DISPLAY_NAME, title);
         intent.putExtra(CalendarContract.Events.DESCRIPTION, description);
         intent.putExtra("hasAlarm", 0);
 
-
-//        intent.putExtra(CalendarContract.Events.DTSTART, dateToTimestamp(strToDate(expireDate)));
-//        intent.putExtra(CalendarContract.Events.DTEND, dateToTimestamp(strToDate(expireDate)) + 15*60*1000);
         intent.putExtra("beginTime", dateToTimestamp(expireDate) +
                 eventStartAt * 60 * 60 * 1000);
         intent.putExtra("endTime", dateToTimestamp(expireDate) +
                 (eventStartAt * 60  * 60 * 1000) +
                 eventDuration * 60 * 1000);
-
-        System.out.println("==================");
-        System.out.println(expireDate);
-        System.out.println(expireDate);
-        System.out.println(dateToTimestamp(expireDate));
-        System.out.println("==================");
 
         startActivity(intent);
     }
