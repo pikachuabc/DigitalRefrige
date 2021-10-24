@@ -76,6 +76,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/time_picker_button"/>
 
+                <Button
+                    android:id="@+id/ics_trigger"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="EXPORT ICS"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nfc_trigger"/>
 
                 <Button
                     android:id="@+id/label_picker_button"
@@ -86,7 +94,7 @@
                     android:textColorHint="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/nfc_trigger" />
+                    app:layout_constraintTop_toBottomOf="@+id/ics_trigger" />
 
 
                 <Button
