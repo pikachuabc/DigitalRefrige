@@ -2,6 +2,8 @@ package com.example.digitalrefrige.views.itemList;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.digitalrefrige.utils.Converters.dateToTimestamp;
+
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -227,6 +230,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
+            binding.icsTrigger.setVisibility(View.GONE);
             binding.buttonAdd.setOnClickListener(this::onAddButtonClicked);
         } else {
             // render item image if exist
@@ -238,6 +242,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+            binding.icsTrigger.setOnClickListener(this::exportICS("test Apple", ""));
 
         }
 
@@ -282,6 +287,53 @@ public class ItemDetailActivity extends AppCompatActivity {
         }catch (IOException | FormatException e) {
             Toast.makeText(this, "写入失败: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
+    }
+    public void exportICS(String title, String description, String expireDate ) {
+
+        //reference 1: https://code.tutsplus.com/tutorials/android-essentials-adding-events-to-the-users-calendar--mobile-8363
+        //reference 2: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#LAST_DATE
+        //reference 3: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#ALL_DAY
+        Calendar cal = Calendar.getInstance();
+        int eventCaldendarID = 1;
+        int eventStartAt = 9;
+        double eventDuration = 0.25;
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+
+
+        intent.putExtra("allDay", false);
+        //The recurrence rule for the event.,暂时不要
+        //intent.putExtra("rrule", "FREQ=YEARLY");
+        intent.putExtra(CalendarContract.Events.CALENDAR_ID,eventCaldendarID);
+
+
+//        System.out.println("==================");
+//        System.out.println(cal.getTimeInMillis());
+//        System.out.println(EpochToDate(cal.getTimeInMillis(),"dd/MM/yyyy"));
+//        System.out.println("==================");
+        //现在采用的方式是每次output到calender直接用现在的日期+上x天后提醒,
+        //如果想采用输入两个日期的话可以改成joda time,但是import出问题
+        //早上九点钟,十五分钟的一个event
+
+
+        intent.putExtra(CalendarContract.Events.TITLE, title);
+        intent.putExtra(CalendarContract.Events.CALENDAR_DISPLAY_NAME, title);
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, description);
+        intent.putExtra("hasAlarm", 0);
+
+
+//        intent.putExtra(CalendarContract.Events.DTSTART, dateToTimestamp(strToDate(expireDate)));
+//        intent.putExtra(CalendarContract.Events.DTEND, dateToTimestamp(strToDate(expireDate)) + 15*60*1000);
+        intent.putExtra("beginTime", dateToTimestamp(strToDate(expireDate)) + eventStartAt * 60 * 60 * 1000);
+        intent.putExtra("endTime", dateToTimestamp(strToDate(expireDate)) + (eventStartAt + eventDuration)* 60  * 60 * 1000);
+
+        System.out.println("==================");
+        System.out.println(expireDate);
+        System.out.println(strToDate(expireDate));
+        System.out.println(dateToTimestamp(strToDate(expireDate)));
+        System.out.println("==================");
+
+        startActivity(intent);
     }
 
     private void onMinusNumberButtonClicked(View view) {
