@@ -186,8 +186,8 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 binding.buttonAll.setTextColor(Color.WHITE);
-                binding.buttonExpiring.setTextColor(Color.BLACK);
-                binding.buttonExpired.setTextColor(Color.BLACK);
+                binding.buttonExpiring.setTextColor(Color.parseColor("#7A7A7A"));
+                binding.buttonExpired.setTextColor(Color.parseColor("#7A7A7A"));
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.ALL_MODE);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
             }
@@ -195,9 +195,9 @@ public class ItemListFragment extends Fragment {
         binding.buttonExpiring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.buttonAll.setTextColor(Color.BLACK);
+                binding.buttonAll.setTextColor(Color.parseColor("#7A7A7A"));
                 binding.buttonExpiring.setTextColor(Color.WHITE);
-                binding.buttonExpired.setTextColor(Color.BLACK);
+                binding.buttonExpired.setTextColor(Color.parseColor("#7A7A7A"));
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRING_MODE);
                 int userSettingExpDays = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("expire_day", "-1"));
                 if (userSettingExpDays != -1) itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
@@ -207,8 +207,8 @@ public class ItemListFragment extends Fragment {
         binding.buttonExpired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.buttonAll.setTextColor(Color.BLACK);
-                binding.buttonExpiring.setTextColor(Color.BLACK);
+                binding.buttonAll.setTextColor(Color.parseColor("#7A7A7A"));
+                binding.buttonExpiring.setTextColor(Color.parseColor("#7A7A7A"));
                 binding.buttonExpired.setTextColor(Color.WHITE);
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRED_MODE);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
