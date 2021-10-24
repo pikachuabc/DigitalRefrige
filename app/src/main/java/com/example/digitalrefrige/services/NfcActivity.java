@@ -9,10 +9,14 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.utils.Converters;
+import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
+import com.example.digitalrefrige.views.itemList.ItemDetailActivityArgs;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class NfcActivity extends AppCompatActivity {
     TextView nfcTextView;
+    Button nfcButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,22 @@ public class NfcActivity extends AppCompatActivity {
                 NdefMessage message = (NdefMessage) messages[0];
                 NdefRecord record = message.getRecords()[0];
                 String payload = new String(record.getPayload());
-                long dayDifferences = Converters.getDayDifferences(payload.substring(3));
+                long itemID = Long.parseLong(payload.substring(3));
                 nfcTextView = findViewById(R.id.nfc_textview);
-                nfcTextView.setText("The item is expiring in "+ Long.toString(dayDifferences)+" days\n"+payload.substring(3));
+                nfcTextView.setText("Click the button to view item");
+                nfcButton = findViewById(R.id.nfc_button);
+                nfcButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent =  new Intent(NfcActivity.this, ItemDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putLong("itemID",itemID);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                });
             }
         }
     }

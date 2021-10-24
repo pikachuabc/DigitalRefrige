@@ -227,12 +227,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
 
-        if (nfcUtils.getmNfcAdapter() == null) {
-            binding.nfcTrigger.setVisibility(View.GONE);
-        } else {
-            binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
-        }
-
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
@@ -248,6 +242,13 @@ public class ItemDetailActivity extends AppCompatActivity {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+
+            if (nfcUtils.getmNfcAdapter() == null) {
+                binding.nfcTrigger.setVisibility(View.GONE);
+            } else {
+                binding.nfcTrigger.setVisibility(View.VISIBLE);
+                binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
+            }
 
         }
 
@@ -329,11 +330,12 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        long itemID = itemDetailViewModel.getCurItem().getItemId();
         try {
-            nfcUtils.writeNFCToTag("2021-12-12", intent);
-            Toast.makeText(this, "写入成功: 2021-12-12", Toast.LENGTH_LONG).show();
+            nfcUtils.writeNFCToTag(String.valueOf(itemID), intent);
+            Toast.makeText(this, "Write Succeed: ID: "+String.valueOf(itemID), Toast.LENGTH_LONG).show();
         } catch (IOException | FormatException e) {
-            Toast.makeText(this, "写入失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Write Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

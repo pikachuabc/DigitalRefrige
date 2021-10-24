@@ -74,7 +74,8 @@
                     android:text="ADD NFC TAG"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/time_picker_button"/>
+                    app:layout_constraintTop_toBottomOf="@+id/time_picker_button"
+                    android:visibility="gone"/>
 
 
                 <Button

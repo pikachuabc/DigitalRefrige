@@ -79,6 +79,13 @@
         android:name="com.example.digitalrefrige.views.login.ExpireFragment"
         android:label="fragment_expire"
         tools:layout="@layout/fragment_expire"/>
+    <activity
+        android:id="@+id/nfcActivity"
+        android:name="com.example.digitalrefrige.services.NfcActivity"
+        android:label="activity_nfc"
+        tools:layout="@layout/activity_nfc">
+    </activity>
+
 
 
 </navigation>
