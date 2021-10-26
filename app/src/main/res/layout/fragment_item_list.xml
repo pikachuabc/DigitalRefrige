@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/bg_gray"
     tools:context=".views.itemList.ItemListFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -68,7 +68,7 @@
                                     android:stateListAnimator="@null"
                                     android:background="@drawable/filter_button_box"
                                     android:textColor="@color/white"
-                                    android:text="Label" />
+                                    android:text="@string/label" />
 
                                 <Button
                                     android:id="@+id/button_all"
@@ -77,9 +77,9 @@
                                     android:layout_marginStart="15dp"
                                     app:backgroundTint="@null"
                                     android:stateListAnimator="@null"
-                                    android:textColor="#7A7A7A"
+                                    android:textColor="@color/dark_gray"
                                     android:background="@drawable/filter_button_box"
-                                    android:text="All" />
+                                    android:text="@string/expiring_all" />
 
                                 <Button
                                     android:id="@+id/button_expiring"
@@ -87,10 +87,10 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
                                     app:backgroundTint="@null"
-                                    android:textColor="#7A7A7A"
+                                    android:textColor="@color/dark_gray"
                                     android:stateListAnimator="@null"
                                     android:background="@drawable/filter_button_box"
-                                    android:text="expiring" />
+                                    android:text="@string/expiring_expiring" />
 
                                 <Button
                                     android:id="@+id/button_expired"
@@ -98,10 +98,10 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
                                     app:backgroundTint="@null"
-                                    android:textColor="#7A7A7A"
+                                    android:textColor="@color/dark_gray"
                                     android:stateListAnimator="@null"
                                     android:background="@drawable/filter_button_box"
-                                    android:text="expired" />
+                                    android:text="@string/expiring_expired" />
 
 
                             </androidx.appcompat.widget.LinearLayoutCompat>

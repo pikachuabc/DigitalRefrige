@@ -2,46 +2,31 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/layout_bg">
 
         <TextView
             android:id="@+id/textview_dialog"
-            android:text="Tap you NFC tag to store item information"
-            android:layout_width="wrap_content"
+            android:text="Tap you NFC tag"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_margin="20dp"
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/nfc_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="NFC"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_baseline_nfc_24" />
-        </RelativeLayout>
-
-
-
 
         <Button
             android:id="@+id/btn_write_nfc_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@android:color/holo_red_light"
-            android:text="Cancel"
+            android:background="@drawable/filter_button_box"
+            android:text="Cencel"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
     </LinearLayout>
