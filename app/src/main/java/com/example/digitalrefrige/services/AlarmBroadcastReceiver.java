@@ -52,13 +52,13 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         if (expiringItems!= null && !expiringItems.isEmpty()) {
                 if (intent.getAction().equals("NOTIFY")) {
                     Intent mIntent = new Intent(context, MainActivity.class);
-                    PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, PendingIntent.FLAG_MUTABLE);
                     createNotificationChannel();
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_document)
                             .setContentTitle("Expiring")
-                            .setContentText("You have item(s) expiring in "+intervalString+" days")
+                            .setContentText("You have expiring item(s)")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(mPendingIntent)
                             .setAutoCancel(true);
