@@ -2,6 +2,7 @@ package com.example.digitalrefrige.model;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
@@ -16,6 +17,7 @@ import java.util.concurrent.Future;
 public class ItemLabelCrossRefRepository {
     private LiveData<List<LabelWithItems>> labelListWithItems;
     private LiveData<List<ItemWithLabels>> itemListWithLabels;
+    private LiveData<List<ItemLabelCrossRef>> allCrossRefs;
 
     private ExecutorService executorService;
 
@@ -26,6 +28,7 @@ public class ItemLabelCrossRefRepository {
         executorService = Executors.newFixedThreadPool(2);
         labelListWithItems = dao.getLabelOfItems();
         itemListWithLabels = dao.getItemOfLabels();
+        allCrossRefs = dao.getAllCrossRefs();
 
     }
 
@@ -36,6 +39,8 @@ public class ItemLabelCrossRefRepository {
     public LiveData<List<ItemWithLabels>> getAllItemList() {
         return itemListWithLabels;
     }
+
+    public LiveData<List<ItemLabelCrossRef>> getAllCrossRefs(){ return allCrossRefs; }
 
     public List<Label> getLabelsByItem(long itemId) {
         Future<List<Label>> res = executorService.submit(() -> itemLabelCrossRefDAO.getLabelsByItem(itemId));
@@ -56,6 +61,15 @@ public class ItemLabelCrossRefRepository {
             return -1L;
         }
     }
+
+    public void updateItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef) {
+        executorService.execute(() -> itemLabelCrossRefDAO.updateItemLabelCrossRef(itemLabelCrossRef));
+    }
+
+    public void deleteItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef) {
+        executorService.execute(() -> itemLabelCrossRefDAO.deleteItemLabelCrossRef(itemLabelCrossRef.getItemId()));
+    }
+
 
     public void updateItemLabels(ItemWithLabels itemWithLabels) {
         executorService.execute(() -> itemLabelCrossRefDAO.updateItemLabels(itemWithLabels));

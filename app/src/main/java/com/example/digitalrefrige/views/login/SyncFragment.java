@@ -35,9 +35,11 @@ import java.util.Map;
 public class SyncFragment extends Fragment {
 
     private FragmentSyncBinding binding;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SyncViewModel syncViewModel;
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private Converters c;
+
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,62 +71,51 @@ public class SyncFragment extends Fragment {
             });
         }
 
-        binding.backUpStorage.setOnClickListener(button -> storeData());
+        binding.backUpStorage.setOnClickListener(button -> uploadData());
         binding.fetchData.setOnClickListener(button -> fetchData());
 
 
         return binding.getRoot();
     }
 
-    public void storeData() {
-        LocalDataBase localDB = LocalDataBase.getInstance(getContext());
+    public void uploadData() {
+
         List<String> itemIDs = new ArrayList<>();
         List<String> labelIDs = new ArrayList<>();
         List<String> refIDs = new ArrayList<>();
 
-        localDB.itemDAO().getAllItems().observe(getViewLifecycleOwner(), new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-                for(Item i: items){
-                    itemIDs.add(i.getName());
-                    // data in local, not in cloud => add in cloud
-                    // data in both local and cloud => update cloud
-                    db.collection("item_table").document(i.getName()).set(i);
-                }
-            }
-        });
-        localDB.labelDAO().getAllLabels().observe(getViewLifecycleOwner(), new Observer<List<Label>>() {
-            @Override
-            public void onChanged(List<Label> labels) {
-                for(Label l: labels){
-                    labelIDs.add(l.getTitle());
-                    db.collection("label_table").document(l.getTitle()).set(l);
-                }
-            }
-        });
-        localDB.itemLabelCrossRefDAO().getAllCrossRefs().observe(getViewLifecycleOwner(),  new Observer<List<ItemLabelCrossRef>>() {
-            @Override
-            public void onChanged(List<ItemLabelCrossRef> refs) {
-                for(int i = 0; i < refs.size(); i++) {
-                    refIDs.add("ref" + i);
-                    db.collection("itemlabelcrossref_table").document("ref" + i).set(refs.get(i));
-                }
-            }
-        });
+
+        List<Item> localItems = getLocalItem();
+        for(Item i: localItems){
+            itemIDs.add("item" + i.getItemId());
+            db.collection("item_table").document("item" + i.getItemId()).set(i);
+        }
+
+        List<Label> localLabels = getLocalLabel();
+        for(Label l: localLabels){
+            labelIDs.add(l.getTitle());
+            db.collection("label_table").document(l.getTitle()).set(l);
+        }
+
+        List<ItemLabelCrossRef> localRefs = getLocalCrossRef();
+        for(int i = 0; i < localRefs.size(); i++) {
+            refIDs.add("ref" + i);
+            db.collection("itemlabelcrossref_table").document("ref" + i).set(localRefs.get(i));
+        }
 
         removeCloudExtra("item_table", itemIDs);
         removeCloudExtra("label_table", labelIDs);
         removeCloudExtra("itemlabelcrossref_table", refIDs);
 
-        Map<String, String> timeR = new HashMap<>();
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String time =  c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
-        binding.uploadRecord.setText(time);
-        timeR.put("value", time);
-        db.collection("update_time").document("last_upload").set(timeR);
-    }
 
+        Map<String, String> uploadTime = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        String timeDiff = c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
+        binding.uploadRecord.setText(timeDiff);
+        uploadTime.put("value", timeDiff);
+        db.collection("update_time").document("last_upload").set(uploadTime);
+
+    }
 
     public void removeCloudExtra(String tableName, List<String> itemIDs){
         db.collection(tableName).get()
@@ -144,11 +135,11 @@ public class SyncFragment extends Fragment {
     }
 
 
+
+
     public void fetchData(){
 
         List<Item> localItems = getLocalItem();
-        List<Label> localLabels = getLocalLabel();
-
         db.collection("item_table")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -174,6 +165,7 @@ public class SyncFragment extends Fragment {
                     }
                 });
 
+        List<Label> localLabels = getLocalLabel();
         db.collection("label_table")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -199,13 +191,38 @@ public class SyncFragment extends Fragment {
                     }
                 });
 
-        Map<String, String> fetchTimeR = new HashMap<>();
+        List<ItemLabelCrossRef> localRefs = getLocalCrossRef();
+        db.collection("itemlabelcrossref_table")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<ItemLabelCrossRef> cloudRefs = new ArrayList<>();
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<DocumentSnapshot> cloudList = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d: cloudList){
+                            ItemLabelCrossRef ref = d.toObject(ItemLabelCrossRef.class);
+                            cloudRefs.add(ref);
+                            if (!localRefs.contains(ref)){
+                                syncViewModel.insertRef(ref);
+                            }else{
+                                syncViewModel.updateRef(ref);
+                            }
+
+                        }
+                    }
+                    // removeLocalExtra
+                    for(ItemLabelCrossRef ref: localRefs){
+                        if(!cloudRefs.contains(ref)){
+                            syncViewModel.deleteRef(ref);
+                        }
+                    }
+                });
+
+        Map<String, String> fetchTime = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String time =  c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
-        binding.fetchRecord.setText(time);
-        fetchTimeR.put("value", time);
-        db.collection("update_time").document("last_fetch").set(fetchTimeR);
+        String timeDiff =  c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
+        binding.fetchRecord.setText(timeDiff);
+        fetchTime.put("value", timeDiff);
+        db.collection("update_time").document("last_fetch").set(fetchTime);
     }
 
 
@@ -232,5 +249,16 @@ public class SyncFragment extends Fragment {
         });
        return localLabels;
    }
+
+    public List<ItemLabelCrossRef> getLocalCrossRef(){
+        List<ItemLabelCrossRef> localRefs = new ArrayList<>();
+        syncViewModel.getAllCrossRefs().observe(getViewLifecycleOwner(), new Observer<List<ItemLabelCrossRef>>() {
+            @Override
+            public void onChanged(List<ItemLabelCrossRef> refs) {
+                localRefs.addAll(refs);
+            }
+        });
+        return localRefs;
+    }
 
 }

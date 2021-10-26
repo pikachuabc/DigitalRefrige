@@ -41,10 +41,7 @@ public class SyncViewModel extends ViewModel {
      */
     private LiveData<List<Label>> allLabels;
 
-    /**
-     * items labels relationships from database for filtering and recyclerview updating
-     */
-    private LiveData<List<ItemWithLabels>> allItemsWithLabels;
+    private LiveData<List<ItemLabelCrossRef>> allCrossRefs;
 
 
     @Inject
@@ -54,7 +51,7 @@ public class SyncViewModel extends ViewModel {
         labelRepository = labelRepo;
         itemLabelCrossRefRepository = itemLabelCrossRefRepo;
         allItems = itemRepository.getAllItems();
-        allItemsWithLabels = itemLabelCrossRefRepo.getAllItemList();
+        allCrossRefs = itemLabelCrossRefRepo.getAllCrossRefs();
         allLabels = labelRepo.getAllLabels();
     }
 
@@ -65,6 +62,9 @@ public class SyncViewModel extends ViewModel {
     public LiveData<List<Label>> getAllLables() {
         return allLabels;
     }
+
+    public LiveData<List<ItemLabelCrossRef>> getAllCrossRefs() {return allCrossRefs; }
+
 
 
     public void insertItem(Item item) {
@@ -79,6 +79,8 @@ public class SyncViewModel extends ViewModel {
         itemRepository.updateItem(item);
     }
 
+
+
     public void insertLabel(Label label){ labelRepository.insertLabel(label); }
 
     public void deleteLabel(Label label) { labelRepository.deleteLabel(label); }
@@ -86,6 +88,13 @@ public class SyncViewModel extends ViewModel {
     public void updateLabel(Label label) {
         labelRepository.updateLabel(label);
     }
+
+
+    public void insertRef(ItemLabelCrossRef ref){ itemLabelCrossRefRepository.insertItemLabelCrossRef(ref); }
+
+    public void deleteRef(ItemLabelCrossRef ref) { itemLabelCrossRefRepository.deleteItemLabelCrossRef(ref); }
+
+    public void updateRef(ItemLabelCrossRef ref) { itemLabelCrossRefRepository.updateItemLabelCrossRef(ref); }
 
 
 }
