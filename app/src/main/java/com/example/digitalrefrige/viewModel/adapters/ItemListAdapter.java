@@ -73,7 +73,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
      */
     class ItemHolder extends RecyclerView.ViewHolder {
         private TextView textViewName;
-        private TextView textViewDescription;
+//        private TextView textViewDescription;
         private TextView expireDate;
         private ImageView itemImage;
         private long itemID;
@@ -81,7 +81,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         public ItemHolder(@NonNull ItemCardBinding binding) {
             super(binding.getRoot());
             textViewName = binding.textViewTitle;
-            textViewDescription = binding.textViewDescription;
+//            textViewDescription = binding.textViewDescription;
             expireDate = binding.textViewExpireDate;
             itemImage = binding.imageViewFoodPhoto;
 
@@ -97,7 +97,7 @@ public class ItemListAdapter extends ListAdapter<Item, ItemListAdapter.ItemHolde
         public void bind(Item item) {
             // bond item content into to this holder
             textViewName.setText(item.getName());
-            textViewDescription.setText(item.getDescription());
+//            textViewDescription.setText(item.getDescription());
             expireDate.setText(Converters.dateToString(item.getExpireDate()));
             itemID = item.getItemId();
             String uri = item.getImgUrl();

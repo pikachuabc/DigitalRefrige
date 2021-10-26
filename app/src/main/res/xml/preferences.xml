@@ -5,12 +5,10 @@
     <SwitchPreference
         android:defaultValue="false"
         android:key="notifications"
-        android:title="Enable message notifications" />
+        android:title="Notification" />
     <EditTextPreference
-
-        app:isPreferenceVisible="false"
         android:defaultValue="3"
         android:key="expire_day"
-        android:title="Set notification deadline"/>
+        android:title="Set expiring deadline"/>
 
 </PreferenceScreen>
