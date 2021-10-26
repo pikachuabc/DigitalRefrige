@@ -1,6 +1,9 @@
 package com.example.digitalrefrige.viewModel;
 
 import androidx.lifecycle.ViewModel;
+
+import com.example.digitalrefrige.model.ItemRepository;
+import com.example.digitalrefrige.model.dataHolder.Item;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +26,10 @@ public class UserProfileViewModel extends ViewModel {
         this.mGoogleSignInClient = mGoogleSignInClient;
         this.mAuth = mAuth;
     }
+
+
+
+
 
 
 }

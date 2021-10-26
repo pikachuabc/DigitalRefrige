@@ -33,6 +33,9 @@ public class Item extends BaseObservable {
         this.imgUrl = imgUrl;
     }
 
+    public Item(){
+    }
+
     @Bindable
     public String getName() {
         return name;

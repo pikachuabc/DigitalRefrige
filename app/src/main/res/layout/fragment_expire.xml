@@ -15,27 +15,30 @@
             android:layout_centerHorizontal="true"
             android:text="Notification"
             android:layout_marginTop="100dp"/>
+
         <RelativeLayout
+            android:id="@+id/notification_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/notification_settings"
-            android:visibility="invisible"
             android:layout_below="@+id/switch_notification"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible">
+
             <EditText
                 android:id="@+id/edit_notify_days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:inputType="number"
-                android:hint="Notify in N days" />
+                android:hint="Notify in N days"
+                android:inputType="number" />
+
             <TimePicker
                 android:id="@+id/timepicker_notify_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@id/edit_notify_days"
-                android:timePickerMode="spinner"/>
+                android:layout_centerHorizontal="true"
+                android:timePickerMode="spinner" />
 
             <Button
                 android:id="@+id/confirm_button"

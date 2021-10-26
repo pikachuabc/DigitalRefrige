@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_navigation_profile_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_sync"
+            app:destination="@id/syncFragment"/>
     </fragment>
 
     <fragment
@@ -79,6 +82,13 @@
         android:name="com.example.digitalrefrige.views.login.ExpireFragment"
         android:label="fragment_expire"
         tools:layout="@layout/fragment_expire"/>
+
+    <fragment
+        android:id="@+id/syncFragment"
+        android:name="com.example.digitalrefrige.views.login.SyncFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_sync" >
+    </fragment>
 
 
 </navigation>

@@ -24,6 +24,7 @@ public class Label extends BaseObservable {
     public Label(String title) {
         this.title = title;
     }
+    public Label(){ }
 
     public void setTitle(String title) {
         this.title = title;

@@ -56,42 +56,28 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/backUp"
-                android:layout_width="match_parent"
+
+            <Button
+                android:id="@+id/sync"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                android:background="@android:color/transparent"
+                android:text="Data synchronization"
                 app:layout_constraintTop_toBottomOf="@id/signin_signup"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-                <Button
-                    android:id="@+id/backUpStorage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Backup Data on cloud"
-                    android:background="@android:color/transparent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:id="@+id/timeRecord"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="x days ago"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginRight="10dp"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@id/backUp"
+                app:layout_constraintTop_toBottomOf="@id/sync"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"/>
+
+
+
 
             <Button
                 android:id="@+id/exportToICS"
@@ -99,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:text="Export To Calendar"
-                app:layout_constraintTop_toBottomOf="@id/backUp"
+                app:layout_constraintTop_toBottomOf="@id/sync"
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <View
