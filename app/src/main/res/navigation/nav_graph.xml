@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_navigation_profile_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@id/action_itemListFragment_to_itemDetailActivity"
+            app:destination="@id/itemDetailActivity"/>
     </fragment>
 
     <fragment

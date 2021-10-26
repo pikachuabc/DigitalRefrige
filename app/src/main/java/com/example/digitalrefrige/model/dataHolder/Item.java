@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 @Entity(tableName = "item_table")
 public class Item extends BaseObservable {
-    private int quantity;
+    private int quantity = 1;
     private String name;
     private String description;
     private Date expireDate;
