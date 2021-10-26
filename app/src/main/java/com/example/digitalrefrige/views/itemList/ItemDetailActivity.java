@@ -6,6 +6,7 @@ import static com.example.digitalrefrige.utils.Converters.dateToTimestamp;
 import static com.example.digitalrefrige.utils.Converters.strToDate;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ActivityItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.utils.NfcUtils;
@@ -98,6 +100,8 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private NfcUtils nfcUtils;
     private ProgressDialog dialog;
+
+    private WriteNfcDialog nfcDialog;
 
 
     @Override
@@ -348,6 +352,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         try {
             nfcUtils.writeNFCToTag(String.valueOf(itemID), intent);
             Toast.makeText(this, "Write Succeed: ID: "+String.valueOf(itemID), Toast.LENGTH_LONG).show();
+            nfcDialog.dismiss();
         } catch (IOException | FormatException e) {
             Toast.makeText(this, "Write Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -530,7 +535,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void onNfcDialogButtonClicked(View view) {
-        new WriteNfcDialog().show(getSupportFragmentManager(), "writedialog");
+        nfcDialog =  new WriteNfcDialog();
+        nfcDialog.show(getSupportFragmentManager(), "writedialog");
     }
 
     private boolean isNetworkConnected() {
