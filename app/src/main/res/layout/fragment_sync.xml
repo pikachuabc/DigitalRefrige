@@ -34,7 +34,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:id="@+id/timeRecord"
+                    android:id="@+id/uploadRecord"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="x days ago"

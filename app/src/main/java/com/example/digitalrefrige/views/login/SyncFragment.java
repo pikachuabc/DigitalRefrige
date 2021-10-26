@@ -15,6 +15,7 @@ import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataSource.LocalDataBase;
+import com.example.digitalrefrige.utils.Converters;
 import com.example.digitalrefrige.viewModel.SyncViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +37,7 @@ public class SyncFragment extends Fragment {
     private FragmentSyncBinding binding;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SyncViewModel syncViewModel;
+    private Converters c;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,13 +47,24 @@ public class SyncFragment extends Fragment {
         syncViewModel = new ViewModelProvider(requireActivity()).get(SyncViewModel.class);
 
 
-        // fetch last update time from fireCloud
-        DocumentReference timeR = db.collection("update_time").document("last_update");
-        if(timeR != null) {
-            timeR.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+        // fetch last upload time from fireCloud
+        DocumentReference uploadR = db.collection("update_time").document("last_upload");
+        if(uploadR != null) {
+            uploadR.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    binding.timeRecord.setText(value.getString("value"));
+                    binding.uploadRecord.setText(value.getString("value"));
+                }
+            });
+        }
+
+        // fetch last fetch time from fireCloud
+        DocumentReference fetchR = db.collection("update_time").document("last_fetch");
+        if(fetchR != null) {
+            fetchR.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    binding.fetchRecord.setText(value.getString("value"));
                 }
             });
         }
@@ -105,11 +118,11 @@ public class SyncFragment extends Fragment {
 
         Map<String, String> timeR = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = format.format(calendar.getTime());
-        binding.timeRecord.setText(time);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String time =  c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
+        binding.uploadRecord.setText(time);
         timeR.put("value", time);
-        db.collection("update_time").document("last_update").set(timeR);
+        db.collection("update_time").document("last_upload").set(timeR);
     }
 
 
@@ -185,6 +198,14 @@ public class SyncFragment extends Fragment {
                         }
                     }
                 });
+
+        Map<String, String> fetchTimeR = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String time =  c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
+        binding.fetchRecord.setText(time);
+        fetchTimeR.put("value", time);
+        db.collection("update_time").document("last_fetch").set(fetchTimeR);
     }
 
 
