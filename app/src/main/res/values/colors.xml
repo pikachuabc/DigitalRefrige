@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="reeking_yellow">#ffd640</color>
     <color name="error">#BF360C</color>
+    <color name="dark_gray">#7A7A7A</color>
+    <color name="bg_gray">#F5F5F5</color>
 </resources>
