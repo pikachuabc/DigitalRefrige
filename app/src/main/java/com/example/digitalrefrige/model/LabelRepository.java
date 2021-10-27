@@ -53,4 +53,13 @@ public class LabelRepository {
             return null;
         }
     }
+    public Label findLabelByTitle(String title){
+        Future<Label> labelFuture = executorService.submit(() -> labelDAO.findLabelByTitle(title));
+        try {
+            return labelFuture.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

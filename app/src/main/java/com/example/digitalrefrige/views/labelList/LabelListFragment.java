@@ -83,8 +83,14 @@ public class LabelListFragment extends Fragment {
     }
 
     public void onAddButtonClicked(View view) {
+        long r;
         binding.labelEditText.clearFocus();
-        long r = labelListViewModel.insertLabel(new Label(binding.labelEditText.getText().toString()));
+        String vaildLabel = binding.labelEditText.getText().toString();
+        if(labelListViewModel.findLabelByTitle(vaildLabel)== null){
+            r = labelListViewModel.insertLabel(new Label(binding.labelEditText.getText().toString()));
+        }else{
+            r = -1L;
+        }
         if(r == -1L){
             Toast.makeText(getContext(), "failed to add", Toast.LENGTH_SHORT).show();
         }else{
