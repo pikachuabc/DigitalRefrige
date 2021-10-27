@@ -85,5 +85,4 @@ public class Converters {
         return dayDifferences;
     }
 
-
 }

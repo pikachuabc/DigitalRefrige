@@ -79,6 +79,12 @@ public class SyncViewModel extends ViewModel {
         itemRepository.updateItem(item);
     }
 
+    public void updateItemImageURL(Item item, String url) {
+        item.setImgUrl(url);
+        itemRepository.updateItem(item);
+    }
+
+
 
 
     public void insertLabel(Label label){ labelRepository.insertLabel(label); }
