@@ -24,6 +24,7 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.LabelWithItems;
 import com.example.digitalrefrige.viewModel.LabelListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.Arrays;
 import java.util.List;
@@ -86,11 +87,16 @@ public class LabelListFragment extends Fragment {
         long r;
         binding.labelEditText.clearFocus();
         String vaildLabel = binding.labelEditText.getText().toString();
-        if(labelListViewModel.findLabelByTitle(vaildLabel)== null){
-            r = labelListViewModel.insertLabel(new Label(binding.labelEditText.getText().toString()));
-        }else{
+        if (Strings.isEmptyOrWhitespace(vaildLabel)){
             r = -1L;
+        }else{
+            if(labelListViewModel.findLabelByTitle(vaildLabel)== null){
+                r = labelListViewModel.insertLabel(new Label(binding.labelEditText.getText().toString()));
+            }else{
+                r = -1L;
+            }
         }
+
         if(r == -1L){
             Toast.makeText(getContext(), "failed to add", Toast.LENGTH_SHORT).show();
         }else{
