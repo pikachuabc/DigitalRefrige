@@ -312,7 +312,6 @@ public class ItemDetailActivity extends AppCompatActivity {
                             }
                         });
                         dialog = new ProgressDialog("retrieving result...");
-                        file.delete();
                         dialog.show(getSupportFragmentManager(), "in progressing");
                     } catch (Exception e) {
                         e.printStackTrace();
