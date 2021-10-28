@@ -135,6 +135,7 @@ public class SyncFragment extends Fragment {
         // get user's cloud items
         // check which of them are not in the local database, and remove
 
+
         List<Item> localItems = getLocalItem();
 
         db.collection("item_table")
@@ -158,27 +159,31 @@ public class SyncFragment extends Fragment {
                             Map<String, Object> item = new HashMap<>();
                             item.put("name", i.getName());
                             item.put("description", i.getDescription());
-                            item.put("imgUrl", i.getImgUrl());
                             item.put("expireDate", i.getExpireDate());
                             item.put("itemId", i.getItemId());
                             item.put("quantity", i.getQuantity());
+                            item.put("imgUrl", i.getImgUrl());
                             item.put("user", user.getUid());
+
                             if(!cloudItems.keySet().contains(i)){
-                                db.collection("item_table").add(item).addOnCompleteListener(t ->{
+                                db.collection("item_table").add(item).addOnCompleteListener( t-> {
                                     if (t.isSuccessful()) {
+                                        DocumentReference document = t.getResult();
                                         if(i.getImgUrl().length() != 0){
-                                            convertImageUrlToCloud(i.getImgUrl(), i.getItemId(), cloudItems.get(i));
+                                            convertImageUrlToCloud(i.getImgUrl(), i.getItemId(), document.getId());
                                         }
                                     }else{
-                                        Log.d(TAG, "Error adding documents: ", task.getException());
+                                        System.out.print("Error adding documents");
                                     }
                                 });
                             }else{
+                                Toast.makeText(getContext(), "3333333333333", Toast.LENGTH_SHORT).show();
                                 db.collection("item_table").document(cloudItems.get(i)).set(item);
                                 if(i.getImgUrl().length() != 0){
                                     convertImageUrlToCloud(i.getImgUrl(), i.getItemId(), cloudItems.get(i));
                                 }
                             }
+
                         }
 
                     } else {
@@ -463,6 +468,9 @@ public class SyncFragment extends Fragment {
     }
 
     public void convertImageUrlToCloud(String url, long itemID, String documentID) {
+
+        Map<String, String> data = new HashMap<>();
+
         Uri imageUri = Uri.parse(url);
         String imageName = "item" + itemID + "." + getFileExtension(imageUri);
         StorageReference itemRef = firebaseStorage.getReference().child(user.getUid() + "/" + "item" + itemID + "/" + imageName);
@@ -470,13 +478,12 @@ public class SyncFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> {
                     itemRef.getDownloadUrl()
                             .addOnSuccessListener(downloadURL -> {
-
-                                Map<String, String> data = new HashMap<>();
+                                Log.d(TAG, "url: " + downloadURL.toString());
                                 data.put("imgUrl", downloadURL.toString());
-
+                                Log.d(TAG, "data size: " + data.size());
+                                Log.d(TAG, "doc ID: " + documentID);
                                 db.collection("item_table").
-                                        document(documentID).
-                                        set(data, SetOptions.merge());
+                                        document(documentID).set(data, SetOptions.merge());
                             });
                     Toast.makeText(getContext(), "Update image Url successfully", Toast.LENGTH_SHORT).show();
                 }).addOnFailureListener(new OnFailureListener() {
