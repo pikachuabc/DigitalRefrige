@@ -54,7 +54,7 @@ public abstract class LocalDataBase extends RoomDatabase {
                                         LabelDAO labelDAO = instance.labelDAO();
                                         ItemLabelCrossRefDAO itemLabelCrossRefDAO = instance.itemLabelCrossRefDAO();
                                         Calendar calendar = Calendar.getInstance();
-                                        for (int i = 1; i <= 15; i++) {
+                                        for (int i = 1; i <= 5; i++) {
                                             calendar.add(Calendar.DAY_OF_MONTH, 1);
                                             itemDAO.insertItem(new Item("item" + i, "description" + i, calendar.getTime(),""));
                                         }

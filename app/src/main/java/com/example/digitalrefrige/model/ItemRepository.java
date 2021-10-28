@@ -72,6 +72,10 @@ public class ItemRepository {
         executorService.execute(() -> itemDAO.updateItem(item));
     }
 
+    public void updateItemWithNotURL(Item item) {
+        executorService.execute(() -> itemDAO.updateNoURL(item.getName(),
+                item.getDescription(),item.getExpireDate(), item.getQuantity(),item.getItemId()));}
+
     public void deleteItem(Item item) {
         executorService.execute(() -> itemDAO.deleteItem(item));
     }

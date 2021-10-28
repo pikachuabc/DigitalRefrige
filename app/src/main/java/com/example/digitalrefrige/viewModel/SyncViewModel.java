@@ -79,6 +79,10 @@ public class SyncViewModel extends ViewModel {
         itemRepository.updateItem(item);
     }
 
+    public void updateItemWithNotURL(Item item) {
+        itemRepository.updateItemWithNotURL(item);
+    }
+
     public void updateItemImageURL(Item item, String url) {
         item.setImgUrl(url);
         itemRepository.updateItem(item);
