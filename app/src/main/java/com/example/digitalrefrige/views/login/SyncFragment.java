@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -485,7 +486,7 @@ public class SyncFragment extends Fragment {
                                 db.collection("item_table").
                                         document(documentID).set(data, SetOptions.merge());
                             });
-                    Toast.makeText(getContext(), "Update image Url successfully", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Update image Url successfully", Toast.LENGTH_SHORT).show();
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -525,18 +526,19 @@ public class SyncFragment extends Fragment {
         try {
 
             File localFile = File.createTempFile("images", ".jpg");
+            Context context_1 = getContext();
             itemRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
                 // Local temp file has been created
                 Bitmap photo = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                String contentUrl = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), photo, "item" + item.getItemId() +".jpg", "item" + item.getItemId() + "image");
-                Toast.makeText(getContext(), "Image successfully saved", Toast.LENGTH_SHORT).show();
+                String contentUrl = MediaStore.Images.Media.insertImage(context_1.getContentResolver(), photo, "item" + item.getItemId() +".jpg", "item" + item.getItemId() + "image");
+                Toast.makeText(context_1, "Image successfully saved", Toast.LENGTH_SHORT).show();
                 syncViewModel.updateItemImageURL(item, contentUrl);
 
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
-                    Toast.makeText(getContext(), "Image save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context_1, "Image save failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (IOException e) {
