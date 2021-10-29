@@ -181,7 +181,6 @@ public class SyncFragment extends Fragment {
                                     }
                                 });
                             } else {
-                                Toast.makeText(getContext(), "3333333333333", Toast.LENGTH_SHORT).show();
                                 db.collection("item_table").document(cloudItems.get(i)).set(item);
                                 if (i.getImgUrl().length() != 0) {
                                     convertImageUrlToCloud(i.getImgUrl(), i.getItemId(), cloudItems.get(i));
