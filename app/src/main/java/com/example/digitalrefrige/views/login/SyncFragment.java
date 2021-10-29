@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,12 +87,17 @@ public class SyncFragment extends Fragment {
         user = userProfileViewModel.mAuth.getCurrentUser();
 
         // fetch last upload time from fireCloud
-        getTime("uploadTime");
+        getTime();
         // fetch last fetch time from fireCloud
-        getTime("fetchTime");
+       // getFetchTime();
 
-        binding.backUpStorage.setOnClickListener(button -> uploadData());
-        binding.fetchData.setOnClickListener(button -> fetchData());
+        binding.backUpStorage.setOnClickListener(button -> {
+            uploadData();
+        });
+        binding.fetchData.setOnClickListener(button -> {
+            fetchData();
+
+        });
 
         return binding.getRoot();
     }
@@ -105,11 +111,12 @@ public class SyncFragment extends Fragment {
 
 
         Calendar calendar = Calendar.getInstance();
-        String timeDiff = c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
-        binding.uploadRecord.setText(timeDiff);
+        String time = format.format(calendar.getTime());
+
+        binding.uploadRecord.setText("just now");
 
         Map<String, String> uploadTime = new HashMap<>();
-        uploadTime.put("uploadTime", timeDiff);
+        uploadTime.put("uploadTime", time);
         uploadTime.put("user", user.getUid());
 
         updateTime(uploadTime);
@@ -124,11 +131,11 @@ public class SyncFragment extends Fragment {
         Toast.makeText(getContext(), "Fetch Successfully", Toast.LENGTH_SHORT).show();
 
         Calendar calendar = Calendar.getInstance();
-        String timeDiff = c.getDayDifferences(format.format(calendar.getTime())) + " days ago";
-        binding.fetchRecord.setText(timeDiff);
+        String time =  format.format(calendar.getTime());
+        binding.fetchRecord.setText("just now");
 
         Map<String, String> fetchTime = new HashMap<>();
-        fetchTime.put("fetchTime", timeDiff);
+        fetchTime.put("fetchTime", time);
         fetchTime.put("user", user.getUid());
 
         updateTime(fetchTime);
@@ -277,7 +284,7 @@ public class SyncFragment extends Fragment {
                 });
     }
 
-    public void updateTime(Map<String, String> uploadTime) {
+    public void updateTime(Map<String, String> time) {
         db.collection("update_time")
                 .whereEqualTo("user", user.getUid())
                 .get()
@@ -285,10 +292,11 @@ public class SyncFragment extends Fragment {
                     if (task.isSuccessful()) {
                         if (task.getResult().size() > 0) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                db.collection("update_time").document(document.getId()).set(uploadTime);
+                                db.collection("update_time").document(document.getId()).set(time, SetOptions.merge());
                             }
                         } else {
-                            db.collection("update_time").add(uploadTime);
+                            Log.d(TAG, "No document in update_time ", task.getException());
+                            db.collection("update_time").add(time);
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -296,7 +304,7 @@ public class SyncFragment extends Fragment {
                 });
     }
 
-    public void getTime(String timeName) {
+    public void getTime(){
 
         db.collection("update_time")
                 .whereEqualTo("user", user.getUid())
@@ -308,12 +316,24 @@ public class SyncFragment extends Fragment {
                                 db.collection("update_time").document(document.getId()).addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                        if (timeName == "uploadTime") {
-                                            binding.uploadRecord.setText(value.getString(timeName));
-                                        } else if (timeName == "fetchTime") {
-                                            binding.fetchRecord.setText(value.getString(timeName));
-                                        }
 
+                                            String  fetch = value.getString("fetchTime");
+                                            String  upload = value.getString("uploadTime");
+                                            if (fetch != null){
+                                                long dateDiff = Converters.getDayDifferences(fetch);
+                                                if (dateDiff == 0){
+                                                    binding.fetchRecord.setText("just now");
+                                                } else{
+                                                    binding.fetchRecord.setText(Math.abs(dateDiff) + " days ago");
+                                                }
+                                            } if(upload != null){
+                                                long dateDiff = Converters.getDayDifferences(upload);
+                                                if (dateDiff == 0){
+                                                    binding.uploadRecord.setText("just now");
+                                                } else{
+                                                    binding.uploadRecord.setText(Math.abs(dateDiff) + " days ago");
+                                                }
+                                            }
                                     }
                                 });
                             }
@@ -322,6 +342,7 @@ public class SyncFragment extends Fragment {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
+
     }
 
     public void fetchItemTable() {
@@ -506,14 +527,6 @@ public class SyncFragment extends Fragment {
     }
 
     public void convertImageUrlToLocal(String url, Item item) {
-
-//        if (ContextCompat.checkSelfPermission(getActivity(),
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            saveImage(url, item);
-//        }else{
-//            askPermission();
-//        }
         saveImage(url, item);
     }
 
