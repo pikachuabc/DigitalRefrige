@@ -5,15 +5,19 @@ import static android.app.Activity.RESULT_OK;
 import static com.example.digitalrefrige.utils.Converters.dateToTimestamp;
 import static com.example.digitalrefrige.utils.Converters.strToDate;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.nfc.FormatException;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -23,6 +27,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.PathUtils;
 import androidx.fragment.app.DialogFragment;
@@ -91,6 +97,9 @@ import retrofit2.Response;
 public class ItemDetailActivity extends AppCompatActivity {
 
     public static final int CREATE_NEW_ITEM = -1;
+
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
 
 
     private ActivityItemDetailBinding binding;
@@ -463,6 +472,62 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            showMessageOKCancel("You need to allow access permissions",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermission();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return false;
+        }
+        return true;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CODE);
+    }
+
+
     public void launchCameraOrSelectFromGallery(View view) {
         String[] availableMode = new String[]{"LIBRARY", "CAMERA"};
         DialogFragment dialogFragment = new picSelectorDialogFragment(availableMode, new DialogInterface.OnClickListener() {
@@ -473,22 +538,32 @@ public class ItemDetailActivity extends AppCompatActivity {
                     photoLibraryLauncher.launch(selectPhoto);
 
                 } else if (i == 1) {
-                    Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    // if doesn't work on emulator, get ride of this if
-                    if (takePicIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
-                        File photo = null;
-                        try {
-                            photo = createImageFile();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (photo != null) {
-                            Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.digitalrefrige.fileprovider", photo);
-                            itemDetailViewModel.setTempUrl(photoUri.toString());
-                            takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        }
-                        cameraLauncher.launch(takePicIntent);
+
+                    if (checkPermission()) {
+                        //main logic or main code
+
+                        // . write your main code to execute, It will execute if the permission is already given.
+                        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        // if doesn't work on emulator, get ride of this if
+//                        if (takePicIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+                            File photo = null;
+                            try {
+                                photo = createImageFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            if (photo != null) {
+                                Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.digitalrefrige.fileprovider", photo);
+                                itemDetailViewModel.setTempUrl(photoUri.toString());
+                                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                            }
+                            cameraLauncher.launch(takePicIntent);
+//                        }
+                    } else {
+                        requestPermission();
                     }
+
+
                 }
             }
         });
