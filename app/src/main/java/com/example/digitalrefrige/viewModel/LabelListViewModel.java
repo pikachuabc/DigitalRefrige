@@ -1,5 +1,6 @@
 package com.example.digitalrefrige.viewModel;
 
+import androidx.compose.ui.graphics.colorspace.Lab;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -48,5 +49,5 @@ public class LabelListViewModel extends ViewModel {
 
     public void updateLabel(Label label){labelRepository.updateLabel(label);}
 
-
+    public Label findLabelByTitle(String name){return labelRepository.findLabelByTitle(name);}
 }

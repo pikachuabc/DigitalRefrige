@@ -2,7 +2,11 @@ package com.example.digitalrefrige.views.itemList;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.digitalrefrige.utils.Converters.dateToTimestamp;
+import static com.example.digitalrefrige.utils.Converters.strToDate;
+
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +29,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.ActivityNavigator;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,6 +48,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ActivityItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.utils.NfcUtils;
@@ -62,6 +69,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -92,6 +100,8 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private NfcUtils nfcUtils;
     private ProgressDialog dialog;
+
+    private WriteNfcDialog nfcDialog;
 
 
     @Override
@@ -227,16 +237,11 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
 
-        if (nfcUtils.getmNfcAdapter() == null) {
-            binding.nfcTrigger.setVisibility(View.GONE);
-        } else {
-            binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
-        }
-
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
+            binding.icsTrigger.setVisibility(View.GONE);
             binding.buttonAdd.setOnClickListener(this::onAddButtonClicked);
         } else {
             // render item image if exist
@@ -248,6 +253,14 @@ public class ItemDetailActivity extends AppCompatActivity {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+            binding.icsTrigger.setOnClickListener(this::exportICS);
+
+            if (nfcUtils.getmNfcAdapter() == null) {
+                binding.nfcTrigger.setVisibility(View.GONE);
+            } else {
+                binding.nfcTrigger.setVisibility(View.VISIBLE);
+                binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
+            }
 
         }
 
@@ -299,7 +312,6 @@ public class ItemDetailActivity extends AppCompatActivity {
                             }
                         });
                         dialog = new ProgressDialog("retrieving result...");
-                        file.delete();
                         dialog.show(getSupportFragmentManager(), "in progressing");
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -327,14 +339,54 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        ActivityNavigator.applyPopAnimationsToPendingTransition(this);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        long itemID = itemDetailViewModel.getCurItem().getItemId();
         try {
-            nfcUtils.writeNFCToTag("2021-12-12", intent);
-            Toast.makeText(this, "写入成功: 2021-12-12", Toast.LENGTH_LONG).show();
+            nfcUtils.writeNFCToTag(String.valueOf(itemID), intent);
+            Toast.makeText(this, "Write Succeed: ID: "+String.valueOf(itemID), Toast.LENGTH_LONG).show();
+            nfcDialog.dismiss();
         } catch (IOException | FormatException e) {
-            Toast.makeText(this, "写入失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Write Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+    public void exportICS(View v ){
+        String title = itemDetailViewModel.getCurItem().getName();
+        Date expireDate = itemDetailViewModel.getCurItem().getExpireDate();
+        String description = itemDetailViewModel.getCurItem().getDescription();
+
+        //reference 1: https://code.tutsplus.com/tutorials/android-essentials-adding-events-to-the-users-calendar--mobile-8363
+        //reference 2: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#LAST_DATE
+        //reference 3: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#ALL_DAY
+        Calendar cal = Calendar.getInstance();
+        int eventCaldendarID = 1;
+        int eventStartAt = 9;
+        int eventDuration = 15;
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+
+
+        intent.putExtra("allDay", false);
+        intent.putExtra(CalendarContract.Events.CALENDAR_ID,eventCaldendarID);
+
+        intent.putExtra(CalendarContract.Events.TITLE, title);
+        intent.putExtra(CalendarContract.Events.CALENDAR_DISPLAY_NAME, title);
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, description);
+        intent.putExtra("hasAlarm", 0);
+
+        intent.putExtra("beginTime", dateToTimestamp(expireDate) +
+                eventStartAt * 60 * 60 * 1000);
+        intent.putExtra("endTime", dateToTimestamp(expireDate) +
+                (eventStartAt * 60  * 60 * 1000) +
+                eventDuration * 60 * 1000);
+
+        startActivity(intent);
     }
 
     private void onMinusNumberButtonClicked(View view) {
@@ -482,7 +534,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void onNfcDialogButtonClicked(View view) {
-        new WriteNfcDialog().show(getSupportFragmentManager(), "writedialog");
+        nfcDialog =  new WriteNfcDialog();
+        nfcDialog.show(getSupportFragmentManager(), "writedialog");
     }
 
     private boolean isNetworkConnected() {

@@ -10,35 +10,56 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="20dp"
         tools:context=".views.labelList.LabelListFragment">
 
         <!-- TODO: Update blank fragment layout -->
 
+        <TextView
+            android:id="@+id/add_new_label_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/add_new_label_textview"
+            android:textColor="@color/dark_gray"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
         <EditText
             android:id="@+id/label_edit_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="50dp"
+            android:background="@drawable/textview_box"
             android:hint="@string/label_name"
             android:inputType="text"
-            android:text="label title"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/button_add_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
+            app:layout_constraintTop_toBottomOf="@id/add_new_label_heading">
         </EditText>
 
         <Button
             android:id="@+id/button_add_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/add_new_label"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:text="@string/add_new_label"
+            android:background="@drawable/ic_oval"
             android:onClick="onAddButtonClicked"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_edit_text"
+            app:layout_constraintTop_toTopOf="@+id/add_new_label_heading"
             tools:ignore="TextContrastCheck">
-
         </Button>
+
+        <TextView
+            android:id="@+id/delete_label_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_add_label"
+            android:text="@string/delete_label_textview"
+            android:textColor="@color/dark_gray"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/label_list_recycler_view"
@@ -51,7 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_add_label"
+            app:layout_constraintTop_toBottomOf="@+id/delete_label_heading"
             app:layout_constraintVertical_bias="0.032"
             tools:listitem="@layout/label_card">
 

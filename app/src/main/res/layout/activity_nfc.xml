@@ -10,7 +10,7 @@
         android:id="@+id/nfc_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Expiring"
+        android:text="@string/nfc_display_detail"
         android:textColor="@color/reeking_yellow"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -18,4 +18,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/nfc_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="@string/nfc_view_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nfc_textview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
