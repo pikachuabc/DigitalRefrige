@@ -25,6 +25,9 @@ public class ItemLabelCrossRef {
         this.labelId = labelId;
     }
 
+    public ItemLabelCrossRef() {};
+
+
     public long getItemId() {
         return itemId;
     }

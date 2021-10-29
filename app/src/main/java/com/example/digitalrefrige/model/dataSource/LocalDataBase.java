@@ -1,6 +1,8 @@
 package com.example.digitalrefrige.model.dataSource;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -9,6 +11,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.ItemLabelCrossRef;
 import com.example.digitalrefrige.model.dataHolder.Label;
@@ -54,20 +57,23 @@ public abstract class LocalDataBase extends RoomDatabase {
                                         LabelDAO labelDAO = instance.labelDAO();
                                         ItemLabelCrossRefDAO itemLabelCrossRefDAO = instance.itemLabelCrossRefDAO();
                                         Calendar calendar = Calendar.getInstance();
-                                        for (int i = 1; i <= 15; i++) {
-                                            calendar.add(Calendar.DAY_OF_MONTH, 1);
-                                            itemDAO.insertItem(new Item("item" + i, "description" + i, calendar.getTime(),""));
-                                        }
-                                        for (int i = 1; i <= 5; i++) {
-                                            labelDAO.insertLabel(new Label("lABEL_" + i));
-                                        }
-                                        long tempLabelId = 1;
-                                        for (int i = 1; i <= 15; i++) {
-                                            if (tempLabelId == 5) tempLabelId = 1;
-                                            itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef((long) i, tempLabelId));
-                                            itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef((long) i, tempLabelId + 1));
-                                            tempLabelId++;
-                                        }
+
+                                        Uri appleImg = Uri.parse("android.resource://com.example.digitalrefrige/" + R.drawable.apple);
+                                        Uri bananaImg = Uri.parse("android.resource://com.example.digitalrefrige/" + R.drawable.banana);
+                                        Uri yogurtImg = Uri.parse("android.resource://com.example.digitalrefrige/" + R.drawable.yogurt);
+
+
+                                        long appleID = itemDAO.insertItem(new Item("apple", "this is an apple", calendar.getTime(), appleImg.toString()));
+                                        long bananaID = itemDAO.insertItem(new Item("banana", "this is a banana", calendar.getTime(), bananaImg.toString()));
+                                        long yogurtID = itemDAO.insertItem(new Item("yogurt", "a cup of yogurt", calendar.getTime(), yogurtImg.toString()));
+
+                                        long fruitID = labelDAO.insertLabel(new Label("fruit"));
+                                        long drinkID = labelDAO.insertLabel(new Label("drink"));
+
+                                        itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef(appleID, fruitID));
+                                        itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef(bananaID, fruitID));
+                                        itemLabelCrossRefDAO.insertItemLabelCrossRef(new ItemLabelCrossRef(yogurtID, drinkID));
+
                                     }).start();
                                 }
                             })

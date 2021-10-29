@@ -47,6 +47,9 @@ public interface ItemLabelCrossRefDAO {
     @Insert
     long insertItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
 
+    @Update
+    void updateItemLabelCrossRef(ItemLabelCrossRef itemLabelCrossRef);
+
 
     @Query("DELETE from itemlabelcrossref where itemId=:itemId")
     void deleteItemLabelCrossRef(long itemId);

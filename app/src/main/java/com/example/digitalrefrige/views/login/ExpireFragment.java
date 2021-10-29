@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.R;
@@ -56,9 +57,6 @@ public class ExpireFragment extends PreferenceFragmentCompat implements SharedPr
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
             }
         });
-        if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("notifications",false)){
-            dayExpireEditText.setVisible(true);
-        }
     }
 
     @Override
@@ -85,9 +83,6 @@ public class ExpireFragment extends PreferenceFragmentCompat implements SharedPr
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("notifications")) {
             if (sharedPreferences.getBoolean(key, false)){
-                dayExpireEditText.setVisible(true);
-
-                Log.i("preference", "notification preference value was updated to: True");
                 // Setting Alarm for daily notification
                 alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
                 // Set the alarm to start at approximately time.
@@ -96,15 +91,13 @@ public class ExpireFragment extends PreferenceFragmentCompat implements SharedPr
 
                 Intent alarmIntent = new Intent(getContext(), AlarmBroadcastReceiver.class);
                 alarmIntent.setAction("NOTIFY");
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_MUTABLE);
                 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
-            }else {
-                dayExpireEditText.setVisible(false);
+                Toast.makeText(getContext(),"Notification enabled",Toast.LENGTH_SHORT).show();
             }
         }
         if (key.equals("expire_day")) {
-            Log.i("preference", "notification preference value was updated to: "+sharedPreferences.getString(key,"7"));
-
+            Toast.makeText(getContext(),"Expiring deadline update to "+sharedPreferences.getString(key,"7"),Toast.LENGTH_SHORT).show();
         }
 
 
@@ -117,29 +110,4 @@ public class ExpireFragment extends PreferenceFragmentCompat implements SharedPr
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
     }
-
-    //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        binding = FragmentExpireBinding.inflate(inflater, container, false);
-//
-//        binding.switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked){
-//                    binding.notificationSettings.setVisibility(View.VISIBLE);
-//                }else {
-//                    binding.notificationSettings.setVisibility(View.INVISIBLE);
-//                }
-//            }
-//        });
-//
-//        binding.confirmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-//        return binding.getRoot();
-//    }
 }

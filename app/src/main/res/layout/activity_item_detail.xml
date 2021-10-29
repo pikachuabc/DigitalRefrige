@@ -20,7 +20,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
+            android:padding="20dp"
             tools:context=".views.itemList.ItemDetailActivity">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,18 +29,22 @@
 
                 <EditText
                     android:id="@+id/edit_text_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/textview_box"
                     android:hint="@string/item_name"
                     android:inputType="text"
                     android:minHeight="48dp"
                     android:text="@={itemDetailViewModel.curItem.name}"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/button_recognize_img"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView_itemCard" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider_line" />
 
                 <EditText
                     android:id="@+id/edit_text_description"
+                    android:background="@drawable/textview_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/item_description"
@@ -70,19 +74,27 @@
                     android:text="ADD NFC TAG"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/time_picker_button"/>
+                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
+                    android:visibility="gone"/>
 
+                <Button
+                    android:id="@+id/ics_trigger"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_item_to_calendar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nfc_trigger"/>
 
                 <Button
                     android:id="@+id/label_picker_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/select_date"
-                    android:text="select label"
+                    android:text="@string/select_label"
                     android:textColorHint="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/nfc_trigger" />
+                    app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
 
 
                 <Button
@@ -96,26 +108,22 @@
                 <Button
                     android:id="@+id/button_update"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/ic_oval"
                     android:text="@string/update_current_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recyclerView_labels_in_detail_fragment" />
+                    app:layout_constraintTop_toBottomOf="@+id/quantityNum" />
 
                 <Button
                     android:id="@+id/button_add"
-                    android:layout_width= "wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="332dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
                     android:background="@drawable/ic_oval"
-                    android:fontFamily="More Fonts..."
                     android:text="@string/add_new_item"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.501"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/time_picker_button" />
+                    app:layout_constraintTop_toTopOf="@+id/button_update" />
 
                 <Button
                     android:id="@+id/button_camera"
@@ -142,54 +150,66 @@
                         android:src="@drawable/img_4857" />
                 </androidx.cardview.widget.CardView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView_labels_in_detail_fragment"
-                    android:layout_width="377dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="64dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button" />
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/recyclerView_labels_in_detail_fragment"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.0"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/edit_text_description" />-->
 
                 <Button
                     android:id="@+id/add_num_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="8dp"
                     android:text="+"
-                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
-                    app:layout_constraintVertical_bias="0.0" />
+                    android:layout_marginLeft="10dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/minus_num_button"
+                    app:layout_constraintStart_toEndOf="@id/quantityNum"
+                    app:layout_constraintTop_toTopOf="@+id/minus_num_button" />
 
                 <Button
                     android:id="@+id/minus_num_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:text="-"
-                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
-                    app:layout_constraintVertical_bias="0.0" />
+                    android:layout_marginRight="10dp"
+                    app:layout_constraintEnd_toStartOf="@id/quantityNum"
+                    app:layout_constraintTop_toBottomOf="@+id/ics_trigger" />
 
                 <EditText
                     android:id="@+id/quantityNum"
                     android:layout_width="102dp"
-                    android:layout_height="41dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/textview_box"
                     android:ems="10"
                     android:text="@={Converters.quantityToStr(itemDetailViewModel.curItem.quantity)}"
-                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_labels_in_detail_fragment"
-                    app:layout_constraintEnd_toStartOf="@+id/add_num_button"
-                    app:layout_constraintHorizontal_bias="0.486"
-                    app:layout_constraintStart_toEndOf="@+id/minus_num_button"
-                    app:layout_constraintTop_toBottomOf="@+id/label_picker_button"
-                    app:layout_constraintVertical_bias="0.652" />
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="@id/minus_num_button"
+                    app:layout_constraintBottom_toBottomOf="@+id/minus_num_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.486" />
+
+                <Button
+                    android:id="@+id/button_recognize_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detect_image_object_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edit_text_name" />
+
+                <View
+                    android:id="@+id/divider_line"
+                    android:background="#DCDCDC"
+                    android:layout_width = "500dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="1dp"
+                    app:layout_constraintTop_toBottomOf="@id/imageView_itemCard"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

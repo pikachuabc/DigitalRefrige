@@ -15,9 +15,16 @@ import androidx.fragment.app.DialogFragment;
 import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.DialogProgressBinding;
 
+import org.w3c.dom.Text;
+
 public class ProgressDialog extends DialogFragment {
     Dialog dialog;
 
+    String message;
+
+    public ProgressDialog(String progressingMes) {
+        message = progressingMes;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -27,7 +34,10 @@ public class ProgressDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_progress, null));
+        View view = inflater.inflate(R.layout.dialog_progress, null);
+        TextView progressingMessageTextView = view.findViewById(R.id.progress_message);
+        progressingMessageTextView.setText(message);
+        builder.setView(view);
         dialog = builder.create();
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);

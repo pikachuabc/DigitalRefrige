@@ -2,12 +2,22 @@ package com.example.digitalrefrige.views.itemList;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.digitalrefrige.utils.Converters.dateToTimestamp;
+import static com.example.digitalrefrige.utils.Converters.strToDate;
+
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.nfc.FormatException;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -17,18 +27,23 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.PathUtils;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.ActivityNavigator;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,12 +54,14 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.digitalrefrige.MainActivity;
+import com.example.digitalrefrige.R;
 import com.example.digitalrefrige.databinding.ActivityItemDetailBinding;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.utils.NfcUtils;
 import com.example.digitalrefrige.viewModel.ItemDetailViewModel;
 import com.example.digitalrefrige.viewModel.adapters.LabelListAdapter;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
+import com.example.digitalrefrige.views.common.ProgressDialog;
 import com.example.digitalrefrige.views.common.TimePickerFragment;
 import com.example.digitalrefrige.views.common.WriteNfcDialog;
 import com.example.digitalrefrige.views.common.picSelectorDialogFragment;
@@ -58,11 +75,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +98,9 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     public static final int CREATE_NEW_ITEM = -1;
 
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
+
 
     private ActivityItemDetailBinding binding;
     private ItemDetailViewModel itemDetailViewModel;
@@ -81,6 +108,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> photoLibraryLauncher;
 
     private NfcUtils nfcUtils;
+    private ProgressDialog dialog;
+
+    private WriteNfcDialog nfcDialog;
 
 
     @Override
@@ -137,7 +167,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         // Inflate the layout for this activity
         binding = ActivityItemDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Log.d("MyLog", "hahahahah================");
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -187,10 +216,10 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
         // config adapter for the recyclerView
-        RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
-        labelRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        final LabelListAdapter labelListAdapter = new LabelListAdapter();
-        labelRecyclerView.setAdapter(labelListAdapter);
+//        RecyclerView labelRecyclerView = binding.recyclerViewLabelsInDetailFragment;
+//        labelRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        final LabelListAdapter labelListAdapter = new LabelListAdapter();
+//        labelRecyclerView.setAdapter(labelListAdapter);
 
         // inject viewModel
         itemDetailViewModel = new ViewModelProvider(this).get(ItemDetailViewModel.class);
@@ -198,12 +227,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         itemDetailViewModel.bindWithItem(itemId);
         binding.setItemDetailViewModel(itemDetailViewModel);
 
-        itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(this, new Observer<List<Label>>() {
-            @Override
-            public void onChanged(List<Label> labels) {
-                labelListAdapter.submitList(labels);
-            }
-        });
+//        itemDetailViewModel.getAllLabelsAssociatedWithItem().observe(this, new Observer<List<Label>>() {
+//            @Override
+//            public void onChanged(List<Label> labels) {
+//                labelListAdapter.submitList(labels);
+//            }
+//        });
 
         itemDetailViewModel.getAllLabels().observe(this, new Observer<List<Label>>() {
             @Override
@@ -217,16 +246,11 @@ public class ItemDetailActivity extends AppCompatActivity {
         binding.addNumButton.setOnClickListener(this::onAddNumberButtonClicked);
         binding.minusNumButton.setOnClickListener(this::onMinusNumberButtonClicked);
 
-        if(nfcUtils.getmNfcAdapter() == null) {
-            binding.nfcTrigger.setVisibility(View.GONE);
-        } else {
-            binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
-        }
-
         // change UI according to action type
         if (itemId == CREATE_NEW_ITEM) {
             binding.buttonDelete.setVisibility(View.GONE);
             binding.buttonUpdate.setVisibility(View.GONE);
+            binding.icsTrigger.setVisibility(View.GONE);
             binding.buttonAdd.setOnClickListener(this::onAddButtonClicked);
         } else {
             // render item image if exist
@@ -238,6 +262,14 @@ public class ItemDetailActivity extends AppCompatActivity {
             binding.buttonAdd.setVisibility(View.GONE);
             binding.buttonDelete.setOnClickListener(this::onDeleteButtonClicked);
             binding.buttonUpdate.setOnClickListener(this::onUpdateButtonClicked);
+            binding.icsTrigger.setOnClickListener(this::exportICS);
+
+            if (nfcUtils.getmNfcAdapter() == null) {
+                binding.nfcTrigger.setVisibility(View.GONE);
+            } else {
+                binding.nfcTrigger.setVisibility(View.VISIBLE);
+                binding.nfcTrigger.setOnClickListener(this::onNfcDialogButtonClicked);
+            }
 
         }
 
@@ -250,12 +282,54 @@ public class ItemDetailActivity extends AppCompatActivity {
                 DialogFragment dialog = new LabelSelectorDialogFragment(allLabels, curSelected, new LabelSelectorDialogFragment.OnLabelsChosenListener() {
                     @Override
                     public void onPositiveClicked(List<Label> selectedLabels) {
-                        //Log.d("MyLog", "selector returned");
                         itemDetailViewModel.getAllLabelsAssociatedWithItem().setValue(new ArrayList<>(selectedLabels));
-//                        refreshItemList();
+
                     }
-                });
+                }, "Edit current labels");
                 dialog.show(getSupportFragmentManager(), "LabelSelectorFragment");
+            }
+        });
+
+        binding.buttonRecognizeImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tempUri = itemDetailViewModel.getTempUrl();
+                if (tempUri.equals("")) {
+                    Toast.makeText(getApplicationContext(), "no images set so far", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (isNetworkConnected()) {
+                    try {
+                        File file = createImageFile();
+                        InputStream is = getContentResolver().openInputStream(Uri.parse(tempUri));
+                        FileOutputStream os = new FileOutputStream(file);
+                        copyStream(is, os);
+                        is.close();
+                        os.close();
+                        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                        itemDetailViewModel.getRemoteService().getCVResult(filePart).enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                itemDetailViewModel.getCurItem().setName(response.body());
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Log.d("temp", t.getMessage());
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog = new ProgressDialog("retrieving result...");
+                        dialog.show(getSupportFragmentManager(), "in progressing");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -274,14 +348,54 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        ActivityNavigator.applyPopAnimationsToPendingTransition(this);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        long itemID = itemDetailViewModel.getCurItem().getItemId();
         try {
-            nfcUtils.writeNFCToTag("2021-12-12", intent);
-            Toast.makeText(this, "写入成功: 2021-12-12",Toast.LENGTH_LONG).show();
-        }catch (IOException | FormatException e) {
-            Toast.makeText(this, "写入失败: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            nfcUtils.writeNFCToTag(String.valueOf(itemID), intent);
+            Toast.makeText(this, "Write Succeed: ID: "+String.valueOf(itemID), Toast.LENGTH_LONG).show();
+            nfcDialog.dismiss();
+        } catch (IOException | FormatException e) {
+            Toast.makeText(this, "Write Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+    public void exportICS(View v ){
+        String title = itemDetailViewModel.getCurItem().getName();
+        Date expireDate = itemDetailViewModel.getCurItem().getExpireDate();
+        String description = itemDetailViewModel.getCurItem().getDescription();
+
+        //reference 1: https://code.tutsplus.com/tutorials/android-essentials-adding-events-to-the-users-calendar--mobile-8363
+        //reference 2: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#LAST_DATE
+        //reference 3: https://developer.android.com/reference/android/provider/CalendarContract.EventsColumns#ALL_DAY
+        Calendar cal = Calendar.getInstance();
+        int eventCaldendarID = 1;
+        int eventStartAt = 9;
+        int eventDuration = 15;
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+
+
+        intent.putExtra("allDay", false);
+        intent.putExtra(CalendarContract.Events.CALENDAR_ID,eventCaldendarID);
+
+        intent.putExtra(CalendarContract.Events.TITLE, title);
+        intent.putExtra(CalendarContract.Events.CALENDAR_DISPLAY_NAME, title);
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, description);
+        intent.putExtra("hasAlarm", 0);
+
+        intent.putExtra("beginTime", dateToTimestamp(expireDate) +
+                eventStartAt * 60 * 60 * 1000);
+        intent.putExtra("endTime", dateToTimestamp(expireDate) +
+                (eventStartAt * 60  * 60 * 1000) +
+                eventDuration * 60 * 1000);
+
+        startActivity(intent);
     }
 
     private void onMinusNumberButtonClicked(View view) {
@@ -358,6 +472,62 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            showMessageOKCancel("You need to allow access permissions",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermission();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return false;
+        }
+        return true;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CODE);
+    }
+
+
     public void launchCameraOrSelectFromGallery(View view) {
         String[] availableMode = new String[]{"LIBRARY", "CAMERA"};
         DialogFragment dialogFragment = new picSelectorDialogFragment(availableMode, new DialogInterface.OnClickListener() {
@@ -368,22 +538,32 @@ public class ItemDetailActivity extends AppCompatActivity {
                     photoLibraryLauncher.launch(selectPhoto);
 
                 } else if (i == 1) {
-                    Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    // if doesn't work on emulator, get ride of this if
-                    if (takePicIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
-                        File photo = null;
-                        try {
-                            photo = createImageFile();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (photo != null) {
-                            Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.digitalrefrige.fileprovider", photo);
-                            itemDetailViewModel.setTempUrl(photoUri.toString());
-                            takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        }
-                        cameraLauncher.launch(takePicIntent);
+
+                    if (checkPermission()) {
+                        //main logic or main code
+
+                        // . write your main code to execute, It will execute if the permission is already given.
+                        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        // if doesn't work on emulator, get ride of this if
+//                        if (takePicIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+                            File photo = null;
+                            try {
+                                photo = createImageFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            if (photo != null) {
+                                Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.digitalrefrige.fileprovider", photo);
+                                itemDetailViewModel.setTempUrl(photoUri.toString());
+                                takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                            }
+                            cameraLauncher.launch(takePicIntent);
+//                        }
+                    } else {
+                        requestPermission();
                     }
+
+
                 }
             }
         });
@@ -408,7 +588,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private void renderImage() {
         String uri = itemDetailViewModel.getTempUrl();
-        Log.d("MyLog", "rendering image: " + uri);
+        Log.d("image", "rendering image: " + uri);
         if (uri.equals("")) return;
         Picasso.get()
                 .load(Uri.parse(uri))
@@ -429,6 +609,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void onNfcDialogButtonClicked(View view) {
-        new WriteNfcDialog().show(getSupportFragmentManager(),"writedialog");
+        nfcDialog =  new WriteNfcDialog();
+        nfcDialog.show(getSupportFragmentManager(), "writedialog");
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }

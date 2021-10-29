@@ -4,8 +4,6 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.325" />
-        <entry key="..\:/Users/azone/Desktop/2021 s2/COMP90018 Mobile Computing Systems Programming/assignment2/DigitalRefrige/app/src/main/res/layout/fragment_label_selector_dialog.xml" value="0.1" />
-        <entry key="..\:/Users/azone/Desktop/2021 s2/COMP90018 Mobile Computing Systems Programming/assignment2/DigitalRefrige/app/src/main/res/layout/fragment_user_profile.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/drawable-v24/ic_dashboard_black_24dp.xml" value="0.2734375" />
         <entry key="app/src/main/res/drawable-v24/ic_home_black_24dp.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14166666666666666" />
@@ -13,24 +11,32 @@
         <entry key="app/src/main/res/drawable/ic_baseline_camera_24.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.14166666666666666" />
         <entry key="app/src/main/res/layout/acticity_second.xml" value="0.2328125" />
+        <entry key="app/src/main/res/layout/activity_item_detail.xml" value="0.30185185185185187" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_nfc.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/card_item_card.xml" value="0.19519927536231885" />
         <entry key="app/src/main/res/layout/fragement_tst.xml" value="0.12760416666666666" />
-        <entry key="app/src/main/res/layout/fragment_expire.xml" value="0.146875" />
+        <entry key="app/src/main/res/layout/fragment_expire.xml" value="0.3194444444444444" />
         <entry key="app/src/main/res/layout/fragment_item_detail.xml" value="0.2955611863558903" />
-        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.38415675507814423" />
-        <entry key="app/src/main/res/layout/fragment_label_selector_dialog.xml" value="0.12604166666666666" />
+        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.19519927536231885" />
+        <entry key="app/src/main/res/layout/fragment_label_list.xml" value="0.30185185185185187" />
+        <entry key="app/src/main/res/layout/fragment_label_selector_dialog.xml" value="0.30185185185185187" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_logout.xml" value="0.25052083333333336" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_sync.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_the_other.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/fragment_time_picker.xml" value="0.10020440098466686" />
-        <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_write_nfc_dialog.xml" value="0.284375" />
         <entry key="app/src/main/res/layout/item_card.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/label_card.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/label_card.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/progress.xml" value="0.55" />
         <entry key="app/src/main/res/menu/bottom_nav_meau.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/menu/item_list_menu.xml" value="0.20555555555555555" />
-        <entry key="app/src/main/res/xml/preferences.xml" value="0.30932971014492755" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_egg.xml" value="0.3921875" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3921875" />
+        <entry key="app/src/main/res/xml/preferences.xml" value="0.2478920741989882" />
         <entry key="app/src/main/res/xml/xml.xml" value="0.14375" />
       </map>
     </option>

@@ -99,14 +99,11 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onChanged(List<Label> labels) {
                 // TODO supposed to merge change into current selected
-                if (itemListViewModel.getCurSelectedLabel().size() == 0) {
-                    List<Label> temp = new ArrayList<>();
-                    temp.add(Label.NONE_LABEL);
-                    temp.addAll(labels);
-                    itemListViewModel.setCurSelectedLabel(temp);
-                } else {
-                    refreshItemList();
-                }
+                List<Label> temp = new ArrayList<>();
+                temp.add(Label.NONE_LABEL);
+                temp.addAll(labels);
+                itemListViewModel.setCurSelectedLabel(temp);
+                refreshItemList();
             }
         });
         itemListViewModel.getAllItemsWithLabels().observe(getViewLifecycleOwner(), new Observer<List<ItemWithLabels>>() {
@@ -133,13 +130,13 @@ public class ItemListFragment extends Fragment {
         }).attachToRecyclerView(itemListRecyclerView);
 
         // set Add Button
-        binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
-                Navigation.findNavController(view).navigate(directions);
-            }
-        });
+//        binding.buttonAddItem.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                NavDirections directions = (NavDirections) ItemListFragmentDirections.actionItemListFragmentToItemDetailActivity(ItemDetailActivity.CREATE_NEW_ITEM);
+//                Navigation.findNavController(view).navigate(directions);
+//            }
+//        });
 
         binding.labelPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +152,7 @@ public class ItemListFragment extends Fragment {
                         itemListViewModel.setCurSelectedLabel(new ArrayList<>(selectedLabels));
                         refreshItemList();
                     }
-                });
+                }, "select labels for filter");
                 dialog.show(getChildFragmentManager(), "LabelSelectorFragment");
             }
         });
@@ -186,8 +183,8 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 binding.buttonAll.setTextColor(Color.WHITE);
-                binding.buttonExpiring.setTextColor(Color.BLACK);
-                binding.buttonExpired.setTextColor(Color.BLACK);
+                binding.buttonExpiring.setTextColor(Color.parseColor("#7A7A7A"));
+                binding.buttonExpired.setTextColor(Color.parseColor("#7A7A7A"));
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.ALL_MODE);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
             }
@@ -195,20 +192,21 @@ public class ItemListFragment extends Fragment {
         binding.buttonExpiring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.buttonAll.setTextColor(Color.BLACK);
+                binding.buttonAll.setTextColor(Color.parseColor("#7A7A7A"));
                 binding.buttonExpiring.setTextColor(Color.WHITE);
-                binding.buttonExpired.setTextColor(Color.BLACK);
+                binding.buttonExpired.setTextColor(Color.parseColor("#7A7A7A"));
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRING_MODE);
                 int userSettingExpDays = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("expire_day", "-1"));
-                if (userSettingExpDays != -1) itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
+                if (userSettingExpDays != -1)
+                    itemListViewModel.setUserSettingExpirationDays(userSettingExpDays);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
             }
         });
         binding.buttonExpired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.buttonAll.setTextColor(Color.BLACK);
-                binding.buttonExpiring.setTextColor(Color.BLACK);
+                binding.buttonAll.setTextColor(Color.parseColor("#7A7A7A"));
+                binding.buttonExpiring.setTextColor(Color.parseColor("#7A7A7A"));
                 binding.buttonExpired.setTextColor(Color.WHITE);
                 itemListViewModel.setCurrentSelectedExpiringDaysMode(ItemListViewModel.EXPIRED_MODE);
                 itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
@@ -223,6 +221,7 @@ public class ItemListFragment extends Fragment {
             binding.buttonExpired.setTextColor(Color.WHITE);
         }
 
+        binding.itemFilterSearchView.clearFocus();
         return binding.getRoot();
     }
 

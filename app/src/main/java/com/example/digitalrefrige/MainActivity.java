@@ -3,13 +3,13 @@ package com.example.digitalrefrige;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.text.HtmlCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
@@ -18,8 +18,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.text.Html;
 import android.view.View;
 
 
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_item_list, R.id.navigation_the_other,  R.id.navigation_register, R.id.navigation_profile, R.id.navigation_login)
+                R.id.navigation_item_list, R.id.navigation_profile)
                 .build();
         NavHostFragment hostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = hostFragment.getNavController();
@@ -66,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(directions);
             }
         });
+
+        getSupportActionBar().hide();
+//        getSupportActionBar().setTitle(Html.fromHtml("<font color='#717171'>My refrigerator</font>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+//        getSupportActionBar().setElevation(0);
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F5F5F5")));
     }
 
     // enable back in appbar when not at top-level destination

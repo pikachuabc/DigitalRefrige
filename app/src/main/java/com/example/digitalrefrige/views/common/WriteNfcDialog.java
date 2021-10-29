@@ -3,6 +3,8 @@ package com.example.digitalrefrige.views.common;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ public class WriteNfcDialog extends DialogFragment {
         });
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
     }
 

@@ -31,16 +31,20 @@
 
 
     <fragment
-        android:id="@+id/navigation_the_other"
-        android:name="com.example.digitalrefrige.views.theOtherFragment.TheOtherFragment"
-        android:label="fragment_the_other"
-        tools:layout="@layout/fragment_the_other" />
-
-    <fragment
         android:id="@+id/navigation_login"
         android:name="com.example.digitalrefrige.views.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_register"
+            app:destination="@id/navigation_register"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment
@@ -50,17 +54,42 @@
         tools:layout="@layout/fragment_user_profile" >
         <action
             android:id="@+id/action_navigation_profile_to_labelListFragment"
-            app:destination="@id/labelListFragment" />
+            app:destination="@id/labelListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_navigation_profile_to_expireFragment"
-            app:destination="@+id/expireNotificationFragment"/>
+            app:destination="@+id/expireNotificationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@id/action_itemListFragment_to_itemDetailActivity"
+            app:destination="@id/itemDetailActivity"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_sync"
+            app:destination="@id/syncFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_register"
         android:name="com.example.digitalrefrige.views.login.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_navigation_register_to_navigation_login"
+            app:destination="@id/navigation_login"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
+    </fragment>
 
     <fragment
         android:id="@+id/labelListFragment"
@@ -72,6 +101,20 @@
         android:name="com.example.digitalrefrige.views.login.ExpireFragment"
         android:label="fragment_expire"
         tools:layout="@layout/fragment_expire"/>
+    <activity
+        android:id="@+id/nfcActivity"
+        android:name="com.example.digitalrefrige.services.NfcActivity"
+        android:label="activity_nfc"
+        tools:layout="@layout/activity_nfc">
+    </activity>
+
+
+    <fragment
+        android:id="@+id/syncFragment"
+        android:name="com.example.digitalrefrige.views.login.SyncFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_sync" >
+    </fragment>
 
 
 </navigation>

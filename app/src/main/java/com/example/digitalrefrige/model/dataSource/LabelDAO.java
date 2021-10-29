@@ -28,4 +28,7 @@ public interface LabelDAO {
 
     @Query("select * from label_table where labelId=:id")
     Label findLabelById(long id);
+
+    @Query("select * from label_table where title=:name")
+    Label findLabelByTitle(String name);
 }

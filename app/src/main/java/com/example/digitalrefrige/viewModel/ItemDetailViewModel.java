@@ -12,6 +12,7 @@ import com.example.digitalrefrige.model.LabelRepository;
 import com.example.digitalrefrige.model.dataHolder.Item;
 import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
+import com.example.digitalrefrige.services.DigitalFridgeService;
 import com.example.digitalrefrige.utils.Converters;
 import com.example.digitalrefrige.views.itemList.ItemDetailActivity;
 
@@ -22,6 +23,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @HiltViewModel
 public class ItemDetailViewModel extends ViewModel {
@@ -29,6 +33,7 @@ public class ItemDetailViewModel extends ViewModel {
     private Item curItem;
     private LabelRepository labelRepository;
     private LiveData<List<Label>> allLabels;
+    private DigitalFridgeService remoteService;
 
     private MutableLiveData<List<Label>> labelsAssociatedWithCurItem;
 
@@ -38,11 +43,12 @@ public class ItemDetailViewModel extends ViewModel {
 
 
     @Inject
-    public ItemDetailViewModel(ItemRepository itemRepo, ItemLabelCrossRefRepository itemLabelCrossRefRepo, LabelRepository labelRepo) {
+    public ItemDetailViewModel(ItemRepository itemRepo, ItemLabelCrossRefRepository itemLabelCrossRefRepo, LabelRepository labelRepo,DigitalFridgeService service) {
         labelRepository = labelRepo;
         itemRepository = itemRepo;
         itemLabelCrossRefRepository = itemLabelCrossRefRepo;
         allLabels = labelRepo.getAllLabels();
+        remoteService = service;
     }
 
     public void bindWithItem(long id) {
@@ -108,6 +114,10 @@ public class ItemDetailViewModel extends ViewModel {
 
     public void setTimeStr(String timeStr) {
         this.curItem.setExpireDate(Converters.strToDate(timeStr));
+    }
+
+    public DigitalFridgeService getRemoteService() {
+        return remoteService;
     }
 
     public MutableLiveData<List<Label>> getAllLabelsAssociatedWithItem() {

@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -18,6 +19,12 @@ public interface ItemDAO {
 
     @Insert
     long insertItem(Item item);
+
+    /**
+     * Updating each field but not imageURL
+     */
+    @Query("UPDATE item_table SET name = :name, description = :description, expireDate =:expireDate, quantity = :quantity WHERE itemId = :itemId")
+    void updateNoURL(String name, String description, Date expireDate, Integer quantity, long itemId);
 
     @Update
     void updateItem(Item item);
