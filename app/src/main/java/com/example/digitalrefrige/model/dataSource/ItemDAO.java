@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.digitalrefrige.model.dataHolder.Item;
@@ -31,6 +32,14 @@ public interface ItemDAO {
 
     @Delete
     void deleteItem(Item item);
+
+    @Delete
+    @Transaction
+    default void deleteSelectedItems(List<Item> items){
+        for (Item item : items) {
+            deleteItem(item);
+        }
+    }
 
     @Query("select * from item_table where itemId=:id")
     Item findItemById(long id);

@@ -48,6 +48,7 @@ public class ItemRepository {
             return null;
         }
     }
+
     public List<Item> getExpiredItems() {
         Future<List<Item>> exp = executorService.submit(() -> itemDAO.getExpiredItems());
         try {
@@ -56,6 +57,10 @@ public class ItemRepository {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void deleteSelectedItems(List<Item> items) {
+        executorService.execute(() -> itemDAO.deleteSelectedItems(items));
     }
 
     public long insertItem(Item item) {
@@ -74,7 +79,8 @@ public class ItemRepository {
 
     public void updateItemWithNotURL(Item item) {
         executorService.execute(() -> itemDAO.updateNoURL(item.getName(),
-                item.getDescription(),item.getExpireDate(), item.getQuantity(),item.getItemId()));}
+                item.getDescription(), item.getExpireDate(), item.getQuantity(), item.getItemId()));
+    }
 
     public void deleteItem(Item item) {
         executorService.execute(() -> itemDAO.deleteItem(item));

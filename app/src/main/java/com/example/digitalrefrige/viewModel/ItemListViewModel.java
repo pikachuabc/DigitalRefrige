@@ -178,6 +178,9 @@ public class ItemListViewModel extends ViewModel implements Filterable {
         return filteredItems;
     }
 
+    public void deleteDisplayedItems() {
+        itemRepository.deleteSelectedItems(new ArrayList<>(filteredItems.getValue()));
+    }
 
     public LiveData<List<Item>> getAllItems() {
         return allItems;

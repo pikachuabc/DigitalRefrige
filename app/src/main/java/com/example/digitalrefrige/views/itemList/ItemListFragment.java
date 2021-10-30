@@ -1,7 +1,13 @@
 package com.example.digitalrefrige.views.itemList;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +33,7 @@ import com.example.digitalrefrige.model.dataHolder.Label;
 import com.example.digitalrefrige.model.dataQuery.ItemWithLabels;
 import com.example.digitalrefrige.viewModel.ItemListViewModel;
 import com.example.digitalrefrige.viewModel.adapters.ItemListAdapter;
+import com.example.digitalrefrige.views.common.BinarySelectorDialogFragment;
 import com.example.digitalrefrige.views.common.LabelSelectorDialogFragment;
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -47,6 +54,12 @@ public class ItemListFragment extends Fragment {
 
     private ItemListViewModel itemListViewModel;
     private FragmentItemListBinding binding;
+    private SensorManager sensorManager;
+    private Sensor accSensor;
+    private float accLastX = 0;
+    private boolean accTriggered = false;
+    private SensorEventListener accListener;
+    private final int SHAKE_THRESHOLD = 9;
 
 
     @Override
@@ -221,6 +234,35 @@ public class ItemListFragment extends Fragment {
             binding.buttonExpired.setTextColor(Color.WHITE);
         }
 
+
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                float curX = event.values[0];
+                if (!accTriggered && Math.abs(curX - accLastX) >= SHAKE_THRESHOLD) {
+                    accTriggered = true;
+                    DialogFragment dialog = new BinarySelectorDialogFragment(new BinarySelectorDialogFragment.OnShakeOptionChosenListener() {
+                        @Override
+                        public void onPositiveClicked() {
+                            accTriggered = false;
+                            itemListViewModel.deleteDisplayedItems();
+                        }
+                    }, "Delete current items?");
+                    dialog.show(getChildFragmentManager(), "shake option dialog");
+
+                }
+                accLastX = curX;
+
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+
         binding.itemFilterSearchView.clearFocus();
         return binding.getRoot();
     }
@@ -229,6 +271,21 @@ public class ItemListFragment extends Fragment {
         itemListViewModel.getFilter().filter(binding.itemFilterSearchView.getQuery());
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (accSensor != null) {
+            sensorManager.unregisterListener(accListener);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (accSensor != null) {
+            sensorManager.registerListener(accListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
 
     @Override
     public void onDestroy() {

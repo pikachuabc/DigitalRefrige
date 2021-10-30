@@ -44,7 +44,6 @@ public class LoginFragment extends Fragment {
 
     private FragmentLoginBinding binding;
     private ProgressDialog dialog;
-
     public UserProfileViewModel userProfileViewModel;
 
 
