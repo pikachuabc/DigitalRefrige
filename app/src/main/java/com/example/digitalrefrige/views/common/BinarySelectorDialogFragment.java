@@ -20,6 +20,7 @@ public class BinarySelectorDialogFragment extends DialogFragment {
 
     public interface OnShakeOptionChosenListener {
         void onPositiveClicked();
+        void onNegativeClicked();
     }
 
     public BinarySelectorDialogFragment(OnShakeOptionChosenListener listener, String title) {
@@ -41,6 +42,7 @@ public class BinarySelectorDialogFragment extends DialogFragment {
         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                listener.onNegativeClicked();
             }
         });
         return builder.create();
