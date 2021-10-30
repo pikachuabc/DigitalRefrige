@@ -9,35 +9,21 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.preference.EditTextPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
-
 import android.text.InputType;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.digitalrefrige.MainActivity;
 import com.example.digitalrefrige.R;
-import com.example.digitalrefrige.databinding.FragmentExpireBinding;
 import com.example.digitalrefrige.services.AlarmBroadcastReceiver;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 
 public class ExpireFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
-    private FragmentExpireBinding binding;
     private AlarmManager alarmManager;
     private Calendar calendar;
     private EditTextPreference dayExpireEditText;

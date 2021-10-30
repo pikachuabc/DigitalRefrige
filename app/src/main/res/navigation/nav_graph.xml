@@ -99,8 +99,7 @@
     <fragment
         android:id="@+id/expireNotificationFragment"
         android:name="com.example.digitalrefrige.views.login.ExpireFragment"
-        android:label="fragment_expire"
-        tools:layout="@layout/fragment_expire"/>
+        android:label="fragment_expire"/>
     <activity
         android:id="@+id/nfcActivity"
         android:name="com.example.digitalrefrige.services.NfcActivity"

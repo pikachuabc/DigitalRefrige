@@ -7,8 +7,8 @@
         android:key="notifications"
         android:title="Notification" />
     <EditTextPreference
-        android:defaultValue="3"
+        android:defaultValue="7"
         android:key="expire_day"
-        android:title="Set expiring deadline"/>
+        android:title="Set expiry deadline (day)" />
 
 </PreferenceScreen>

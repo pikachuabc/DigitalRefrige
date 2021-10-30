@@ -38,7 +38,7 @@
     <string name="backup">Backup Data on Cloud</string>
     <string name="backup_date">x days ago</string>
     <string name="export_calendar">Export To Calendar</string>
-    <string name="edit_labels">edit labels</string>
-    <string name="expire_notification">expire notification</string>
+    <string name="labels">labels</string>
+    <string name="preferences">preferences</string>
     <string name="logout">logout</string>
 </resources>
