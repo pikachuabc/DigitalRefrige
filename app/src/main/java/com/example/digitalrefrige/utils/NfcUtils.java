@@ -88,26 +88,18 @@ public class NfcUtils {
 
         if (ndef != null) {
             ndef.connect();
-            //判断是否支持可写
             if (!ndef.isWritable()) {
 
                 return;
             }
-            //判断标签的容量是否够用
             if (ndef.getMaxSize() < size) {
                 return;
             }
-            //3.写入数据
             ndef.writeNdefMessage(ndefMessage);
         } else {
-            //当我们买回来的NFC标签是没有格式化的，或者没有分区的执行此步
-            //Ndef格式类
             NdefFormatable format = NdefFormatable.get(tag);
-            //判断是否获得了NdefFormatable对象，有一些标签是只读的或者不允许格式化的
             if (format != null) {
-                //连接
                 format.connect();
-                //格式化并将信息写入标签
                 format.format(ndefMessage);
             }
         }
