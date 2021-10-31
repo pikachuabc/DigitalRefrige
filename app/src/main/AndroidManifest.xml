@@ -27,7 +27,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".services.NfcActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -37,7 +38,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +48,8 @@
         </activity>
         <activity
             android:name=".views.itemList.ItemDetailActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation|screenSize">
 
         </activity>
 

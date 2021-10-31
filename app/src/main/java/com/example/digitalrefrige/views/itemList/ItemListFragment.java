@@ -249,6 +249,11 @@ public class ItemListFragment extends Fragment {
                             accTriggered = false;
                             itemListViewModel.deleteDisplayedItems();
                         }
+
+                        @Override
+                        public void onNegativeClicked() {
+                            accTriggered = false;
+                        }
                     }, "Delete current items?");
                     dialog.show(getChildFragmentManager(), "shake option dialog");
 
