@@ -59,10 +59,11 @@
 
             <Button
                 android:id="@+id/sync"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:text="Data synchronization"
+                android:gravity="left|center_vertical"
                 app:layout_constraintTop_toBottomOf="@id/signin_signup"
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"/>

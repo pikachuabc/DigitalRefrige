@@ -95,11 +95,21 @@
         android:id="@+id/labelListFragment"
         android:name="com.example.digitalrefrige.views.labelList.LabelListFragment"
         android:label="fragment_label_list"
-        tools:layout="@layout/fragment_label_list" />
+        tools:layout="@layout/fragment_label_list">
+        <action
+            android:id="@id/action_itemListFragment_to_itemDetailActivity"
+            app:destination="@id/itemDetailActivity"/>
+    </fragment>
+
     <fragment
         android:id="@+id/expireNotificationFragment"
         android:name="com.example.digitalrefrige.views.login.ExpireFragment"
-        android:label="fragment_expire"/>
+        android:label="fragment_expire">
+        <action
+            android:id="@id/action_itemListFragment_to_itemDetailActivity"
+            app:destination="@id/itemDetailActivity"/>
+    </fragment>
+
     <activity
         android:id="@+id/nfcActivity"
         android:name="com.example.digitalrefrige.services.NfcActivity"
@@ -113,6 +123,9 @@
         android:name="com.example.digitalrefrige.views.login.SyncFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_sync" >
+        <action
+            android:id="@id/action_itemListFragment_to_itemDetailActivity"
+            app:destination="@id/itemDetailActivity"/>
     </fragment>
 
 

@@ -113,7 +113,7 @@ public class SyncFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         String time = format.format(calendar.getTime());
 
-        binding.uploadRecord.setText("just now");
+        binding.uploadRecord.setText("today");
 
         Map<String, String> uploadTime = new HashMap<>();
         uploadTime.put("uploadTime", time);
@@ -132,7 +132,7 @@ public class SyncFragment extends Fragment {
 
         Calendar calendar = Calendar.getInstance();
         String time =  format.format(calendar.getTime());
-        binding.fetchRecord.setText("just now");
+        binding.fetchRecord.setText("today");
 
         Map<String, String> fetchTime = new HashMap<>();
         fetchTime.put("fetchTime", time);
@@ -322,14 +322,14 @@ public class SyncFragment extends Fragment {
                                             if (fetch != null){
                                                 long dateDiff = Converters.getDayDifferences(fetch);
                                                 if (dateDiff == 0){
-                                                    binding.fetchRecord.setText("just now");
+                                                    binding.fetchRecord.setText("today");
                                                 } else{
                                                     binding.fetchRecord.setText(Math.abs(dateDiff) + " days ago");
                                                 }
                                             } if(upload != null){
                                                 long dateDiff = Converters.getDayDifferences(upload);
                                                 if (dateDiff == 0){
-                                                    binding.uploadRecord.setText("just now");
+                                                    binding.uploadRecord.setText("today");
                                                 } else{
                                                     binding.uploadRecord.setText(Math.abs(dateDiff) + " days ago");
                                                 }

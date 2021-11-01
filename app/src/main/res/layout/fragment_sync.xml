@@ -21,15 +21,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints">
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="20dp">
 
                 <Button
                     android:id="@+id/backUpStorage"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Backup Data on cloud"
+                    android:gravity="left|center_vertical"
                     android:background="@android:color/transparent"
-                    android:layout_marginTop="20dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -63,9 +64,10 @@
 
                 <Button
                     android:id="@+id/fetchData"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Fetch Data from cloud"
+                    android:gravity="left|center_vertical"
                     android:background="@android:color/transparent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
