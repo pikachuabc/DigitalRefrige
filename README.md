@@ -45,7 +45,6 @@ COMP90018
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -67,11 +66,6 @@ COMP90018
 
 
 It is an Android app based on the function of reminding the expiration date of food in the fridge or locker, which often leads to the waste of food. This app records the expiration date of food purchased by users and reminds them regularly to reduce the waste of food.
-
-Here's main feature:
-![Main_feature](https://user-images.githubusercontent.com/61958672/139540178-d18e61ee-3af6-4729-ba20-9d3f077b793f.png)
-
-Use the `BLANK_README.md` to get started.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -138,16 +132,6 @@ https://user-images.githubusercontent.com/61958672/139541058-fc765df6-3976-4617-
 
 
 
-
-<!-- ROADMAP -->
-## Roadmap
-<p align="center">
-<img width="300" alt="Screen Shot 2021-10-31 at 3 30 59 am" src="https://user-images.githubusercontent.com/61958672/139541460-60e12937-0ed7-40d0-865f-77dae7cbaac6.png">
-<img width="300" alt="Screen Shot 2021-10-31 at 3 31 08 am" src="https://user-images.githubusercontent.com/61958672/139541461-50ed5fd9-416d-4183-b34f-63556aa09a3b.png">
-  
-<img width="300" alt="Screen Shot 2021-10-31 at 3 31 24 am" src="https://user-images.githubusercontent.com/61958672/139541469-911226d7-d7dc-4edc-94a4-d73d670498ca.png">
-
-</p>
 
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
