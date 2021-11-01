@@ -97,6 +97,7 @@ This is an example of how to list things you need to use the software and how to
   ```
 * Real Andriod device wiht above API
 * Google SignIn
+  
   In the project directory, using the Gradle signingReport command to get SHA-1 (making sure your java is above version 11): 
   ```
   ./gradlew signingReport
